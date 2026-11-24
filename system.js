@@ -2080,6 +2080,281 @@
       `);
     },
 
+    openAICallModal(initialQuestion = "") {
+      const modalHtml = `
+        <div class="p-6 sm:p-8 bg-gradient-to-b from-slate-900 to-slate-950 text-white rounded-3xl relative overflow-hidden" id="ai-voice-modal-content">
+          <div class="flex items-center justify-between pb-4 border-b border-white/10">
+            <div class="flex items-center gap-2.5">
+              <span class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold border border-amber-400/30">
+                <i data-lucide="bot" class="w-6 h-6"></i>
+              </span>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-display text-lg font-bold text-white">CareWell 24/7 AI Receptionist</h3>
+                  <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black uppercase tracking-wider">
+                    🌙 Raat Ko AI Call Uthayega
+                  </span>
+                </div>
+                <p class="text-[11px] text-emerald-400">Smart Voice Assistant · Spoken Audio & Real-time Text</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="modal-voice-toggle-btn" type="button" class="px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-900 transition">
+                ${window.isVoiceAudioEnabled ? "🔊 Audio: ON" : "🔇 Audio: OFF"}
+              </button>
+              <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-white p-1">
+                <i data-lucide="x" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Animated Voice Waveform Visualizer -->
+          <div class="my-5 text-center">
+            <div class="w-16 h-16 rounded-full bg-amber-500/20 border-2 border-amber-400 mx-auto flex items-center justify-center shadow-lg shadow-amber-500/20 call-pulse">
+              <i data-lucide="mic" class="w-7 h-7 text-amber-300"></i>
+            </div>
+            <div class="flex items-center justify-center gap-1.5 h-6 mt-3">
+              <div class="wave-bar bg-amber-400"></div>
+              <div class="wave-bar bg-amber-400"></div>
+              <div class="wave-bar bg-amber-400"></div>
+              <div class="wave-bar bg-amber-400"></div>
+              <div class="wave-bar bg-amber-400"></div>
+            </div>
+          </div>
+
+          <!-- Live Transcript Output -->
+          <div id="ai-modal-transcript" class="my-3 p-4 rounded-2xl bg-white/10 backdrop-blur border border-white/10 text-xs text-slate-100 leading-relaxed min-h-[105px] flex flex-col justify-center text-center">
+            <p class="text-emerald-300 font-medium">"Namaste! CareWell AI Voice Assistant bol raha hoon. Clinic Mon-Sat open hai. Aap sawal poochhiye ya neeche test button dabayein."</p>
+          </div>
+
+          <!-- Ready-to-Click Questions Chips (Reel Feature 2) -->
+          <div class="space-y-2 mt-3 pt-3 border-t border-white/10">
+            <p class="text-[11px] text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1">
+              <span>⚡ Click to Test AI Audio Response (Spoken Audio + Text):</span>
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <button type="button" data-ai-q="Free eye test ka timing kya hai?" class="btn-ask-ai-prompt p-2.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-left text-slate-200 hover:text-white transition flex items-center gap-2">
+                <span class="text-base shrink-0">👁️</span>
+                <span>"Free eye test ka timing kya hai?"</span>
+              </button>
+              <button type="button" data-ai-q="Blue-cut computer lenses ka kitna lagega?" class="btn-ask-ai-prompt p-2.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-left text-slate-200 hover:text-white transition flex items-center gap-2">
+                <span class="text-base shrink-0">👓</span>
+                <span>"Blue-cut computer lenses ka kitna lagega?"</span>
+              </button>
+              <button type="button" data-ai-q="Doctor appointment ka timing kya hai?" class="btn-ask-ai-prompt p-2.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-left text-slate-200 hover:text-white transition flex items-center gap-2">
+                <span class="text-base shrink-0">🩺</span>
+                <span>"Doctor appointment timing kya hai?"</span>
+              </button>
+              <button type="button" data-ai-q="Raat ko clinic band hone ke baad call uthayega kya?" class="btn-ask-ai-prompt p-2.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-left text-slate-200 hover:text-white transition flex items-center gap-2">
+                <span class="text-base shrink-0">🌙</span>
+                <span>"Raat ko AI call uthayega kya?"</span>
+              </button>
+            </div>
+
+            <!-- Custom Question Input -->
+            <div class="flex gap-2 mt-3 pt-2">
+              <input id="ai-custom-q-input" type="text" placeholder="Apna sawal yahan type karein..." class="h-10 px-3.5 text-xs flex-1 rounded-xl bg-white/10 border border-white/20 text-white outline-none focus:border-amber-400">
+              <button id="btn-submit-custom-q" type="button" class="h-10 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition">
+                <span>Ask AI</span>
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      showModalHtml(modalHtml);
+
+      const transcript = $s("#ai-modal-transcript");
+      const toggleBtn = $s("#modal-voice-toggle-btn");
+
+      toggleBtn?.addEventListener("click", () => {
+        window.isVoiceAudioEnabled = !window.isVoiceAudioEnabled;
+        toggleBtn.textContent = window.isVoiceAudioEnabled ? "🔊 Audio: ON" : "🔇 Audio: OFF";
+      });
+
+      const handleQuestion = (q) => {
+        let answer = "";
+        const lower = q.toLowerCase();
+
+        if (lower.includes("eye test") || lower.includes("free eye")) {
+          answer = "Namaste! CareWell Clinic mein Free Eye Test Monday se Saturday, subah 9:00 AM se dopahar 1:00 PM aur shaam 4:00 PM se 7:00 PM tak hota hai. Aap abhi website se free slot hold kar sakte hain!";
+        } else if (lower.includes("blue-cut") || lower.includes("lens") || lower.includes("computer")) {
+          answer = "CareWell Clinic optical section mein Blue-cut anti-glare computer lenses sirf ₹499 se shuru hote hain. Isme certified UV420 blue light protection aur 1-year anti-scratch warranty included hai.";
+        } else if (lower.includes("raat") || lower.includes("call uthayega") || lower.includes("night")) {
+          answer = "Haan bilkul! Chahe raat ke 2 baje ho, CareWell 24/7 AI Assistant har call uthata hai, patient ki takleef sunta hai aur subah ka pehla doctor slot reserve kar deta hai!";
+        } else if (lower.includes("doctor") || lower.includes("timing") || lower.includes("appointment")) {
+          answer = "CareWell Clinic OPD timing Monday to Saturday subah 9 se 1 aur shaam 4 se 7 baje hai. Dr. Ananya Rao aur specialist doctors available hain. Aap 1 click mein booking kar sakte hain!";
+        } else {
+          answer = `Namaste! CareWell 24/7 AI Assistant aapka sawal note kar chuka hai. Clinic OPD desk par direct slot reserve kar diya gaya hai!`;
+        }
+
+        if (transcript) {
+          transcript.innerHTML = `
+            <div class="text-left space-y-2">
+              <p><strong class="text-amber-300">Patient:</strong> "${sEscapeHtml(q)}"</p>
+              <p class="mt-1"><strong class="text-emerald-400">CareWell AI:</strong> "${sEscapeHtml(answer)}"</p>
+            </div>
+          `;
+        }
+
+        speakVoice(answer);
+      };
+
+      $$s(".btn-ask-ai-prompt").forEach((b) => {
+        b.addEventListener("click", () => {
+          handleQuestion(b.dataset.aiQ);
+        });
+      });
+
+      $s("#btn-submit-custom-q")?.addEventListener("click", () => {
+        const inp = $s("#ai-custom-q-input");
+        const val = inp ? inp.value.trim() : "";
+        if (val) {
+          handleQuestion(val);
+          inp.value = "";
+        }
+      });
+
+      if (initialQuestion) {
+        handleQuestion(initialQuestion);
+      } else {
+        speakVoice("Namaste! Main CareWell Clinic 24/7 AI Voice Assistant bol raha hoon. Aap sawal poochhiye ya test option click karein.");
+      }
+    },
+
+    testWhatsAppAutoBooking(name = "Ritu Sharma", phone = "9811111111", service = "Free Computerized Eye Test", slot = "Tuesday 11:30 AM") {
+      sShowToast(`🚀 WhatsApp Auto-Booking initiated for ${name}!`);
+
+      const waModalHtml = `
+        <div class="p-5 sm:p-7 bg-[#ECE5DD] rounded-3xl relative overflow-hidden" id="wa-reel-modal">
+          <!-- WhatsApp Header -->
+          <div class="bg-[#075E54] -m-5 sm:-m-7 p-4 sm:p-5 text-white flex items-center justify-between shadow-md mb-5">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-white text-[#075E54] flex items-center justify-center font-bold">
+                <i data-lucide="message-circle" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <h4 class="font-bold text-sm text-white">CareWell Clinic Bot</h4>
+                  <i data-lucide="badge-check" class="w-4 h-4 text-emerald-300"></i>
+                </div>
+                <p class="text-[11px] text-emerald-200">Official WhatsApp Business Account · Online</p>
+              </div>
+            </div>
+            <button id="modal-close-btn" type="button" class="text-emerald-100 hover:text-white p-1">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+
+          <!-- Chat Messages Container -->
+          <div id="wa-reel-chat-box" class="space-y-3 py-2 min-h-[260px] text-xs">
+            <!-- Message 1 from Bot -->
+            <div class="flex justify-start animate-in fade-in">
+              <div class="chat-bubble-bot p-3.5 shadow-xs max-w-[85%] text-slate-800">
+                <p class="font-semibold text-[#075E54] mb-1">CareWell Clinic Automated System</p>
+                <p>Namaste <strong>${sEscapeHtml(name)}</strong> ji!</p>
+                <p class="mt-1">Aapka <strong>${sEscapeHtml(service)}</strong> slot <strong>${sEscapeHtml(slot)}</strong> hold ho gaya hai.</p>
+                <p class="mt-2 text-slate-600 bg-emerald-50/80 p-2 rounded-lg border border-emerald-100 font-medium">
+                  Confirm karne ke liye: <strong>"1"</strong> likhein<br>
+                  Cancel karne ke liye: <strong>"2"</strong> likhein
+                </p>
+                <span class="text-[10px] text-slate-400 block text-right mt-1">Just now · Delivered</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-4 pt-3 border-t border-slate-300/60 flex flex-col gap-2">
+            <div id="wa-auto-reply-action" class="flex gap-2">
+              <button id="btn-wa-reply-confirm" type="button" class="flex-1 py-2.5 rounded-xl bg-[#25D366] text-white font-bold text-xs hover:bg-[#1ebd5a] shadow-xs flex items-center justify-center gap-1.5 transition">
+                <span>Reply "1" (Confirm Slot)</span>
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              </button>
+              <button id="btn-wa-reply-cancel" type="button" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 font-medium text-xs hover:bg-slate-50 transition">
+                Reply "2" (Cancel)
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      showModalHtml(waModalHtml);
+
+      const chatBox = $s("#wa-reel-chat-box");
+      const actionBox = $s("#wa-auto-reply-action");
+
+      const simulateConfirm = () => {
+        if (!chatBox) return;
+
+        chatBox.innerHTML += `
+          <div class="flex justify-end animate-in fade-in">
+            <div class="chat-bubble-patient p-3 shadow-xs text-slate-900 max-w-[70%]">
+              <p class="font-bold">1</p>
+              <span class="text-[10px] text-slate-500 block text-right mt-0.5">Just now · Sent</span>
+            </div>
+          </div>
+          <div id="typing-indicator" class="flex justify-start">
+            <div class="chat-bubble-bot px-4 py-2.5 shadow-xs flex items-center gap-1">
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+            </div>
+          </div>
+        `;
+
+        if (actionBox) actionBox.innerHTML = `<span class="text-xs text-slate-500 text-center w-full">Bot typing confirmation...</span>`;
+
+        setTimeout(() => {
+          $s("#typing-indicator")?.remove();
+          chatBox.innerHTML += `
+            <div class="flex justify-start animate-in fade-in">
+              <div class="chat-bubble-bot p-3.5 shadow-xs max-w-[85%] text-slate-800 border-l-4 border-[#25D366]">
+                <p class="font-bold text-tealbrand text-sm">🎉 Thank You! Slot Confirmed.</p>
+                <p class="mt-1">Aapka <strong>Token No. 12 (CW-2048)</strong> book ho chuka hai.</p>
+                <div class="mt-2 p-2 rounded-lg bg-mint text-slate-700 text-[11px] leading-relaxed">
+                  ✓ Blue-cut computer lenses power check clinic par free available hai.<br>
+                  ✓ Number aane se <strong>15 minute pehle WhatsApp alert</strong> aayega taaki clinic me wait na karna pade!
+                </div>
+                <span class="text-[10px] text-slate-400 block text-right mt-1.5">Auto-Reply · Just now</span>
+              </div>
+            </div>
+          `;
+
+          if (actionBox) {
+            actionBox.innerHTML = `
+              <div class="flex gap-2 w-full">
+                <a href="patient.html" class="flex-1 py-2 rounded-xl bg-tealbrand text-white font-semibold text-xs text-center flex items-center justify-center gap-1 shadow-xs">
+                  <i data-lucide="user-round" class="w-3.5 h-3.5"></i> Patient Portal Me File Dekhein →
+                </a>
+              </div>
+            `;
+            sRefreshIcons();
+          }
+
+          speakVoice("Thank you! Aapka slot confirm ho gaya hai. Token number 12 generate ho gaya hai.");
+        }, 1100);
+      };
+
+      $s("#btn-wa-reply-confirm")?.addEventListener("click", simulateConfirm);
+      $s("#btn-wa-reply-cancel")?.addEventListener("click", () => {
+        if (!chatBox) return;
+        chatBox.innerHTML += `
+          <div class="flex justify-end">
+            <div class="chat-bubble-patient p-2.5 shadow-xs text-slate-900">
+              <p class="font-bold">2</p>
+            </div>
+          </div>
+          <div class="flex justify-start mt-2">
+            <div class="chat-bubble-bot p-3 shadow-xs text-slate-800">
+              <p>Aapka slot cancel ho gaya hai. Dobara book karne ke liye CareWell website visit karein.</p>
+            </div>
+          </div>
+        `;
+        if (actionBox) actionBox.innerHTML = `<span class="text-xs text-red-600 text-center w-full">Booking Cancelled</span>`;
+      });
+    },
+
     openAddDoctorModal() {
       showModalHtml(`
         <div class="p-6 sm:p-8">

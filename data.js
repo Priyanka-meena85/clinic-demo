@@ -93,9 +93,31 @@ const CareWellData = {
       specialty: "Pediatrician",
       text: "Bacchon ka fever, vaccines, aur growth check. Vaccination card laana.",
       icon: "baby"
+    },
+    {
+      id: "eyetest",
+      title: "Free Eye Test & Optical",
+      specialty: "Ophthalmology",
+      text: "Free computerized eye test, blue-cut computer lenses power check & retina screening.",
+      icon: "eye"
     }
   ],
   doctors: [
+    {
+      id: "rohit-verma",
+      name: "Dr. Rohit Verma",
+      specialty: "Ophthalmologist",
+      group: "Eye Test",
+      location: "Pune",
+      timing: "Mon–Sat, 10:00 AM – 2:00 PM",
+      qualifications: "MBBS, MS (Ophthalmology)",
+      experienceYears: 10,
+      languages: ["Hindi", "English"],
+      fee: 300,
+      rating: 4.9,
+      reviewCount: 172,
+      bio: "Free computerized eye testing, blue-cut computer glasses, cataract evaluation & vision therapy."
+    },
     {
       id: "ananya-rao",
       name: "Dr. Ananya Rao",

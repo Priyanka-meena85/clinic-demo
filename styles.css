@@ -270,6 +270,22 @@ textarea:focus-visible {
   background: #059669;
 }
 
+/* Floating Gold Bot Pulsing Button */
+@keyframes gold-glow {
+  0%, 100% {
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.7), 0 0 28px rgba(217, 119, 6, 0.4);
+    transform: translateY(0);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(251, 191, 36, 1), 0 0 40px rgba(245, 158, 11, 0.7);
+    transform: translateY(-2px);
+  }
+}
+
+.floating-gold-bot {
+  animation: gold-glow 2.2s infinite ease-in-out;
+}
+
 /* Print styles for Prescriptions */
 @media print {
   body * {

@@ -538,7 +538,7 @@
           <div class="flex items-start justify-between border-b border-emerald-100 pb-5">
             <div class="flex items-center gap-3">
               <span class="w-12 h-12 rounded-2xl bg-emerald-100 text-tealbrand flex items-center justify-center font-bold text-xl border border-emerald-300">
-                🛡️
+                ️
               </span>
               <div>
                 <div class="flex items-center gap-2">
@@ -557,7 +557,7 @@
 
           <!-- Why Security Matters for Clinic Client Box -->
           <div class="my-5 p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-mint border border-emerald-200 text-xs text-slate-700 leading-relaxed">
-            <p class="font-bold text-tealbrand text-sm mb-1">🔐 Healthcare & Multi-Speciality Clinic Security Guarantee:</p>
+            <p class="font-bold text-tealbrand text-sm mb-1"> Healthcare & Multi-Speciality Clinic Security Guarantee:</p>
             <p>
               Clinic ki website par patient ka <strong>Name, Phone, Medical Prescriptions, Blood Tests, Vitals aur Online Payments</strong> aate hain. 
               Ye 20-Point Shield ensure karta hai ki koi hacker ek patient ka prescription na dekh sake (Zero BOLA/IDOR), koi fake payment page na bana sake, aur CareWell Clinic ki medical reputation 100% safe rahe.
@@ -572,14 +572,14 @@
                 <div class="rounded-2xl border border-emerald-100 bg-white p-4 sm:p-5 shadow-2xs">
                   <h4 class="font-bold text-sm text-slate-900 pb-2 border-b border-slate-100 flex items-center justify-between">
                     <span>${cat}</span>
-                    <span class="text-xs text-emerald-700 font-bold">${items.length}/${items.length} Checked ✓</span>
+                    <span class="text-xs text-emerald-700 font-bold">${items.length}/${items.length} Checked </span>
                   </h4>
                   <div class="mt-3 divide-y divide-slate-100">
                     ${items.map((item) => `
                       <div class="py-2.5 flex items-start justify-between gap-3 text-xs">
                         <div class="flex items-start gap-2">
                           <span class="w-5 h-5 rounded-full bg-emerald-100 text-tealbrand flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
-                            ✓
+                            
                           </span>
                           <div>
                             <span class="font-semibold text-slate-800">${item.point}. ${item.title}</span>
@@ -630,7 +630,7 @@
     verifyLiveAll() {
       const toast = $("#toast");
       if (toast) {
-        toast.textContent = "⚡ Running live security test suite... 20/20 Checks Passed!";
+        toast.textContent = " Running live security test suite... 20/20 Checks Passed!";
         toast.classList.remove("hidden");
         setTimeout(() => toast.classList.add("hidden"), 3000);
       }

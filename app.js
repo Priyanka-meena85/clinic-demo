@@ -374,14 +374,14 @@ function renderDoctors() {
           <div class="min-w-0">
             <div class="flex items-center gap-1.5 flex-wrap">
               <h3 class="font-display text-xl leading-tight text-slate-950">${escapeHtml(doctor.name)}</h3>
-              <span class="text-tealbrand text-xs" title="Verified Medical Practitioner">✓</span>
+              <span class="text-tealbrand text-xs" title="Verified Medical Practitioner"></span>
             </div>
             <p class="mt-0.5 text-xs font-semibold text-tealbrand">${escapeHtml(doctor.specialty)} · <span class="text-slate-500 font-normal">${escapeHtml(doctor.location || "Pune")}</span></p>
             <p class="text-[11px] font-medium text-slate-400 mt-0.5">${escapeHtml(doctor.qualifications)}</p>
           </div>
         </div>
         <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shrink-0">
-          ★ ${doctor.rating || 4.8}
+           ${doctor.rating || 4.8}
         </span>
       </div>
 
@@ -408,7 +408,7 @@ function renderDoctors() {
       </div>
 
       <div class="mt-2.5 flex items-center justify-between text-[11px] text-slate-500">
-        <span class="truncate">🗣️ ${(doctor.languages || []).join(", ")}</span>
+        <span class="truncate">️ ${(doctor.languages || []).join(", ")}</span>
         <button type="button" data-reviews="${escapeHtml(doctor.id)}" class="shrink-0 text-tealbrand font-semibold hover:underline">
           ${state.openReviews === doctor.id ? "Reviews Hide" : `${doctor.reviewCount || 0} Reviews`}
         </button>
@@ -572,59 +572,28 @@ function renderVisit() {
 function renderFooter() {
   const { clinic, nav } = CareWellData;
   $("#site-footer").innerHTML = `
-    <!-- Top Security & Search Engine Compliance Ribbon -->
-    <div class="mb-10 pb-8 border-b border-emerald-800/80 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
-      <!-- 20-Point Security Status -->
+    <!-- Top Security & Trust Assurance Banner -->
+    <div class="mb-12 pb-8 border-b border-emerald-800/80 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
       <div class="flex items-start sm:items-center gap-3.5">
-        <span class="w-12 h-12 rounded-2xl bg-white/10 text-emerald-300 border border-emerald-400/30 flex items-center justify-center font-bold text-xl shrink-0 shadow-inner">
-          🛡️
+        <span class="w-12 h-12 rounded-2xl bg-white/10 text-emerald-300 border border-emerald-400/30 flex items-center justify-center font-bold text-xl shrink-0">
+          ️
         </span>
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <h4 class="font-display text-lg font-bold text-white">20-Point Healthcare & Privacy Shield</h4>
+            <h4 class="font-display text-lg font-bold text-white">20-Point Security & Medical Privacy Shield</h4>
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-slate-950 uppercase tracking-wider">
               20/20 PASSED (100%)
             </span>
           </div>
           <p class="text-xs text-emerald-200/80 mt-0.5 leading-relaxed">
-            Zero BOLA/IDOR Data Leakage · SQL Parameterization · Rate Limiting · End-to-End Encrypted Prescriptions & Vitals
+            Zero BOLA/IDOR Data Leakage · SQL Parameterization · Rate Limiting · End-to-End Encrypted Prescriptions & Lab Records
           </p>
         </div>
       </div>
-
-      <!-- Action Button & SEO Verification Badges -->
-      <div class="flex flex-wrap items-center gap-3">
-        <button type="button" onclick="window.CareWellSecurity ? window.CareWellSecurity.openSecurityAuditModal() : null" class="px-4 py-2.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 font-bold text-xs shadow-md transition flex items-center justify-center gap-2 shrink-0">
-          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
-          <span>View 20-Point Security Report</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- SEO & Webmaster Discovery Strip -->
-    <div class="mb-10 p-3.5 rounded-2xl bg-emerald-950/70 border border-emerald-800/60 flex flex-wrap items-center justify-between gap-3 text-xs text-emerald-200">
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="text-[11px] font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-          <i data-lucide="search" class="w-3.5 h-3.5 text-emerald-400"></i> Search & AI Indexing:
-        </span>
-        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 text-[11px] font-medium border border-white/10 text-white">
-          <i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Google Search Console
-        </span>
-        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 text-[11px] font-medium border border-white/10 text-white">
-          <i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Bing Webmaster Tools
-        </span>
-        <a href="sitemap.xml" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-900/60 hover:bg-emerald-800 text-[11px] font-medium border border-emerald-700/60 text-emerald-300 hover:text-white transition">
-          <i data-lucide="file-code" class="w-3 h-3"></i> XML Sitemap
-        </a>
-        <a href="llms.txt" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-900/60 hover:bg-emerald-800 text-[11px] font-medium border border-emerald-700/60 text-emerald-300 hover:text-white transition">
-          <i data-lucide="bot" class="w-3 h-3"></i> LLMS.txt Standard
-        </a>
-      </div>
-      <div class="flex items-center gap-3 text-[11px] text-emerald-300/80">
-        <span>Open Graph Meta: <strong>Validated</strong></span>
-        <span>·</span>
-        <span>JSON-LD Schema: <strong>Active</strong></span>
-      </div>
+      <button type="button" onclick="window.CareWellSecurity ? window.CareWellSecurity.openSecurityAuditModal() : null" class="px-5 py-2.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 font-bold text-xs shadow-md transition flex items-center justify-center gap-2 shrink-0">
+        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+        <span>View 20-Point Security Report</span>
+      </button>
     </div>
 
     <!-- 5-Column Main Footer Grid -->
@@ -645,22 +614,9 @@ function renderFooter() {
           Camp Pune's premier paperless healthcare facility. Zero waiting room crowds with live queue tracking, digital prescriptions, WhatsApp auto-reminders, and 24/7 AI voice call recovery.
         </p>
         <div class="pt-2 flex flex-wrap gap-2 text-[10px] font-bold text-emerald-200">
-          <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10">✓ NABH Quality Protocol</span>
-          <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10">✓ ISO 9001:2015</span>
-          <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10">✓ HIPAA / DISHA Compliant</span>
-        </div>
-
-        <!-- Interactive Health Tips / WhatsApp Notification Subscribe -->
-        <div class="pt-2 max-w-sm">
-          <p class="text-[11px] text-emerald-300 font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-            <i data-lucide="bell" class="w-3.5 h-3.5 text-amber-300"></i> Get Preventive Health Alerts on WhatsApp:
-          </p>
-          <form id="footer-wa-tips-form" class="flex gap-2">
-            <input id="footer-wa-phone" type="tel" placeholder="10-digit mobile number" maxlength="10" class="h-9 px-3 text-xs flex-1 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-emerald-300/50 outline-none focus:border-emerald-400 font-mono">
-            <button type="submit" class="h-9 px-3.5 rounded-xl bg-[#25D366] hover:bg-[#1ebd5a] text-slate-950 font-bold text-xs flex items-center gap-1 transition shadow-sm shrink-0">
-              <span>Subscribe</span>
-            </button>
-          </form>
+          <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10"> NABH Quality Protocol</span>
+          <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10"> ISO 9001:2015</span>
+          <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10"> HIPAA Compliant</span>
         </div>
       </div>
 
@@ -698,19 +654,19 @@ function renderFooter() {
         </span>
         <div class="flex flex-col gap-2 text-emerald-200/90">
           <a class="hover:text-white transition flex items-center gap-1.5" href="patient.html">
-            <i data-lucide="user-round" class="w-3.5 h-3.5 text-emerald-300"></i> Patient Portal (CW-2048)
+            <i data-lucide="user-round" class="w-3.5 h-3.5 text-emerald-300"></i> Patient Portal (Rx & Reports)
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="doctor.html">
-            <i data-lucide="stethoscope" class="w-3.5 h-3.5 text-emerald-300"></i> Doctor OPD Workspace
+            <i data-lucide="stethoscope" class="w-3.5 h-3.5 text-emerald-300"></i> Doctor OPD Console
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="admin.html">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-300"></i> Admin & Reception Desk
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-300"></i> Reception & Admin Desk
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="login.html">
             <i data-lucide="key-round" class="w-3.5 h-3.5 text-emerald-300"></i> Role Gateway & Sign Up
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#queue">
-            <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-300"></i> Live Token Queue Counter
+            <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-300"></i> Live OPD Token Stepper
           </a>
           <button type="button" onclick="window.CareWellSystem ? window.CareWellSystem.openAICallModal() : null" class="text-left hover:text-white transition flex items-center gap-1.5 text-amber-300 font-semibold">
             <i data-lucide="bot" class="w-3.5 h-3.5 text-amber-400"></i> 24/7 AI Night Receptionist
@@ -721,55 +677,39 @@ function renderFooter() {
       <!-- Col 4: Timings & Emergency -->
       <div class="space-y-3">
         <span class="font-bold text-white text-xs uppercase tracking-wider block border-b border-emerald-800 pb-2">
-          OPD Hours & Locations
+          OPD Hours & Location
         </span>
         <div class="space-y-2 text-emerald-100/90 leading-relaxed">
           <p><strong class="text-white block">Monday – Saturday:</strong> 9:00 AM – 1:00 PM<br>4:00 PM – 7:00 PM</p>
           <p><strong class="text-white block">Sunday:</strong> Emergency On-Call Only</p>
           <div class="pt-2 border-t border-emerald-800/60">
-            <p class="font-bold text-white">24/7 Emergency Casualty:</p>
+            <p class="font-bold text-white">Emergency Helpline:</p>
             <a href="tel:+919876543210" class="text-amber-300 font-bold hover:underline block text-sm mt-0.5">+91 98765 43210</a>
-            <p class="text-[11px] text-emerald-300 mt-1">Main: 214, MG Road, Camp, Pune</p>
-            <p class="text-[10px] text-emerald-400/80">Branches: Bhiwadi & Jaipur</p>
+            <p class="text-[11px] text-emerald-300 mt-1">214, MG Road, Camp, Pune</p>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- Bottom Legal, Search Discovery & Compliance Sub-Bar -->
+    <!-- Bottom Legal & Compliance Sub-Bar -->
     <div class="mt-12 pt-6 border-t border-emerald-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-[11px] text-emerald-300/80">
       <div class="space-y-1">
         <p>© 2026 CareWell Healthcare & Multi-Speciality Clinic Systems. All rights reserved.</p>
         <p class="text-emerald-400/60">Medical Disclaimer: Clinical records, vitals and digital prescriptions are strictly encrypted under patient-only access controls.</p>
       </div>
-      <div class="flex flex-wrap items-center gap-3.5 text-emerald-200">
+      <div class="flex flex-wrap items-center gap-4 text-emerald-200">
         <button type="button" onclick="window.CareWellSecurity ? window.CareWellSecurity.openSecurityAuditModal() : null" class="hover:text-white transition underline font-medium">
           20-Point Security Audit Report
         </button>
         <span>·</span>
-        <a href="sitemap.xml" target="_blank" class="hover:text-white transition underline">XML Sitemap</a>
-        <span>·</span>
-        <a href="llms.txt" target="_blank" class="hover:text-white transition underline">LLMS.txt</a>
-        <span>·</span>
-        <a href="robots.txt" target="_blank" class="hover:text-white transition underline">Robots.txt</a>
-        <span>·</span>
         <a href="#home" class="hover:text-white transition">Privacy Policy</a>
+        <span>·</span>
+        <a href="#home" class="hover:text-white transition">Terms of Service</a>
+        <span>·</span>
+        <a href="login.html" class="hover:text-white transition">Staff Portals</a>
       </div>
     </div>`;
-
-  // Attach WhatsApp tips subscription handler
-  $("#footer-wa-tips-form")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const phone = $("#footer-wa-phone")?.value.trim();
-    if (!phone || phone.length < 10) {
-      alert("Kripya 10-digit mobile number enter karein.");
-      return;
-    }
-    alert(`Dhanyawad! +91 ${phone} par seasonal health tips aur OPD reminder service active ho gayi hai.`);
-    $("#footer-wa-phone").value = "";
-  });
-}
 }
 
 function updateBookingCountAndLists() {

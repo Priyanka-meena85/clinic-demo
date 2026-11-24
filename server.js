@@ -224,17 +224,6 @@ const server = http.createServer((req, res) => {
   // ---------------------------------------------------------------
   let filePath = path.join(__dirname, pathname === "/" ? "index.html" : pathname);
 
-  // SEO & AI Crawlers Special Route Mapping
-  if (pathname === "/sitemap.xml") {
-    filePath = path.join(__dirname, "sitemap.xml");
-  } else if (pathname === "/robots.txt") {
-    filePath = path.join(__dirname, "robots.txt");
-  } else if (pathname === "/llms.txt") {
-    filePath = path.join(__dirname, "llms.txt");
-  } else if (pathname === "/.well-known/llms.txt") {
-    filePath = path.join(__dirname, ".well-known", "llms.txt");
-  }
-
   // Block Directory Traversal Attack
   if (!filePath.startsWith(__dirname)) {
     res.writeHead(403);
@@ -255,8 +244,6 @@ const server = http.createServer((req, res) => {
     ".js": "text/javascript; charset=utf-8",
     ".css": "text/css; charset=utf-8",
     ".json": "application/json; charset=utf-8",
-    ".xml": "application/xml; charset=utf-8",
-    ".txt": "text/plain; charset=utf-8",
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".svg": "image/svg+xml"

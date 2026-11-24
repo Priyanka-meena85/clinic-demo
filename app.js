@@ -586,7 +586,7 @@ function renderFooter() {
             </span>
           </div>
           <p class="text-xs text-emerald-200/80 mt-0.5 leading-relaxed">
-            Zero BOLA/IDOR Data Leakage · SQL Parameterization · Rate Limiting · End-to-End Encrypted Eye Test & Prescriptions
+            Zero BOLA/IDOR Data Leakage · SQL Parameterization · Rate Limiting · End-to-End Encrypted Prescriptions & Lab Records
           </p>
         </div>
       </div>
@@ -607,11 +607,11 @@ function renderFooter() {
           </span>
           <div>
             <span class="block font-display text-xl font-bold leading-none text-white">${escapeHtml(clinic.name)}</span>
-            <span class="block text-[11px] text-emerald-300 font-medium mt-0.5">Primary Care & Computerized Optical Center</span>
+            <span class="block text-[11px] text-emerald-300 font-medium mt-0.5">Primary Care & Multi-Speciality Clinic</span>
           </div>
         </div>
         <p class="text-emerald-100/80 text-xs leading-relaxed max-w-sm">
-          Camp Pune's premier paperless healthcare facility. Zero waiting room crowds with live queue tracking, computerized eye testing, WhatsApp auto-reminders, and 24/7 AI voice call recovery.
+          Camp Pune's premier paperless healthcare facility. Zero waiting room crowds with live queue tracking, digital prescriptions, WhatsApp auto-reminders, and 24/7 AI voice call recovery.
         </p>
         <div class="pt-2 flex flex-wrap gap-2 text-[10px] font-bold text-emerald-200">
           <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/10">✓ NABH Quality Protocol</span>
@@ -620,29 +620,29 @@ function renderFooter() {
         </div>
       </div>
 
-      <!-- Col 2: Clinical & Optical Services -->
+      <!-- Col 2: Clinical Specialities -->
       <div class="space-y-3">
         <span class="font-bold text-white text-xs uppercase tracking-wider block border-b border-emerald-800 pb-2">
-          Specialties & Care
+          Clinical Specialities
         </span>
         <div class="flex flex-col gap-2 text-emerald-200/90">
-          <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="eye" class="w-3.5 h-3.5 text-emerald-300"></i> Free Eye Test & Optical
-          </a>
-          <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="glasses" class="w-3.5 h-3.5 text-emerald-300"></i> Blue-Cut Computer Glasses
-          </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
             <i data-lucide="stethoscope" class="w-3.5 h-3.5 text-emerald-300"></i> General Physician OPD
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-emerald-300"></i> Preventive Cardiology
+            <i data-lucide="baby" class="w-3.5 h-3.5 text-emerald-300"></i> Pediatrics & Child Care
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="baby" class="w-3.5 h-3.5 text-emerald-300"></i> Pediatrics & Vaccines
+            <i data-lucide="sun" class="w-3.5 h-3.5 text-emerald-300"></i> Dermatology & Skin Care
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="smile" class="w-3.5 h-3.5 text-emerald-300"></i> Dental Surgery
+            <i data-lucide="smile" class="w-3.5 h-3.5 text-emerald-300"></i> Dental Surgery & Toothache
+          </a>
+          <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
+            <i data-lucide="ear" class="w-3.5 h-3.5 text-emerald-300"></i> ENT (Ear, Nose, Throat)
+          </a>
+          <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
+            <i data-lucide="bone" class="w-3.5 h-3.5 text-emerald-300"></i> Orthopedics & Joint Care
           </a>
         </div>
       </div>
@@ -695,8 +695,8 @@ function renderFooter() {
     <!-- Bottom Legal & Compliance Sub-Bar -->
     <div class="mt-12 pt-6 border-t border-emerald-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-[11px] text-emerald-300/80">
       <div class="space-y-1">
-        <p>© 2026 CareWell Healthcare & Optical Solutions. All rights reserved.</p>
-        <p class="text-emerald-400/60">Medical Disclaimer: Eye power readings and digital prescriptions are strictly encrypted under patient-only access controls.</p>
+        <p>© 2026 CareWell Healthcare & Multi-Speciality Clinic Systems. All rights reserved.</p>
+        <p class="text-emerald-400/60">Medical Disclaimer: Clinical records, vitals and digital prescriptions are strictly encrypted under patient-only access controls.</p>
       </div>
       <div class="flex flex-wrap items-center gap-4 text-emerald-200">
         <button type="button" onclick="window.CareWellSecurity ? window.CareWellSecurity.openSecurityAuditModal() : null" class="hover:text-white transition underline font-medium">
@@ -1215,7 +1215,7 @@ function bindEvents() {
       e.preventDefault();
       const name = $("#free-slot-name")?.value.trim() || "Ritu Sharma";
       const phone = $("#free-slot-phone")?.value.trim() || "9811111111";
-      const service = $("#free-slot-service")?.value || "Free Computerized Eye Test";
+      const service = $("#free-slot-service")?.value || "General Physician OPD Consultation";
       const slot = $("#free-slot-time")?.value || "Tuesday 11:30 AM";
       if (window.CareWellSystem && typeof window.CareWellSystem.testWhatsAppAutoBooking === "function") {
         window.CareWellSystem.testWhatsAppAutoBooking(name, phone, service, slot);

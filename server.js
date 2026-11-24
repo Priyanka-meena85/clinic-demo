@@ -85,8 +85,8 @@ function verifyJwt(token) {
 // -----------------------------------------------------------------
 const Database = {
   prescriptions: [
-    { id: "rx-1", patientId: "CW-2048", doctor: "Dr. Rohit Verma", date: "2026-11-20", sphereRight: "-1.50", sphereLeft: "-1.75", cylinder: "-0.50", axis: "90", text: "Computer Vision Anti-glare glasses prescribed. Blue-cut lenses advised." },
-    { id: "rx-2", patientId: "CW-1980", doctor: "Dr. Vikram Shah", date: "2026-05-20", sphereRight: "+1.25", sphereLeft: "+1.50", text: "Reading power glasses. BP checkup in 6 months." }
+    { id: "rx-1", patientId: "CW-2048", doctor: "Dr. Ananya Rao", date: "2026-11-20", diagnosis: "Acute Viral Fever", bp: "120/80 mmHg", pulse: "76 bpm", text: "Tab Paracetamol 650mg TDS x 3 days, Tab Pantocid 40mg OD before breakfast, ORS hydration." },
+    { id: "rx-2", patientId: "CW-1980", doctor: "Dr. Vikram Shah", date: "2026-05-20", diagnosis: "Hypertension Stage 1", bp: "142/90 mmHg", text: "Continue BP medication Telma 40mg OD. Low salt diet. Repeat BP checkup in 6 months." }
   ],
   patients: [
     { id: "CW-2048", name: "Riya Sharma", phone: "9811111111", role: "patient" },

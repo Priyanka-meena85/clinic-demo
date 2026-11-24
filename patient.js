@@ -462,6 +462,12 @@
       const rx = rxList.find((x) => x.id === rxId) || rxList[0];
       const member = familyMembers.find((m) => m.patientId === activeMemberId) || familyMembers[0];
 
+      // 02. Auth & Access - BOLA / IDOR Verification Check (Checklist Point 6)
+      if (window.CareWellSecurity && !window.CareWellSecurity.authorizeRecordAccess(member.patientId, rx.patientId, "patient")) {
+        showToast("Security Alert (BOLA Protected): Unauthorized! Aap doosre patient ka prescription nahi dekh sakte.");
+        return;
+      }
+
       const modalContainer = $("#prescription-modal-container");
       if (!modalContainer) return;
 
@@ -471,31 +477,82 @@
             <!-- Prescription Pad Header -->
             <div class="border-b-2 border-tealbrand pb-4 flex items-start justify-between">
               <div>
-                <h3 class="font-display text-2xl font-bold text-tealbrand">CareWell Clinic</h3>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-display text-2xl font-bold text-tealbrand">CareWell Optical & Clinic</h3>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-tealbrand border border-emerald-300">
+                    🔒 BOLA Protected
+                  </span>
+                </div>
                 <p class="text-xs text-slate-500">214, MG Road, Camp, Pune 411001 · Phone: +91 98765 43210</p>
-                <p class="text-xs font-semibold text-slate-800 mt-1">${escapeHtml(rx.doctor || "Dr. Ananya Rao")}</p>
+                <p class="text-xs font-semibold text-slate-800 mt-1">${escapeHtml(rx.doctor || "Dr. Rohit Verma (Eye Specialist)")}</p>
               </div>
               <span class="font-display text-4xl font-bold text-tealbrand">℞</span>
             </div>
 
             <!-- Patient Metadata -->
-            <div class="my-4 py-2 border-b border-slate-100 grid grid-cols-2 gap-2 text-xs">
+            <div class="my-3 py-2 border-b border-slate-100 grid grid-cols-2 gap-2 text-xs">
               <div><span class="text-slate-400">Patient:</span> <strong class="text-slate-800">${escapeHtml(member.name)}</strong> (${escapeHtml(member.patientId)})</div>
               <div><span class="text-slate-400">Date:</span> <strong class="text-slate-800 font-mono">${escapeHtml(rx.date)}</strong></div>
               <div><span class="text-slate-400">Age:</span> ${member.age} yrs</div>
-              <div><span class="text-slate-400">Diagnosis:</span> <strong>Acute Viral Checkup</strong></div>
+              <div><span class="text-slate-400">Department:</span> <strong>Optical Vision & Eye Care</strong></div>
+            </div>
+
+            <!-- Optical Power Prescription Grid (For Optical Client) -->
+            <div class="my-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs">
+              <p class="font-bold text-slate-800 text-[11px] uppercase tracking-wider mb-2 flex items-center gap-1">
+                <span>👓 Computerized Eye Power Reading:</span>
+              </p>
+              <div class="grid grid-cols-4 gap-1.5 text-center font-mono text-[11px]">
+                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
+                  <span class="block text-[9px] text-slate-400">Eye</span>
+                  <strong>OD (Right)</strong>
+                </div>
+                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
+                  <span class="block text-[9px] text-slate-400">Sphere</span>
+                  <strong class="text-tealbrand">-1.50</strong>
+                </div>
+                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
+                  <span class="block text-[9px] text-slate-400">Cylinder</span>
+                  <strong>-0.50</strong>
+                </div>
+                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
+                  <span class="block text-[9px] text-slate-400">Axis</span>
+                  <strong>90°</strong>
+                </div>
+              </div>
+              <div class="grid grid-cols-4 gap-1.5 text-center font-mono text-[11px] mt-1.5">
+                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
+                  <span class="block text-[9px] text-slate-400">Eye</span>
+                  <strong>OS (Left)</strong>
+                </div>
+                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
+                  <span class="block text-[9px] text-slate-400">Sphere</span>
+                  <strong class="text-tealbrand">-1.75</strong>
+                </div>
+                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
+                  <span class="block text-[9px] text-slate-400">Cylinder</span>
+                  <strong>-0.25</strong>
+                </div>
+                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
+                  <span class="block text-[9px] text-slate-400">Axis</span>
+                  <strong>85°</strong>
+                </div>
+              </div>
+              <p class="mt-2 text-[10px] text-emerald-800 font-medium">
+                ✓ Recommended Lens: Certified Blue-Cut Anti-Glare Computer Lenses (UV420 Protection)
+              </p>
             </div>
 
             <!-- Prescription Text -->
-            <div class="my-4 p-4 rounded-2xl bg-mint/50 border border-emerald-100 text-xs font-mono whitespace-pre-line leading-relaxed text-slate-800">
+            <div class="my-3 p-3 rounded-2xl bg-mint/50 border border-emerald-100 text-xs font-mono whitespace-pre-line leading-relaxed text-slate-800">
               ${escapeHtml(rx.text)}
             </div>
 
             <!-- Doctor Sign & Buttons -->
-            <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
               <div>
-                <p class="text-[11px] text-slate-400">Digitally Verified & Signed</p>
-                <p class="text-xs font-semibold text-tealbrand">CareWell Medical Records</p>
+                <p class="text-[10px] text-slate-400">Encrypted PHI Record · HIPAA Verified</p>
+                <p class="text-xs font-semibold text-tealbrand">CareWell Optical Records</p>
               </div>
               <div class="flex gap-2">
                 <button type="button" onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">

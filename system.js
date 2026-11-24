@@ -868,18 +868,41 @@
     sRefreshIcons();
   }
 
-  window.isVoiceAudioEnabled = true;
+  if (typeof window !== "undefined") {
+    window.isVoiceAudioEnabled = true;
+    window.cachedSpeechVoices = [];
+    if ("speechSynthesis" in window) {
+      const getV = () => {
+        try { window.cachedSpeechVoices = window.speechSynthesis.getVoices(); } catch (e) {}
+      };
+      getV();
+      window.speechSynthesis.onvoiceschanged = getV;
+    }
+  }
+
   function speakVoice(text) {
-    if (!window.isVoiceAudioEnabled || !("speechSynthesis" in window)) return;
+    if (typeof window === "undefined" || !window.isVoiceAudioEnabled || !("speechSynthesis" in window)) return;
     try {
       window.speechSynthesis.cancel();
-      const clean = text.replace(/<[^>]*>/g, "").replace(/["']/g, "");
+      const clean = text.replace(/<[^>]*>/g, "").replace(/["'*_`]/g, "").trim();
+      if (!clean) return;
       const utter = new SpeechSynthesisUtterance(clean);
-      utter.lang = "hi-IN";
-      utter.rate = 0.95;
+      const voices = (window.cachedSpeechVoices && window.cachedSpeechVoices.length) ? window.cachedSpeechVoices : window.speechSynthesis.getVoices();
+      const preferred = voices.find((v) => v.lang.startsWith("hi") || v.name.toLowerCase().includes("hindi")) ||
+                        voices.find((v) => v.lang.includes("IN") || v.lang.includes("India")) ||
+                        voices[0];
+      if (preferred) {
+        utter.voice = preferred;
+        utter.lang = preferred.lang;
+      } else {
+        utter.lang = "hi-IN";
+      }
+      utter.rate = 1.0;
       utter.pitch = 1.0;
       window.speechSynthesis.speak(utter);
-    } catch (e) {}
+    } catch (e) {
+      console.warn("Speech error:", e);
+    }
   }
 
   function startAICallSimulation(call) {
@@ -2082,38 +2105,49 @@
 
     openAICallModal(initialQuestion = "") {
       const modalHtml = `
-        <div class="p-6 sm:p-8 bg-gradient-to-b from-slate-900 to-slate-950 text-white rounded-3xl relative overflow-hidden" id="ai-voice-modal-content">
-          <div class="flex items-center justify-between pb-4 border-b border-white/10">
-            <div class="flex items-center gap-2.5">
-              <span class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold border border-amber-400/30">
+        <div class="p-5 sm:p-7 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white rounded-3xl relative overflow-hidden flex flex-col max-h-[88vh]" id="ai-voice-modal-content">
+          <!-- Modal Header -->
+          <div class="flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
+            <div class="flex items-center gap-3">
+              <span class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400/30 to-amber-600/20 text-amber-300 flex items-center justify-center font-bold border border-amber-400/40 shadow-lg shadow-amber-500/10">
                 <i data-lucide="bot" class="w-6 h-6"></i>
               </span>
               <div>
                 <div class="flex items-center gap-2">
-                  <h3 class="font-display text-lg font-bold text-white">CareWell 24/7 AI Receptionist</h3>
-                  <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black uppercase tracking-wider">
+                  <h3 class="font-display text-base sm:text-lg font-bold text-white">CareWell 24/7 Clinic AI Receptionist</h3>
+                  <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black uppercase tracking-wider hidden sm:inline-block">
                     🌙 Raat Ko AI Call Uthayega
                   </span>
                 </div>
-                <p class="text-[11px] text-emerald-400">Smart Voice Assistant · Spoken Audio & Real-time Text</p>
+                <p class="text-[11px] text-emerald-400 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                  <span id="ai-voice-status-badge">Live Voice Active · Speech & Audio Ready</span>
+                </p>
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <button id="modal-voice-toggle-btn" type="button" class="px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-900 transition">
-                ${window.isVoiceAudioEnabled ? "🔊 Audio: ON" : "🔇 Audio: OFF"}
+              <button id="modal-voice-toggle-btn" type="button" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-900 transition flex items-center gap-1.5">
+                <span id="modal-audio-icon">${window.isVoiceAudioEnabled ? "🔊" : "🔇"}</span>
+                <span>Audio: ${window.isVoiceAudioEnabled ? "ON" : "OFF"}</span>
               </button>
-              <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-white p-1">
+              <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
               </button>
             </div>
           </div>
 
-          <!-- Animated Voice Waveform Visualizer -->
-          <div class="my-5 text-center">
-            <div class="w-16 h-16 rounded-full bg-amber-500/20 border-2 border-amber-400 mx-auto flex items-center justify-center shadow-lg shadow-amber-500/20 call-pulse">
-              <i data-lucide="mic" class="w-7 h-7 text-amber-300"></i>
+          <!-- Active Mic & Waveform Visualizer Banner -->
+          <div id="ai-active-wave-bar" class="py-2.5 px-4 my-2.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3">
+              <button id="btn-hero-mic-toggle" type="button" class="w-9 h-9 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center font-bold shadow-md transition transform active:scale-95" title="Click to speak with voice">
+                <i data-lucide="mic" class="w-4 h-4"></i>
+              </button>
+              <div>
+                <p id="ai-mic-instruction" class="text-xs font-medium text-slate-200">Tap mic to speak or record voice note</p>
+                <p class="text-[10px] text-slate-400">Hindi / Hinglish / English voice commands supported</p>
+              </div>
             </div>
-            <div class="flex items-center justify-center gap-1.5 h-6 mt-3">
+            <div class="flex items-center gap-1 h-5" id="wave-bars-container">
               <div class="wave-bar bg-amber-400"></div>
               <div class="wave-bar bg-amber-400"></div>
               <div class="wave-bar bg-amber-400"></div>
@@ -2122,40 +2156,64 @@
             </div>
           </div>
 
-          <!-- Live Transcript Output -->
-          <div id="ai-modal-transcript" class="my-3 p-4 rounded-2xl bg-white/10 backdrop-blur border border-white/10 text-xs text-slate-100 leading-relaxed min-h-[105px] flex flex-col justify-center text-center">
-            <p class="text-emerald-300 font-medium">"Namaste! CareWell AI Voice Assistant bol raha hoon. Clinic Mon-Sat open hai. Aap sawal poochhiye ya neeche test button dabayein."</p>
+          <!-- Scrollable Chat Messages Stream -->
+          <div id="ai-chat-messages" class="flex-1 overflow-y-auto space-y-3.5 pr-1 my-2 text-xs leading-relaxed min-h-[220px] max-h-[360px]">
+            <!-- Initial Greeting from AI -->
+            <div class="flex gap-2.5 items-start">
+              <span class="w-7 h-7 rounded-full bg-tealbrand text-white flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold shadow-xs">
+                AI
+              </span>
+              <div class="p-3.5 rounded-2xl bg-white/10 border border-white/10 text-slate-100 max-w-[85%] space-y-1.5">
+                <p class="font-semibold text-emerald-300">Namaste! CareWell Clinic 24/7 AI Receptionist bol raha hoon.</p>
+                <p>Clinic OPD, Doctor consultation, Fees, Token status, ya raat ki emergency ke baare me kuch bhi poochhein. Aap mic dabakar bol sakte hain ya type karein.</p>
+                <button type="button" class="btn-replay-speech text-[10px] text-amber-300 hover:underline flex items-center gap-1 pt-1 font-medium" data-speech="Namaste! CareWell Clinic 24/7 AI Receptionist bol raha hoon. Clinic OPD, Doctor consultation, Fees, Token status ya emergency ke baare me poochhein.">
+                  <i data-lucide="volume-2" class="w-3 h-3"></i> Suniye (Play Audio)
+                </button>
+              </div>
+            </div>
           </div>
 
-          <!-- Ready-to-Click Questions Chips (Reel Feature 2) -->
-          <div class="space-y-2 mt-3 pt-3 border-t border-white/10">
-            <p class="text-[11px] text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1">
-              <span>⚡ Click to Test AI Audio Response (Spoken Audio + Text):</span>
+          <!-- Quick Clinic Questions Carousel / Chips -->
+          <div class="pt-2 border-t border-white/10 shrink-0">
+            <p class="text-[10px] text-amber-300 font-bold uppercase tracking-wider mb-2 flex items-center gap-1">
+              <span>⚡ Quick Questions (Tap to Ask & Listen):</span>
             </p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <button type="button" data-ai-q="Free eye test ka timing kya hai?" class="btn-ask-ai-prompt p-2.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-left text-slate-200 hover:text-white transition flex items-center gap-2">
-                <span class="text-base shrink-0">👁️</span>
-                <span>"Free eye test ka timing kya hai?"</span>
+            <div class="flex gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
+              <button type="button" data-ai-q="Dr. Ananya Rao (General Physician) ki timing aur fees kya hai?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+                🩺 Dr. Rao timing & fees
               </button>
-              <button type="button" data-ai-q="Blue-cut computer lenses ka kitna lagega?" class="btn-ask-ai-prompt p-2.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-left text-slate-200 hover:text-white transition flex items-center gap-2">
-                <span class="text-base shrink-0">👓</span>
-                <span>"Blue-cut computer lenses ka kitna lagega?"</span>
+              <button type="button" data-ai-q="Bacche ko bukhar hai, Pediatrician doctor kab milenge?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+                👶 Bacche ke doctor (Pediatrician)
               </button>
-              <button type="button" data-ai-q="Doctor appointment ka timing kya hai?" class="btn-ask-ai-prompt p-2.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-left text-slate-200 hover:text-white transition flex items-center gap-2">
-                <span class="text-base shrink-0">🩺</span>
-                <span>"Doctor appointment timing kya hai?"</span>
+              <button type="button" data-ai-q="Daant me dard hai, Dentist available hai kya?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+                🦷 Dental doctor & fees
               </button>
-              <button type="button" data-ai-q="Raat ko clinic band hone ke baad call uthayega kya?" class="btn-ask-ai-prompt p-2.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-left text-slate-200 hover:text-white transition flex items-center gap-2">
-                <span class="text-base shrink-0">🌙</span>
-                <span>"Raat ko AI call uthayega kya?"</span>
+              <button type="button" data-ai-q="Raat ko clinic band hone ke baad call uthayega kya?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+                🌙 Raat ko AI call uthayega?
+              </button>
+              <button type="button" data-ai-q="Abhi live token number kitna chal raha hai?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+                🎫 Live OPD Token Status
               </button>
             </div>
+          </div>
 
-            <!-- Custom Question Input -->
-            <div class="flex gap-2 mt-3 pt-2">
-              <input id="ai-custom-q-input" type="text" placeholder="Apna sawal yahan type karein..." class="h-10 px-3.5 text-xs flex-1 rounded-xl bg-white/10 border border-white/20 text-white outline-none focus:border-amber-400">
-              <button id="btn-submit-custom-q" type="button" class="h-10 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition">
-                <span>Ask AI</span>
+          <!-- Bottom Input Dock with Voice Commands & Recording -->
+          <div class="mt-2.5 pt-2.5 border-t border-white/10 shrink-0">
+            <div class="flex items-center gap-2">
+              <button id="btn-voice-note-record" type="button" class="h-10 px-3 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-emerald-300 hover:text-emerald-200 text-xs font-semibold flex items-center gap-1.5 transition shrink-0" title="Send Voice Note">
+                <i data-lucide="mic" class="w-4 h-4 text-emerald-400"></i>
+                <span class="hidden sm:inline">Voice Note</span>
+              </button>
+
+              <div class="relative flex-1">
+                <input id="ai-custom-q-input" type="text" placeholder="Apna sawal likhein ya mic dabayein..." class="h-10 w-full pl-3.5 pr-10 text-xs rounded-xl bg-white/10 border border-white/20 text-white outline-none focus:border-amber-400 placeholder:text-slate-400 font-medium">
+                <button id="btn-input-mic" type="button" class="absolute right-2 top-2 text-slate-400 hover:text-amber-400 transition" title="Speak via voice">
+                  <i data-lucide="mic" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <button id="btn-submit-custom-q" type="button" class="h-10 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shrink-0 shadow-md">
+                <span>Send</span>
                 <i data-lucide="send" class="w-3.5 h-3.5"></i>
               </button>
             </div>
@@ -2164,66 +2222,335 @@
       `;
 
       showModalHtml(modalHtml);
+      sRefreshIcons();
 
-      const transcript = $s("#ai-modal-transcript");
-      const toggleBtn = $s("#modal-voice-toggle-btn");
+      const chatContainer = $s("#ai-chat-messages");
+      const textInput = $s("#ai-custom-q-input");
+      const sendBtn = $s("#btn-submit-custom-q");
+      const toggleAudioBtn = $s("#modal-voice-toggle-btn");
+      const statusBadge = $s("#ai-voice-status-badge");
+      const micInstruction = $s("#ai-mic-instruction");
+      const heroMicBtn = $s("#btn-hero-mic-toggle");
+      const inputMicBtn = $s("#btn-input-mic");
+      const voiceNoteBtn = $s("#btn-voice-note-record");
 
-      toggleBtn?.addEventListener("click", () => {
-        window.isVoiceAudioEnabled = !window.isVoiceAudioEnabled;
-        toggleBtn.textContent = window.isVoiceAudioEnabled ? "🔊 Audio: ON" : "🔇 Audio: OFF";
-      });
-
-      const handleQuestion = (q) => {
-        let answer = "";
-        const lower = q.toLowerCase();
-
-        if (lower.includes("eye test") || lower.includes("free eye")) {
-          answer = "Namaste! CareWell Clinic mein Free Eye Test Monday se Saturday, subah 9:00 AM se dopahar 1:00 PM aur shaam 4:00 PM se 7:00 PM tak hota hai. Aap abhi website se free slot hold kar sakte hain!";
-        } else if (lower.includes("blue-cut") || lower.includes("lens") || lower.includes("computer")) {
-          answer = "CareWell Clinic optical section mein Blue-cut anti-glare computer lenses sirf ₹499 se shuru hote hain. Isme certified UV420 blue light protection aur 1-year anti-scratch warranty included hai.";
-        } else if (lower.includes("raat") || lower.includes("call uthayega") || lower.includes("night")) {
-          answer = "Haan bilkul! Chahe raat ke 2 baje ho, CareWell 24/7 AI Assistant har call uthata hai, patient ki takleef sunta hai aur subah ka pehla doctor slot reserve kar deta hai!";
-        } else if (lower.includes("doctor") || lower.includes("timing") || lower.includes("appointment")) {
-          answer = "CareWell Clinic OPD timing Monday to Saturday subah 9 se 1 aur shaam 4 se 7 baje hai. Dr. Ananya Rao aur specialist doctors available hain. Aap 1 click mein booking kar sakte hain!";
-        } else {
-          answer = `Namaste! CareWell 24/7 AI Assistant aapka sawal note kar chuka hai. Clinic OPD desk par direct slot reserve kar diya gaya hai!`;
+      const scrollChatToBottom = () => {
+        if (chatContainer) {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-
-        if (transcript) {
-          transcript.innerHTML = `
-            <div class="text-left space-y-2">
-              <p><strong class="text-amber-300">Patient:</strong> "${sEscapeHtml(q)}"</p>
-              <p class="mt-1"><strong class="text-emerald-400">CareWell AI:</strong> "${sEscapeHtml(answer)}"</p>
-            </div>
-          `;
-        }
-
-        speakVoice(answer);
       };
 
-      $$s(".btn-ask-ai-prompt").forEach((b) => {
-        b.addEventListener("click", () => {
-          handleQuestion(b.dataset.aiQ);
+      // Toggle Audio Button
+      toggleAudioBtn?.addEventListener("click", () => {
+        window.isVoiceAudioEnabled = !window.isVoiceAudioEnabled;
+        const iconSpan = $s("#modal-audio-icon");
+        if (iconSpan) iconSpan.textContent = window.isVoiceAudioEnabled ? "🔊" : "🔇";
+        toggleAudioBtn.querySelector("span:last-child").textContent = `Audio: ${window.isVoiceAudioEnabled ? "ON" : "OFF"}`;
+        sShowToast(`AI Voice Audio: ${window.isVoiceAudioEnabled ? "ON (Bolkar batayega)" : "OFF (Muted)"}`);
+        if (!window.isVoiceAudioEnabled && "speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+      });
+
+      // Clinical NLP Knowledge Base
+      const getClinicalAnswer = (rawQuery) => {
+        const q = rawQuery.toLowerCase();
+
+        // 1. Fever / Bukhar / Cold / Viral / Dengue / Typhoid
+        if (q.includes("bukhar") || q.includes("fever") || q.includes("sardi") || q.includes("cough") || q.includes("khansi") || q.includes("viral") || q.includes("dengue") || q.includes("sugar") || q.includes("diabetes") || q.includes("kamzori")) {
+          return {
+            text: "General Medicine aur Bukhar ke liye hamare Senior Physician Dr. Ananya Rao (MBBS, MD) Monday se Saturday subah 9:00 AM se 1:00 PM tak OPD me baithti hain. Consultation fee ₹500 hai. Hydration rakhein aur OPD slot turant reserve karein.",
+            speech: "General Medicine aur Bukhar ke liye hamare Senior Physician Doctor Ananya Rao Monday se Saturday subah 9 se 1 baje tak available hain. Consultation fee 500 rupaye hai. Aap abhi slot book kar sakte hain."
+          };
+        }
+
+        // 2. Pediatrics / Baccha / Baby / Child / Vaccines
+        if (q.includes("baccha") || q.includes("child") || q.includes("baby") || q.includes("pedia") || q.includes("vaccine") || q.includes("teething") || q.includes("teeka")) {
+          return {
+            text: "Bacchon ki health, fever aur vaccination ke liye Dr. Sameer Khan (MBBS, MD Pediatrics) Monday se Saturday shaam 4:00 PM se 7:00 PM tak clinic mein hote hain. Consultation fee ₹600 hai. Purana vaccination card zaroor saath laayein.",
+            speech: "Bacchon ki dekhbhaal aur vaccination ke liye Doctor Sameer Khan shaam 4 se 7 baje tak available hain. Fee 600 rupaye hai. Purana vaccine card saath laayein."
+          };
+        }
+
+        // 3. Dental / Daant / Toothache / Root Canal / Cavity
+        if (q.includes("daant") || q.includes("dent") || q.includes("tooth") || q.includes("teeth") || q.includes("keeda") || q.includes("cavity") || q.includes("braces") || q.includes("scaling")) {
+          return {
+            text: "Dental checkup, toothache aur root canal ke liye Dr. Kabir Jain (BDS, MDS) Monday se Saturday subah 10:00 AM se 2:00 PM tak available hain. Basic consultation fee sirf ₹350 hai. Clinic par digital dental X-ray ki suvidha bhi hai.",
+            speech: "Toothache aur dental checkup ke liye Doctor Kabir Jain subah 10 se dopahar 2 baje tak available hain. Consultation fee sirf 350 rupaye hai."
+          };
+        }
+
+        // 4. Dermatology / Skin / Allergy / Rash / Acne / Pimples / Baal
+        if (q.includes("skin") || q.includes("allergy") || q.includes("rash") || q.includes("acne") || q.includes("pimple") || q.includes("khujli") || q.includes("baal") || q.includes("hair")) {
+          return {
+            text: "Skin allergy, acne aur rash ke liye Senior Dermatologist Dr. Meera Iyer (MBBS, MD Dermatology) Tuesday se Saturday subah 11:00 AM se 2:00 PM tak available hain. Consultation fee ₹700 hai.",
+            speech: "Skin allergy aur acne ke liye Doctor Meera Iyer Tuesday se Saturday subah 11 se 2 baje tak available hain. Consultation fee 700 rupaye hai."
+          };
+        }
+
+        // 5. ENT / Kaan / Naak / Gala / Throat / Sinus / Hearing
+        if (q.includes("kaan") || q.includes("naak") || q.includes("gala") || q.includes("throat") || q.includes("ear") || q.includes("sinus") || q.includes("ent")) {
+          return {
+            text: "Kaan, naak aur gale ki bimari ke liye ENT Specialist Dr. Leela Nair (MBBS, MS ENT) Monday se Friday subah 9:00 AM se 12:30 PM tak clinic me hote hain. Consultation fee ₹650 hai.",
+            speech: "Kaan, naak aur gale ke liye ENT specialist Doctor Leela Nair subah 9 se 12:30 baje tak available hain. Fee 650 rupaye hai."
+          };
+        }
+
+        // 6. Orthopedics / Haddi / Joint / Knee / Ghutne / Back pain / Kamar dard
+        if (q.includes("haddi") || q.includes("joint") || q.includes("knee") || q.includes("ghutne") || q.includes("back pain") || q.includes("kamar") || q.includes("ortho") || q.includes("fracture")) {
+          return {
+            text: "Joint pain, knee pain aur back pain ke liye Orthopedic Surgeon Dr. Arjun Patel (MBBS, MS Orthopedics) Monday se Friday subah 10:00 AM se 1:00 PM tak OPD me hote hain. Consultation fee ₹800 hai.",
+            speech: "Haddi aur joint pain ke liye Doctor Arjun Patel subah 10 se 1 baje tak available hain. Consultation fee 800 rupaye hai."
+          };
+        }
+
+        // 7. Cardiology / Heart / Chest Pain / BP / Dil
+        if (q.includes("heart") || q.includes("dil") || q.includes("chest") || q.includes("bp") || q.includes("blood pressure") || q.includes("cardio") || q.includes("ecg")) {
+          return {
+            text: "Preventive Cardiology aur Blood Pressure review ke liye Dr. Vikram Shah (MBBS, MD, DM Cardiology) Monday se Saturday shaam 4:00 PM se 7:00 PM tak available hain. Fee ₹900 hai. Note: Severe emergency chest pain ho to turant helpline dial karein.",
+            speech: "Heart aur BP consultation ke liye Doctor Vikram Shah shaam 4 se 7 baje tak available hain. Fee 900 rupaye hai."
+          };
+        }
+
+        // 8. Raat ko call / 24/7 AI Receptionist / Night
+        if (q.includes("raat") || q.includes("night") || q.includes("call uthayega") || q.includes("24/7") || q.includes("band hone ke baad")) {
+          return {
+            text: "Haan bilkul! Chahe raat ke 2 baje hon ya 3 baje, CareWell 24/7 AI Voice Assistant har call attend karta hai, patient ki complaint note karta hai aur subah 9:00 AM ka first priority token lock kar deta hai taaki aapka samay bache!",
+            speech: "Haan bilkul! Chahe raat ke do baje ho, CareWell 24/7 AI Voice Assistant har call attend karta hai aur subah ka first priority slot confirm kar deta hai."
+          };
+        }
+
+        // 9. Live Queue / Token Status
+        if (q.includes("token") || q.includes("queue") || q.includes("line") || q.includes("number") || q.includes("wait")) {
+          return {
+            text: "Live OPD Token System: Is samay OPD desk par Token No. 8 chal raha hai. Agar aap abhi book karte hain to aapko Token No. 12 milega (approx 30 min wait). Number aane se 15 minute pehle aapko WhatsApp reminder bhi bhej diya jayega!",
+            speech: "Live Queue Status: Abhi Token Number 8 chal raha hai. Aapka Token Number 12 lagbhag 30 minutes me aayega. Turn aane se 15 minute pehle WhatsApp alert aayega."
+          };
+        }
+
+        // 10. Clinic Timing & OPD Hours
+        if (q.includes("timing") || q.includes("time") || q.includes("open") || q.includes("khulta") || q.includes("sunday") || q.includes("hours")) {
+          return {
+            text: "CareWell Clinic OPD Timing: Monday se Saturday subah 9:00 AM se 1:00 PM aur shaam 4:00 PM se 7:00 PM tak open rehti hai. Sunday routine OPD closed rehti hai, emergency on-call doctor 24/7 available rehta hai.",
+            speech: "CareWell Clinic Monday se Saturday subah 9 se 1 aur shaam 4 se 7 baje tak open rehti hai. Sunday ko emergency doctor on-call rehta hai."
+          };
+        }
+
+        // 11. Fees / Charges / Kitna lagega
+        if (q.includes("fee") || q.includes("fees") || q.includes("charge") || q.includes("price") || q.includes("kharcha") || q.includes("kitna")) {
+          return {
+            text: "Transparent Clinic Fees: Dental OPD ₹350, General Physician ₹500, Pediatrician ₹600, ENT ₹650, Skin ₹700, Ortho ₹800, Cardiology ₹900. Online slot reservation bilkul free hai, payment consultation ke waqt desk par karni hoti hai.",
+            speech: "Hamari OPD consultation fees 350 rupaye se 800 rupaye ke beech hai. Online booking bilkul free hai."
+          };
+        }
+
+        // 12. Address & Location
+        if (q.includes("address") || q.includes("location") || q.includes("kahan") || q.includes("pune") || q.includes("bhiwadi") || q.includes("jaipur") || q.includes("map")) {
+          return {
+            text: "Clinic Address: CareWell Multi-Speciality Clinic, 214, MG Road, Camp, Pune 411001 (Near Central Bank). Humari doosri branches Bhiwadi aur Jaipur me bhi active hain.",
+            speech: "CareWell Clinic ka address hai: 214 MG Road, Camp, Pune. Near Central Bank."
+          };
+        }
+
+        // 13. Emergency Helpline
+        if (q.includes("emergency") || q.includes("accident") || q.includes("serious") || q.includes("casualty")) {
+          return {
+            text: "🚨 24/7 Clinic Emergency Helpline: +91 98765 43210. Screen ke bottom par diye red Emergency button se 1 click mein on-call doctor ko direct call lag jata hai.",
+            speech: "Emergency helpline number hai: 98765 43210. Screen ke Emergency button se direct doctor ko call karein."
+          };
+        }
+
+        // 14. Doctor Booking general
+        if (q.includes("doctor") || q.includes("appointment") || q.includes("book") || q.includes("slot")) {
+          return {
+            text: "Aap kisi bhi doctor ke liye slot website ke Bookings section se 1 minute me book kar sakte hain. Bas apna 10-digit mobile number aur pasandida time select karein, Token turant mil jayega!",
+            speech: "Doctor appointment book karne ke liye bas apna 10-digit mobile number aur slot select karein. Token turant mil jayega."
+          };
+        }
+
+        // 15. Fallback Intelligent Greeting
+        return {
+          text: `Namaste! CareWell Clinic 24/7 AI Desk par aapka swagat hai. "${sEscapeHtml(rawQuery)}" ke baare mein humare doctors available hain. Aap OPD slot book karne ke liye apna naam aur phone number de sakte hain ya timing/fees pooch sakte hain.`,
+          speech: `Namaste! CareWell Clinic me aapka swagat hai. Aap doctor appointment, clinic timing, fees ya OPD queue ke baare me pooch sakte hain.`
+        };
+      };
+
+      // Function to post message in chat
+      const appendChatMessage = (sender, content, audioText = "") => {
+        if (!chatContainer) return;
+
+        const isUser = sender === "user";
+        const isVoiceNote = content.startsWith("🎙️");
+
+        const msgHtml = isUser
+          ? `
+            <div class="flex gap-2.5 justify-end items-start animate-in fade-in">
+              <div class="p-3.5 rounded-2xl bg-tealbrand text-white max-w-[85%] shadow-xs">
+                ${isVoiceNote
+                  ? `<div class="flex items-center gap-2 font-medium">
+                      <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">🎙️</span>
+                      <span>${sEscapeHtml(content)}</span>
+                    </div>`
+                  : `<p class="font-medium">${sEscapeHtml(content)}</p>`}
+                <span class="text-[9px] text-teal-200 block text-right mt-1">Patient · Just now</span>
+              </div>
+              <span class="w-7 h-7 rounded-full bg-emerald-700 text-white flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+                P
+              </span>
+            </div>
+          `
+          : `
+            <div class="flex gap-2.5 items-start animate-in fade-in">
+              <span class="w-7 h-7 rounded-full bg-tealbrand text-white flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold shadow-xs">
+                AI
+              </span>
+              <div class="p-3.5 rounded-2xl bg-white/10 border border-white/10 text-slate-100 max-w-[85%] space-y-1.5">
+                <p class="leading-relaxed">${content}</p>
+                ${audioText
+                  ? `<button type="button" class="btn-replay-speech text-[10px] text-amber-300 hover:underline flex items-center gap-1 pt-1 font-medium" data-speech="${sEscapeHtml(audioText)}">
+                      <i data-lucide="volume-2" class="w-3 h-3"></i> Suniye (Play Voice)
+                    </button>`
+                  : ""}
+                <span class="text-[9px] text-slate-400 block mt-1">CareWell AI · 24/7 Verified</span>
+              </div>
+            </div>
+          `;
+
+        chatContainer.insertAdjacentHTML("beforeend", msgHtml);
+        sRefreshIcons();
+        scrollChatToBottom();
+
+        // Wire speech replay
+        const newReplayBtns = chatContainer.querySelectorAll(".btn-replay-speech");
+        const lastBtn = newReplayBtns[newReplayBtns.length - 1];
+        lastBtn?.addEventListener("click", () => {
+          speakVoice(lastBtn.dataset.speech || "");
+        });
+      };
+
+      // Handler for user query
+      const handleUserQuery = (queryText) => {
+        if (!queryText || !queryText.trim()) return;
+        const q = queryText.trim();
+
+        appendChatMessage("user", q);
+
+        if (statusBadge) statusBadge.textContent = "AI Soch raha hai...";
+
+        setTimeout(() => {
+          const res = getClinicalAnswer(q);
+          appendChatMessage("ai", res.text, res.speech);
+          speakVoice(res.speech);
+          if (statusBadge) statusBadge.textContent = "Live Voice Active · Speech & Audio Ready";
+        }, 350);
+      };
+
+      // Speech Recognition Integration (Voice Commands)
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let isListening = false;
+
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = "hi-IN";
+
+        recognition.onstart = () => {
+          isListening = true;
+          if (statusBadge) statusBadge.textContent = "🎙️ Sun raha hoon... Boliye";
+          if (micInstruction) micInstruction.textContent = "Listening... Aap boliye (Voice Active)";
+          heroMicBtn?.classList.add("ring-4", "ring-amber-400", "animate-pulse");
+          $s("#wave-bars-container")?.classList.add("scale-110");
+        };
+
+        recognition.onresult = (event) => {
+          const spoken = event.results[0][0].transcript;
+          if (textInput) textInput.value = spoken;
+          handleUserQuery(spoken);
+        };
+
+        recognition.onerror = (event) => {
+          console.warn("Speech recognition error:", event.error);
+          isListening = false;
+          if (statusBadge) statusBadge.textContent = "Live Voice Active · Speech & Audio Ready";
+          if (micInstruction) micInstruction.textContent = "Voice input ready. Tap mic ya type karein.";
+          heroMicBtn?.classList.remove("ring-4", "ring-amber-400", "animate-pulse");
+          sShowToast("Voice note complete ya Mic permission required.");
+        };
+
+        recognition.onend = () => {
+          isListening = false;
+          if (statusBadge) statusBadge.textContent = "Live Voice Active · Speech & Audio Ready";
+          if (micInstruction) micInstruction.textContent = "Tap mic to speak or record voice note";
+          heroMicBtn?.classList.remove("ring-4", "ring-amber-400", "animate-pulse");
+        };
+      }
+
+      const toggleListening = () => {
+        if (!SpeechRecognition) {
+          sShowToast("Aapka browser Speech Recognition support nahi karta. Text likhein ya Voice Note dabayein.");
+          return;
+        }
+        if (isListening) {
+          recognition.stop();
+        } else {
+          try {
+            recognition.start();
+          } catch (e) {
+            recognition.stop();
+          }
+        }
+      };
+
+      heroMicBtn?.addEventListener("click", toggleListening);
+      inputMicBtn?.addEventListener("click", toggleListening);
+
+      // Voice Note Record Simulation
+      voiceNoteBtn?.addEventListener("click", () => {
+        sShowToast("🎙️ Voice Note sending to CareWell AI...");
+        const voiceQuery = "Doctor ka timing kya hai aur OPD consultation fee kitni hai?";
+        appendChatMessage("user", `🎙️ Voice Note (0:04) · "${voiceQuery}"`);
+        setTimeout(() => {
+          const res = getClinicalAnswer(voiceQuery);
+          appendChatMessage("ai", res.text, res.speech);
+          speakVoice(res.speech);
+        }, 600);
+      });
+
+      // Quick Questions
+      $$s(".btn-quick-q").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          handleUserQuery(btn.dataset.aiQ);
         });
       });
 
-      $s("#btn-submit-custom-q")?.addEventListener("click", () => {
-        const inp = $s("#ai-custom-q-input");
-        const val = inp ? inp.value.trim() : "";
-        if (val) {
-          handleQuestion(val);
-          inp.value = "";
+      // Submit custom text
+      const submitText = () => {
+        const val = textInput ? textInput.value : "";
+        if (val && val.trim()) {
+          handleUserQuery(val);
+          textInput.value = "";
+        }
+      };
+
+      sendBtn?.addEventListener("click", submitText);
+      textInput?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submitText();
         }
       });
 
+      // Initial question or initial speech
       if (initialQuestion) {
-        handleQuestion(initialQuestion);
+        handleUserQuery(initialQuestion);
       } else {
-        speakVoice("Namaste! Main CareWell Clinic 24/7 AI Voice Assistant bol raha hoon. Aap sawal poochhiye ya test option click karein.");
+        speakVoice("Namaste! Main CareWell Clinic ka 24/7 AI Voice Assistant bol raha hoon. Doctor appointment ya clinic timing ke baare me poochhiye.");
       }
     },
 
-    testWhatsAppAutoBooking(name = "Ritu Sharma", phone = "9811111111", service = "Free Computerized Eye Test", slot = "Tuesday 11:30 AM") {
+    testWhatsAppAutoBooking(name = "Ritu Sharma", phone = "9811111111", service = "General Physician OPD Consultation", slot = "Tuesday 11:30 AM") {
       sShowToast(`🚀 WhatsApp Auto-Booking initiated for ${name}!`);
 
       const waModalHtml = `
@@ -2280,6 +2607,7 @@
       `;
 
       showModalHtml(waModalHtml);
+      sRefreshIcons();
 
       const chatBox = $s("#wa-reel-chat-box");
       const actionBox = $s("#wa-auto-reply-action");
@@ -2311,15 +2639,62 @@
             <div class="flex justify-start animate-in fade-in">
               <div class="chat-bubble-bot p-3.5 shadow-xs max-w-[85%] text-slate-800 border-l-4 border-[#25D366]">
                 <p class="font-bold text-tealbrand text-sm">🎉 Thank You! Slot Confirmed.</p>
-                <p class="mt-1">Aapka <strong>Token No. 12 (CW-2048)</strong> book ho chuka hai.</p>
+                <p class="mt-1">Aapka <strong>Token No. 12 (CW-2048)</strong> Dr. Ananya Rao ke paas book ho chuka hai.</p>
                 <div class="mt-2 p-2 rounded-lg bg-mint text-slate-700 text-[11px] leading-relaxed">
-                  ✓ Blue-cut computer lenses power check clinic par free available hai.<br>
+                  ✓ Clinic Address: 214, MG Road, Camp, Pune.<br>
                   ✓ Number aane se <strong>15 minute pehle WhatsApp alert</strong> aayega taaki clinic me wait na karna pade!
                 </div>
                 <span class="text-[10px] text-slate-400 block text-right mt-1.5">Auto-Reply · Just now</span>
               </div>
             </div>
           `;
+
+          if (actionBox) {
+            actionBox.innerHTML = `
+              <div class="flex gap-2 w-full">
+                <a href="patient.html" class="flex-1 py-2 rounded-xl bg-tealbrand text-white font-semibold text-xs text-center flex items-center justify-center gap-1 shadow-xs">
+                  <span>Open Patient Portal</span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </a>
+                <button type="button" onclick="window.CareWellSystem.closeAllModals()" class="px-4 py-2 rounded-xl bg-slate-200 text-slate-700 font-semibold text-xs">
+                  Done
+                </button>
+              </div>
+            `;
+            sRefreshIcons();
+          }
+        }, 1100);
+      };
+
+      const simulateCancel = () => {
+        if (!chatBox) return;
+
+        chatBox.innerHTML += `
+          <div class="flex justify-end animate-in fade-in">
+            <div class="chat-bubble-patient p-3 shadow-xs text-slate-900 max-w-[70%] bg-red-100 text-red-900">
+              <p class="font-bold">2</p>
+              <span class="text-[10px] text-slate-500 block text-right mt-0.5">Just now · Sent</span>
+            </div>
+          </div>
+          <div class="flex justify-start animate-in fade-in mt-2">
+            <div class="chat-bubble-bot p-3 shadow-xs max-w-[85%] text-slate-800">
+              <p>Slot cancel kar diya gaya hai. Jab bhi appointment chahiye ho, website par aaiye ya message karein.</p>
+            </div>
+          </div>
+        `;
+
+        if (actionBox) {
+          actionBox.innerHTML = `
+            <button type="button" onclick="window.CareWellSystem.closeAllModals()" class="w-full py-2 rounded-xl bg-slate-200 text-slate-700 font-semibold text-xs">
+              Close
+            </button>
+          `;
+        }
+      };
+
+      $s("#btn-wa-reply-confirm")?.addEventListener("click", simulateConfirm);
+      $s("#btn-wa-reply-cancel")?.addEventListener("click", simulateCancel);
+    },
 
           if (actionBox) {
             actionBox.innerHTML = `

@@ -204,18 +204,29 @@ function refreshIcons() {
 
 function renderNav() {
   const linkHtml = CareWellData.nav.map((item) => {
-    const count = item.count ? ' <span class="booking-count rounded-full bg-mint px-2 py-0.5 text-xs text-tealbrand">0</span>' : "";
-    return `<a href="${item.href}" class="inline-flex items-center gap-1 hover:text-tealbrand" data-nav-link>${item.label}${count}</a>`;
+    const count = item.count ? ' <span class="booking-count rounded-full bg-mint px-2 py-0.5 text-xs text-tealbrand font-bold">0</span>' : "";
+    return `<a href="${item.href}" class="inline-flex items-center gap-1 hover:text-tealbrand text-xs font-semibold px-2 py-1 rounded-lg transition" data-nav-link>${item.label}${count}</a>`;
   }).join("");
 
   $("#desktop-nav").innerHTML = linkHtml;
   $("#mobile-menu").innerHTML = `
     <div class="flex flex-col gap-1 text-sm font-medium text-slate-700">
       ${CareWellData.nav.map((item) => {
-        const count = item.count ? ' <span class="booking-count rounded-full bg-mint px-2 py-0.5 text-xs text-tealbrand">0</span>' : "";
-        return `<a href="${item.href}" class="rounded-2xl px-3 py-3 hover:bg-mint" data-nav-link>${item.label}${count}</a>`;
+        const count = item.count ? ' <span class="booking-count rounded-full bg-mint px-2 py-0.5 text-xs text-tealbrand font-bold">0</span>' : "";
+        return `<a href="${item.href}" class="rounded-xl px-3 py-2.5 hover:bg-mint flex items-center justify-between" data-nav-link>${item.label}${count}</a>`;
       }).join("")}
-      <button type="button" data-open-booking class="mt-2 inline-flex h-12 items-center justify-center rounded-full bg-tealbrand text-sm font-semibold text-white">Appointment book karo</button>
+      <div class="pt-2 mt-1 border-t border-slate-100 flex flex-col gap-2">
+        <a href="patient.html" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-mint border border-emerald-200 text-xs font-semibold text-tealbrand">
+          <i data-lucide="user-round" class="w-4 h-4"></i> Patient Portal Login
+        </a>
+        <a href="doctor.html" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700">
+          <i data-lucide="stethoscope" class="w-4 h-4 text-tealbrand"></i> Doctor OPD Login
+        </a>
+        <a href="admin.html" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-900 text-xs font-semibold text-white">
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Clinic Admin Desk
+        </a>
+        <button type="button" data-open-booking class="inline-flex h-11 items-center justify-center rounded-xl bg-tealbrand text-xs font-semibold text-white">Appointment book karo</button>
+      </div>
     </div>`;
 }
 
@@ -567,15 +578,29 @@ function renderFooter() {
     <div>
       <p class="font-display text-2xl text-white">${escapeHtml(clinic.name)}</p>
       <p class="mt-3 text-sm leading-6 text-emerald-50/90">${escapeHtml(clinic.address)}</p>
+      <p class="mt-2 text-xs text-emerald-100/80">OPD: Mon–Sat 9:00 AM – 1:00 PM, 4:00 PM – 7:00 PM</p>
     </div>
     <div class="flex flex-col gap-2 text-sm">
-      ${nav.map((item) => `<a class="hover:text-white" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}
+      <span class="font-bold text-white text-xs uppercase tracking-wider mb-1">Quick Links</span>
+      ${nav.map((item) => `<a class="hover:text-white transition" href="${item.href}">${escapeHtml(item.label)}</a>`).join("")}
     </div>
     <div class="text-sm leading-6">
-      <a class="block hover:text-white" href="tel:+91${clinic.phone}">${escapeHtml(clinic.phoneDisplay)}</a>
-      <a class="mt-1 block hover:text-white" href="mailto:${escapeHtml(clinic.email)}">${escapeHtml(clinic.email)}</a>
-      <a class="mt-1 block hover:text-white" target="_blank" rel="noopener" href="${whatsappUrl("Namaste, CareWell Clinic.")}">WhatsApp</a>
-      <p class="mt-4 text-xs leading-5 text-emerald-50/80">Demo website. Medical advice nahi hai. LocalStorage pe data rehta hai.</p>
+      <span class="font-bold text-white text-xs uppercase tracking-wider mb-1 block">Dedicated Portals</span>
+      <div class="flex flex-col gap-1.5 text-xs text-emerald-100">
+        <a class="hover:text-white flex items-center gap-1.5" href="patient.html">
+          <i data-lucide="user-round" class="w-3.5 h-3.5"></i> Patient Portal (Phone + OTP)
+        </a>
+        <a class="hover:text-white flex items-center gap-1.5" href="doctor.html">
+          <i data-lucide="stethoscope" class="w-3.5 h-3.5"></i> Doctor OPD Workspace
+        </a>
+        <a class="hover:text-white flex items-center gap-1.5" href="admin.html">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Clinic Reception & Admin
+        </a>
+        <a class="hover:text-white flex items-center gap-1.5 font-bold text-white mt-1" href="login.html">
+          <i data-lucide="key-round" class="w-3.5 h-3.5"></i> All Portals Gateway →
+        </a>
+      </div>
+      <p class="mt-4 text-xs leading-5 text-emerald-50/80">CareWell Clinic Management System · Data saved locally</p>
     </div>`;
 }
 

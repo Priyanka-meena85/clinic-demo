@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareWell Clinic · Patient Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tealbrand: "#0F766E",
+            mint: "#ECFDF5"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white border-b border-emerald-100 shadow-xs">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2" title="Back to Patient Website">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white shadow-xs">
+            <i data-lucide="user-round" class="h-5 w-5"></i>
+          </span>
+          <div>
+            <span class="block font-display text-lg leading-none text-slate-900 font-bold">CareWell Patient Portal</span>
+            <span class="block text-[11px] text-tealbrand font-medium">Digital Health Records & Appointments</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-3 text-xs font-semibold">
+        <a href="index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Website
+        </a>
+        <a href="login.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand hover:bg-emerald-100 transition">
+          <i data-lucide="key-round" class="w-3.5 h-3.5"></i> All Portals
+        </a>
+        <button id="btn-patient-logout" type="button" class="hidden text-xs text-red-600 hover:underline px-2 font-medium">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main class="flex-1 max-w-6xl mx-auto w-full p-4 sm:p-6 lg:p-8">
+    <!-- Patient Login Screen (Shown when not authenticated) -->
+    <div id="patient-login-view" class="max-w-md mx-auto my-12 bg-white rounded-3xl border border-emerald-100 p-8 shadow-sm text-center">
+      <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mint text-tealbrand mb-4 shadow-xs">
+        <i data-lucide="shield-check" class="w-7 h-7"></i>
+      </span>
+      <h2 class="font-display text-2xl font-bold text-slate-900">Patient Portal Login</h2>
+      <p class="text-xs text-slate-500 mt-1">Apna registered mobile number daalein aur OTP se login karein</p>
+
+      <form id="form-patient-login" class="mt-6 space-y-4 text-left text-xs">
+        <div>
+          <label class="font-semibold text-slate-700 block mb-1">Mobile Number (10 Digits)</label>
+          <input id="patient-login-phone" type="tel" value="9811111111" maxlength="10" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700 block mb-1">OTP Code (Demo: 1234)</label>
+          <input id="patient-login-otp" type="text" value="1234" maxlength="4" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+        </div>
+        <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
+          Verify OTP & Open Portal
+        </button>
+        <button id="btn-quick-patient-login" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition">
+          ⚡ 1-Click Demo Login as Riya Sharma (CW-2048)
+        </button>
+      </form>
+    </div>
+
+    <!-- Authenticated Patient Portal Workspace -->
+    <div id="patient-workspace-view" class="hidden space-y-6">
+      <!-- Profile Header & Family Switcher -->
+      <div class="p-6 rounded-3xl bg-mint border border-emerald-200/80 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5">
+            <div id="patient-avatar-box" class="w-14 h-14 rounded-2xl bg-tealbrand text-white font-display text-xl flex items-center justify-center font-bold shadow-xs">
+              RS
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 id="patient-header-name" class="font-display text-2xl font-bold text-slate-900">Riya Sharma</h2>
+                <span id="patient-header-id" class="text-xs px-2.5 py-0.5 rounded-full bg-tealbrand text-white font-mono font-medium">CW-2048</span>
+              </div>
+              <p id="patient-header-meta" class="text-xs text-slate-600 mt-1">
+                Age: 28 yrs · Relation: Self · Mobile: +91 98111 11111
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-emerald-800 bg-white border border-emerald-200 px-3 py-1.5 rounded-xl font-medium flex items-center gap-1.5 shadow-2xs">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-tealbrand"></i>
+              No Paper Files: Sab Digital
+            </span>
+          </div>
+        </div>
+
+        <!-- Family Profiles Switcher -->
+        <div class="mt-5 pt-4 border-t border-emerald-200/60">
+          <p class="text-xs font-semibold text-tealbrand mb-2 flex items-center gap-1.5">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            Family Profile Switcher (Ek Login me 4 Family Members):
+          </p>
+          <div id="family-chips-container" class="flex flex-wrap gap-2">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="bg-white rounded-2xl border border-emerald-100 p-1.5 shadow-xs flex items-center gap-1 overflow-x-auto">
+        <button type="button" data-patient-tab="appointments" class="px-4 py-2.5 text-xs font-semibold rounded-xl bg-tealbrand text-white transition shadow-xs">
+          📅 My Appointments (<span id="count-pat-appointments">1</span>)
+        </button>
+        <button type="button" data-patient-tab="prescriptions" class="px-4 py-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+          💊 Digital Prescriptions (<span id="count-pat-prescriptions">1</span>)
+        </button>
+        <button type="button" data-patient-tab="reports" class="px-4 py-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+          🧪 Medical Reports (<span id="count-pat-reports">1</span>)
+        </button>
+        <button type="button" data-patient-tab="history" class="px-4 py-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+          ⏳ Visit History (<span id="count-pat-history">3</span>)
+        </button>
+        <button type="button" data-patient-tab="healthcard" class="px-4 py-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+          🪪 Digital Health Card
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div id="patient-tab-content" class="bg-white rounded-3xl border border-emerald-100 p-6 sm:p-8 shadow-sm min-h-[350px]">
+        Loading your health records...
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-white border-t border-emerald-100 py-4 text-center text-xs text-slate-500">
+    CareWell Clinic · Patient Health Portal · Protected by Phone + OTP
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed left-4 right-4 top-20 z-[60] hidden rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white shadow-lg sm:left-auto sm:right-6 sm:w-80" role="status"></div>
+
+  <!-- Prescription Printable Modal -->
+  <div id="prescription-modal-container"></div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="data.js"></script>
+  <script src="patient.js"></script>
+</body>
+</html>

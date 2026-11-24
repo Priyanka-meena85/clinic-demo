@@ -271,38 +271,52 @@
           </div>
         </div>
 
-        <!-- Simulation & Staff Control Panel -->
-        <div class="bg-white rounded-3xl border border-emerald-100 p-6 shadow-sm">
-          <div class="flex items-center gap-2 text-tealbrand font-semibold text-sm">
-            <i data-lucide="sliders" class="w-4 h-4"></i>
-            <span>Clinic Staff Queue Controls</span>
-          </div>
-          <p class="text-xs text-slate-500 mt-1">Doctor OPD room se live token aage badha sakte hain.</p>
-
-          <div class="mt-5 space-y-3">
-            <button id="btn-next-token" type="button" class="w-full h-12 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 flex items-center justify-center gap-2 shadow-sm">
-              <i data-lucide="chevron-right-circle" class="w-4 h-4"></i>
-              Agla Token Bulao (+1)
-            </button>
-
-            <button id="btn-trigger-wa-alert" type="button" class="w-full h-11 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 flex items-center justify-center gap-2">
-              <i data-lucide="message-square" class="w-4 h-4"></i>
-              Simulate: "15 Min Pehle WhatsApp Alert"
-            </button>
-
-            <button id="btn-reset-queue" type="button" class="w-full h-9 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-medium hover:bg-slate-50">
-              Reset Demo Queue
-            </button>
-          </div>
-
-          <div class="mt-6 pt-5 border-t border-emerald-100 text-xs text-slate-600 space-y-2">
-            <div class="flex items-center gap-2 text-slate-700 font-semibold">
+        <!-- Patient Smart Queue Benefits & Portal Gateway -->
+        <div class="bg-white rounded-3xl border border-emerald-100 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 text-tealbrand font-semibold text-sm">
               <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
-              <span>Smart Queue Advantages</span>
+              <span>Zero Wait-Time Guarantee</span>
             </div>
-            <p>• Crowded waiting area nahi hoti</p>
-            <p>• Patient ghar / office se timing match karke aate hain</p>
-            <p>• Token slip mobile par hi rehti hai</p>
+            <p class="text-xs text-slate-500 mt-1">CareWell Clinic smart queue system ke fayde:</p>
+
+            <div class="mt-4 space-y-2.5 text-xs text-slate-600">
+              <div class="flex items-start gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Ghar se aao, seedha andar jao — 2 ghante crowded room me nahi baithna.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Aapka number aane se <strong>15 minute pehle</strong> WhatsApp reminder.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Doctor checkup ke baad Prescription & Reports digital portal me save.</span>
+              </div>
+            </div>
+
+            <!-- Patient Portal Callout -->
+            <div class="mt-5 p-4 rounded-2xl bg-mint border border-emerald-200">
+              <p class="text-xs font-bold text-tealbrand">Already Booked / Visited?</p>
+              <p class="text-[11px] text-slate-600 mt-0.5">Apni digital prescription (Rx) aur lab reports download karein:</p>
+              <a href="patient.html" class="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 transition shadow-2xs">
+                <i data-lucide="user-round" class="w-3.5 h-3.5"></i> Open Patient Portal →
+              </a>
+            </div>
+          </div>
+
+          <div class="mt-5 pt-4 border-t border-slate-100">
+            <details class="text-[11px] text-slate-400 cursor-pointer">
+              <summary class="hover:text-slate-600 font-medium">⚡ Demo Queue Controls (For Evaluator)</summary>
+              <div class="mt-2 space-y-2 pt-2">
+                <button id="btn-next-token" type="button" class="w-full py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium flex items-center justify-center gap-1.5">
+                  <i data-lucide="chevron-right-circle" class="w-3.5 h-3.5 text-tealbrand"></i> Call Next Token (+1)
+                </button>
+                <button id="btn-trigger-wa-alert" type="button" class="w-full py-2 rounded-lg bg-emerald-50 text-tealbrand hover:bg-emerald-100 text-xs font-medium flex items-center justify-center gap-1.5">
+                  <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Simulate 15-Min Alert
+                </button>
+              </div>
+            </details>
           </div>
         </div>
       </div>

@@ -38,10 +38,9 @@ const CareWellData = {
   nav: [
     { href: "#services", label: "Services" },
     { href: "#doctors", label: "Doctors" },
-    { href: "#stories", label: "Stories" },
-    { href: "#faq", label: "FAQ" },
-    { href: "#bookings", label: "Bookings", count: true },
-    { href: "#visit", label: "Visit" }
+    { href: "#queue", label: "Live Queue" },
+    { href: "#visit", label: "Timings & Map" },
+    { href: "#bookings", label: "Bookings", count: true }
   ],
   hero: {
     kicker: "Camp, Pune · OPD Monday to Saturday",
@@ -378,14 +377,6 @@ CareWellData.clinic.slotLoad = {
   "kabir-jain": { "09:30": 2 }
 };
 CareWellData.clinic.nearLocation = "Pune";
-
-CareWellData.nav.push(
-  { href: "#queue", label: "Live Queue" },
-  { href: "#whatsapp", label: "WhatsApp" },
-  { href: "#calls", label: "AI Calls" },
-  { href: "#portal", label: "Patient Portal" },
-  { href: "#admin", label: "Admin Desk" }
-);
 
 CareWellData.records = {
   family: [

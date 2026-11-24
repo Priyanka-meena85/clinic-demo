@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareWell Clinic · Portals & Login Gateway</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tealbrand: "#0F766E",
+            mint: "#ECFDF5"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white border-b border-emerald-100 shadow-xs">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <a href="index.html" class="flex items-center gap-2" title="Back to Patient Website">
+        <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white shadow-xs">
+          <i data-lucide="shield-plus" class="h-5 w-5"></i>
+        </span>
+        <div>
+          <span class="block font-display text-lg leading-none text-slate-900 font-bold">CareWell Clinic</span>
+          <span class="block text-[11px] text-tealbrand font-medium">Role-Based Portals & Login Gateway</span>
+        </div>
+      </a>
+
+      <a href="index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 text-xs font-semibold transition">
+        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Website Home
+      </a>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main class="flex-1 max-w-6xl mx-auto w-full p-4 sm:p-6 lg:p-8">
+    <div class="text-center max-w-2xl mx-auto my-8">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-tealbrand border border-emerald-200">
+        <i data-lucide="lock" class="w-3.5 h-3.5"></i> Strict Role-Based Access Isolation
+      </span>
+      <h1 class="font-display text-3xl sm:text-4xl font-bold text-slate-950 mt-3">CareWell Portals Gateway</h1>
+      <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+        Patient, Doctor aur Admin ka alag-alag login hai. Har user sirf apna authorised data dekh sakta hai — Admin clinic ka poora data aur financial reports dekh sakta hai.
+      </p>
+    </div>
+
+    <!-- 3 Role Portals Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+      
+      <!-- 1. Patient Portal Card -->
+      <div class="bg-white rounded-3xl border border-emerald-100 p-6 sm:p-7 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-tealbrand shadow-2xs">
+              <i data-lucide="user-round" class="w-6 h-6"></i>
+            </span>
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-tealbrand border border-emerald-200">
+              Phone + OTP
+            </span>
+          </div>
+
+          <h2 class="font-display text-xl font-bold text-slate-900">Patient Portal</h2>
+          <p class="text-xs text-slate-500 mt-1">For Patients & Family Members</p>
+
+          <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+            <p class="font-semibold text-slate-800 text-[11px] uppercase tracking-wide">Kya Access Milega:</p>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Upcoming & Past Appointments (CW-2048)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Digital Prescriptions (Rx) PDF Download</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Medical Lab Reports (Blood Test, X-Ray)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>4-Member Family Profiles (Riya, Papa, Mummy, Baccha)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Digital Health Card with QR Code</span>
+            </div>
+          </div>
+
+          <div class="mt-4 p-3 rounded-xl bg-slate-50 text-[11px] text-slate-500 border border-slate-100">
+            🔒 <em>Patient ko doosre patient, doctor earnings ya admin revenue nahi dikhega.</em>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-100">
+          <a href="patient.html" class="w-full h-11 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 transition flex items-center justify-center gap-2 shadow-xs">
+            Open Patient Portal →
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. Doctor Portal Card -->
+      <div class="bg-white rounded-3xl border border-emerald-100 p-6 sm:p-7 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-tealbrand shadow-2xs">
+              <i data-lucide="stethoscope" class="w-6 h-6"></i>
+            </span>
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-tealbrand border border-emerald-200">
+              Doctor PIN
+            </span>
+          </div>
+
+          <h2 class="font-display text-xl font-bold text-slate-900">Doctor OPD Desk</h2>
+          <p class="text-xs text-slate-500 mt-1">For Doctors & Consultants</p>
+
+          <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+            <p class="font-semibold text-slate-800 text-[11px] uppercase tracking-wide">Kya Access Milega:</p>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Active OPD Room Console (Token 8 In Room)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Call Next Patient (+1) & Mark Done</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Digital Prescription Pad (℞ Pad)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>My Consultation Fee Earnings (₹6,000 today)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Doctor Leave Toggle ("Kal Main Nahi Hu")</span>
+            </div>
+          </div>
+
+          <div class="mt-4 p-3 rounded-xl bg-slate-50 text-[11px] text-slate-500 border border-slate-100">
+            🔒 <em>Doctor sirf apna OPD queue aur apni consultation fee dekh sakta hai. Clinic total revenue doctor ko visible nahi hai.</em>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-100">
+          <a href="doctor.html" class="w-full h-11 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 transition flex items-center justify-center gap-2 shadow-xs">
+            Open Doctor Desk →
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. Admin Portal Card -->
+      <div class="bg-white rounded-3xl border border-emerald-100 p-6 sm:p-7 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-tealbrand shadow-2xs">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </span>
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-900 text-white">
+              Admin / Staff
+            </span>
+          </div>
+
+          <h2 class="font-display text-xl font-bold text-slate-900">Clinic Admin Desk</h2>
+          <p class="text-xs text-slate-500 mt-1">Receptionist & Clinic Director Access</p>
+
+          <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+            <p class="font-semibold text-slate-800 text-[11px] uppercase tracking-wide">Full Clinic Access:</p>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Monthly Income: <strong>₹1,84,000</strong> & Today: <strong>₹7,200</strong></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Doctors Comparison: Saare 8 Doctors ka load & earnings</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>All Appointments & Master Patient Search</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Queue Controller + 15-Min Prior WhatsApp Alert</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span>Follow-up Broadcasts & Full Clinic Slot Control</span>
+            </div>
+          </div>
+
+          <div class="mt-4 p-3 rounded-xl bg-emerald-50 text-[11px] text-tealbrand border border-emerald-200">
+            ⭐ <em>Admin can see EVERYTHING: all doctors, patients, and financial balances.</em>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-100">
+          <a href="admin.html" class="w-full h-11 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition flex items-center justify-center gap-2 shadow-xs">
+            Open Admin Desk →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="bg-white border-t border-emerald-100 py-4 text-center text-xs text-slate-500">
+    CareWell Clinic Management System · Camp, Pune
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    if (window.lucide && typeof window.lucide.createIcons === "function") {
+      window.lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

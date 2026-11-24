@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareWell Clinic · Admin & Reception Desk Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tealbrand: "#0F766E",
+            mint: "#ECFDF5"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white border-b border-emerald-100 shadow-xs">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2" title="Back to Patient Website">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white shadow-xs">
+            <i data-lucide="shield-check" class="h-5 w-5"></i>
+          </span>
+          <div>
+            <span class="block font-display text-lg leading-none text-slate-900 font-bold">CareWell Admin</span>
+            <span class="block text-[11px] text-tealbrand font-medium">Reception & Clinic Desk Portal</span>
+          </div>
+        </a>
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-tealbrand border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live OPD Session
+        </span>
+      </div>
+
+      <div class="flex items-center gap-3 text-xs font-semibold">
+        <a href="doctor.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand hover:bg-emerald-100 transition">
+          <i data-lucide="stethoscope" class="w-3.5 h-3.5"></i> Doctor Portal →
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Patient Website
+        </a>
+        <button id="btn-admin-logout" type="button" class="hidden text-xs text-red-600 hover:underline px-2">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main class="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8">
+    <!-- Login Screen (Shown when not authenticated) -->
+    <div id="admin-login-view" class="max-w-md mx-auto my-12 bg-white rounded-3xl border border-emerald-100 p-8 shadow-sm text-center">
+      <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mint text-tealbrand mb-4 shadow-xs">
+        <i data-lucide="lock" class="w-7 h-7"></i>
+      </span>
+      <h2 class="font-display text-2xl font-bold text-slate-900">Clinic Admin Login</h2>
+      <p class="text-xs text-slate-500 mt-1">Receptionist, Clinic Manager & Staff Access</p>
+
+      <form id="form-admin-login" class="mt-6 space-y-4 text-left text-xs">
+        <div>
+          <label class="font-semibold text-slate-700 block mb-1">Username / ID</label>
+          <input id="admin-username" type="text" value="admin@carewell" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700 block mb-1">Password</label>
+          <input id="admin-password" type="password" value="carewell123" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+        </div>
+        <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
+          Login to Admin Portal
+        </button>
+        <button id="btn-quick-admin-login" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition">
+          ⚡ 1-Click Demo Login as Reception Admin
+        </button>
+      </form>
+    </div>
+
+    <!-- Authenticated Admin Dashboard Workspace (Hidden until login) -->
+    <div id="admin-workspace-view" class="hidden space-y-6">
+      <!-- Portal Sub-Tab Bar -->
+      <div class="bg-white rounded-2xl border border-emerald-100 p-1.5 shadow-xs flex items-center justify-between gap-1 overflow-x-auto">
+        <div class="flex items-center gap-1 overflow-x-auto">
+          <button type="button" data-admin-tab="dashboard" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-tealbrand text-white transition">
+            📊 Dashboard
+          </button>
+          <button type="button" data-admin-tab="appointments" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+            📅 Appointments
+          </button>
+          <button type="button" data-admin-tab="patients" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+            👥 Patients Manager
+          </button>
+          <button type="button" data-admin-tab="doctors" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+            👨‍⚕️ Doctors Manager
+          </button>
+          <button type="button" data-admin-tab="queue" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+            ⏱️ Queue Controller
+          </button>
+          <button type="button" data-admin-tab="followups" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+            🔔 Follow-ups
+          </button>
+          <button type="button" data-admin-tab="reports" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+            📈 Analytics
+          </button>
+          <button type="button" data-admin-tab="slots" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+            ⛔ Slot Control
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content Placeholder (Rendered dynamically by admin.js) -->
+      <div id="admin-tab-content" class="bg-white rounded-3xl border border-emerald-100 p-6 sm:p-8 shadow-sm">
+        Loading admin console...
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-white border-t border-emerald-100 py-4 text-center text-xs text-slate-500">
+    CareWell Clinic Management System · Admin Portal · Data saved locally
+  </footer>
+
+  <!-- Toast notification -->
+  <div id="toast" class="fixed left-4 right-4 top-20 z-[60] hidden rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white shadow-lg sm:left-auto sm:right-6 sm:w-80" role="status"></div>
+
+  <!-- Modal Container -->
+  <div id="carewell-system-modals"></div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="data.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

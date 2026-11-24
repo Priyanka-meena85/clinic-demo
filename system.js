@@ -570,93 +570,102 @@
     const chatMessages = sReadJson("carewell_wa_chat", []);
     const nowTime = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
 
-    // 1. Add patient message
+    // 1. Add patient message + typing indicator
     chatMessages.push({
       sender: "patient",
       time: nowTime,
       text: text
     });
-
-    const appointments = typeof getAppointments === "function" ? getAppointments() : sReadJson("carewell_appointments", []);
-    const lower = text.toLowerCase();
-
-    // 2. Process automated logic
-    if (lower === "1" || lower.includes("confirm")) {
-      // Confirm active appointment
-      const userAppt = appointments.find((a) => a.phone === "9811111111" && a.status !== "cancelled");
-      if (userAppt) {
-        userAppt.status = "confirmed";
-        if (typeof setAppointments === "function") setAppointments(appointments);
-        else sWriteJson("carewell_appointments", appointments);
-      }
-      chatMessages.push({
-        sender: "bot",
-        time: nowTime,
-        text: "✅ Thank You! Aapka appointment Confirm ho gaya hai.\n• Doctor: Dr. Ananya Rao\n• Token No: 12 (Booking ID: CW-2048)\n• Clinic Address: 214 MG Road, Camp, Pune.\n\nLive queue track karne ke liye website par 'Queue' tab dekhein!"
-      });
-      sShowToast("Appointment Confirmed via WhatsApp!");
-    } else if (lower === "2" || lower.includes("cancel")) {
-      // Cancel active appointment
-      const userAppt = appointments.find((a) => a.phone === "9811111111" && a.status !== "cancelled");
-      if (userAppt) {
-        userAppt.status = "cancelled";
-        if (typeof setAppointments === "function") setAppointments(appointments);
-        else sWriteJson("carewell_appointments", appointments);
-      }
-      chatMessages.push({
-        sender: "bot",
-        time: nowTime,
-        text: "❌ Aapka appointment cancel kar diya gaya hai. Slot doosre patient ke liye release ho gaya hai.\n\nDobara book karne ke liye 'Book' likhein ya website open karein."
-      });
-      sShowToast("Appointment Cancelled via WhatsApp. Slot released.");
-    } else if (lower.includes("book") || lower.includes("slot")) {
-      // Auto Booking Flow
-      const nextBookingId = `CW-${Math.floor(2050 + Math.random() * 800)}`;
-      const nextTok = Math.floor(13 + Math.random() * 5);
-      const newAppt = {
-        id: `cw-${Date.now()}`,
-        bookingId: nextBookingId,
-        tokenNo: nextTok,
-        token: nextBookingId,
-        patientName: "Riya Sharma",
-        phone: "9811111111",
-        age: 28,
-        doctorId: "ananya-rao",
-        date: new Date(Date.now() + 86400000).toISOString().split("T")[0],
-        slot: "11:30",
-        reason: "WhatsApp Auto-Booking (Fever checkup)",
-        visitType: "New visit",
-        status: "confirmed",
-        createdAt: new Date().toISOString()
-      };
-      appointments.push(newAppt);
-      if (typeof setAppointments === "function") setAppointments(appointments);
-      else sWriteJson("carewell_appointments", appointments);
-
-      chatMessages.push({
-        sender: "bot",
-        time: nowTime,
-        text: `🎉 Booking Auto Hogi! Slot lock ho gaya:\n• Patient: Riya Sharma\n• Doctor: Dr. Ananya Rao (General Physician)\n• Date & Time: Kal 11:30 AM\n• Booking ID: ${nextBookingId}\n• Token No: ${nextTok}\n\nInstant confirmation screen + WhatsApp dono pe generate ho gaya hai!`
-      });
-      sShowToast("Auto-Booking completed via WhatsApp!");
-    } else if (lower.includes("prescription") || lower.includes("dawai")) {
-      chatMessages.push({
-        sender: "bot",
-        time: nowTime,
-        text: "📄 Aapka latest prescription (Dr. Ananya Rao - 12 Nov) digital portal par available hai:\n• Paracetamol 500mg, ORS\n\nPDF Download karne ke liye website par 'Portal' tab mein jayein."
-      });
-    } else {
-      chatMessages.push({
-        sender: "bot",
-        time: nowTime,
-        text: "CareWell Clinic Bot: Aapka message receive hua. Appointments ke liye '1' dabayein (Confirm), '2' (Cancel), ya 'Book' likhein."
-      });
-    }
-
+    chatMessages.push({
+      sender: "bot",
+      time: nowTime,
+      text: "",
+      isTyping: true
+    });
     sWriteJson("carewell_wa_chat", chatMessages);
     renderWhatsAppPanel();
-    // Refresh app appointments if hook available
-    if (typeof updateBookingCountAndLists === "function") updateBookingCountAndLists();
+
+    setTimeout(() => {
+      const msgs = sReadJson("carewell_wa_chat", []);
+      // Remove typing message
+      const filtered = msgs.filter((m) => !m.isTyping);
+      const appointments = typeof getAppointments === "function" ? getAppointments() : sReadJson("carewell_appointments", []);
+      const lower = text.toLowerCase();
+
+      // Process automated logic
+      if (lower === "1" || lower.includes("confirm")) {
+        const userAppt = appointments.find((a) => a.phone === "9811111111" && a.status !== "cancelled");
+        if (userAppt) {
+          userAppt.status = "confirmed";
+          if (typeof setAppointments === "function") setAppointments(appointments);
+          else sWriteJson("carewell_appointments", appointments);
+        }
+        filtered.push({
+          sender: "bot",
+          time: nowTime,
+          text: "✅ Thank You! Aapka appointment Confirm ho gaya hai.\n• Doctor: Dr. Ananya Rao\n• Token No: 12 (Booking ID: CW-2048)\n• Clinic Address: 214 MG Road, Camp, Pune.\n\nLive queue track karne ke liye website par 'Queue' tab dekhein!"
+        });
+        sShowToast("Appointment Confirmed via WhatsApp!");
+      } else if (lower === "2" || lower.includes("cancel")) {
+        const userAppt = appointments.find((a) => a.phone === "9811111111" && a.status !== "cancelled");
+        if (userAppt) {
+          userAppt.status = "cancelled";
+          if (typeof setAppointments === "function") setAppointments(appointments);
+          else sWriteJson("carewell_appointments", appointments);
+        }
+        filtered.push({
+          sender: "bot",
+          time: nowTime,
+          text: "❌ Aapka appointment cancel kar diya gaya hai. Slot doosre patient ke liye release ho gaya hai.\n\nDobara book karne ke liye 'Book' likhein ya website open karein."
+        });
+        sShowToast("Appointment Cancelled via WhatsApp. Slot released.");
+      } else if (lower.includes("book") || lower.includes("slot")) {
+        const nextBookingId = `CW-${Math.floor(2050 + Math.random() * 800)}`;
+        const nextTok = Math.floor(13 + Math.random() * 5);
+        const newAppt = {
+          id: `cw-${Date.now()}`,
+          bookingId: nextBookingId,
+          tokenNo: nextTok,
+          token: nextBookingId,
+          patientName: "Riya Sharma",
+          phone: "9811111111",
+          age: 28,
+          doctorId: "ananya-rao",
+          date: new Date(Date.now() + 86400000).toISOString().split("T")[0],
+          slot: "11:30",
+          reason: "WhatsApp Auto-Booking (Fever checkup)",
+          visitType: "New visit",
+          status: "confirmed",
+          createdAt: new Date().toISOString()
+        };
+        appointments.push(newAppt);
+        if (typeof setAppointments === "function") setAppointments(appointments);
+        else sWriteJson("carewell_appointments", appointments);
+
+        filtered.push({
+          sender: "bot",
+          time: nowTime,
+          text: `🎉 Booking Auto Hogi! Slot lock ho gaya:\n• Patient: Riya Sharma\n• Doctor: Dr. Ananya Rao (General Physician)\n• Date & Time: Kal 11:30 AM\n• Booking ID: ${nextBookingId}\n• Token No: ${nextTok}\n\nInstant confirmation screen + WhatsApp dono pe generate ho gaya hai!`
+        });
+        sShowToast("Auto-Booking completed via WhatsApp!");
+      } else if (lower.includes("prescription") || lower.includes("dawai")) {
+        filtered.push({
+          sender: "bot",
+          time: nowTime,
+          text: "📄 Aapka latest prescription (Dr. Ananya Rao - 12 Nov) digital portal par available hai:\n• Paracetamol 500mg, ORS\n\nPDF Download karne ke liye website par 'Portal' tab mein jayein."
+        });
+      } else {
+        filtered.push({
+          sender: "bot",
+          time: nowTime,
+          text: "CareWell Clinic Bot: Aapka message receive hua. Appointments ke liye '1' dabayein (Confirm), '2' (Cancel), ya 'Book' likhein."
+        });
+      }
+
+      sWriteJson("carewell_wa_chat", filtered);
+      renderWhatsAppPanel();
+      if (typeof updateBookingCountAndLists === "function") updateBookingCountAndLists();
+    }, 450);
   }
 
   // -------------------------------------------------------------
@@ -770,7 +779,12 @@
                   <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                   AI Voice Assistant Line
                 </span>
-                <span id="call-timer-display" class="font-mono text-emerald-400">Ready</span>
+                <div class="flex items-center gap-2">
+                  <button id="toggle-voice-audio-btn" type="button" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border border-emerald-400/30 bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900 transition">
+                    🔊 Voice Speech: ON
+                  </button>
+                  <span id="call-timer-display" class="font-mono text-emerald-400">Ready</span>
+                </div>
               </div>
 
               <div class="mt-6 text-center">
@@ -830,7 +844,28 @@
       });
     });
 
+    $s("#toggle-voice-audio-btn")?.addEventListener("click", () => {
+      window.isVoiceAudioEnabled = !window.isVoiceAudioEnabled;
+      const btn = $s("#toggle-voice-audio-btn");
+      if (btn) btn.textContent = window.isVoiceAudioEnabled ? "🔊 Voice Speech: ON" : "🔇 Voice Speech: OFF";
+      sShowToast(`Voice Speech Audio: ${window.isVoiceAudioEnabled ? "Enabled" : "Muted"}`);
+    });
+
     sRefreshIcons();
+  }
+
+  window.isVoiceAudioEnabled = true;
+  function speakVoice(text) {
+    if (!window.isVoiceAudioEnabled || !("speechSynthesis" in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const clean = text.replace(/<[^>]*>/g, "").replace(/["']/g, "");
+      const utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = "hi-IN";
+      utter.rate = 0.95;
+      utter.pitch = 1.0;
+      window.speechSynthesis.speak(utter);
+    } catch (e) {}
   }
 
   function startAICallSimulation(call) {
@@ -864,6 +899,7 @@
           <p><strong class="text-emerald-400">AI Voice:</strong> "Namaste ${sEscapeHtml(call.name)} ji! Main CareWell Clinic se AI assistant bol raha hoon. Aapka call miss hua tha. Kya aap Dr. Ananya Rao ke paas appointment book karna chahte hain?"</p>
         </div>
       `;
+      speakVoice(`Namaste ${call.name} ji! Main CareWell Clinic se AI assistant bol raha hoon. Aapka call miss hua tha. Kya aap Dr. Ananya Rao ke paas appointment book karna chahte hain?`);
 
       // Render interactive patient response choices
       controlsBox.innerHTML = `
@@ -879,10 +915,12 @@
       `;
 
       $s("#ai-resp-1")?.addEventListener("click", () => {
+        const confirmMsg = "Done! Kal subah 11:30 AM ka slot lock kar diya hai. Booking ID CW-2048, Token No. 12 generate ho gaya hai aur details WhatsApp par bhej di hain. Dhanyawad!";
         transcriptBox.innerHTML += `
           <p class="text-left"><strong class="text-amber-300">Patient:</strong> "Haan, kal subah 11:30 AM ka slot book kar do."</p>
-          <p class="text-left mt-2"><strong class="text-emerald-400">AI Voice:</strong> "Done! Kal subah 11:30 AM ka slot lock kar diya hai. Booking ID CW-2048, Token No. 12 generate ho gaya hai aur details WhatsApp par bhej di hain. Clinic aane se pehle queue live track kar sakti hain. Dhanyawad!"</p>
+          <p class="text-left mt-2"><strong class="text-emerald-400">AI Voice:</strong> "${confirmMsg}"</p>
         `;
+        speakVoice(confirmMsg);
 
         controlsBox.innerHTML = `
           <button id="btn-end-ai-call" type="button" class="w-full py-2.5 rounded-xl bg-red-600 text-white text-xs font-semibold hover:bg-red-700">
@@ -891,6 +929,7 @@
         `;
 
         $s("#btn-end-ai-call")?.addEventListener("click", () => {
+          if ("speechSynthesis" in window) window.speechSynthesis.cancel();
           clearInterval(interval);
           // Mark call as recovered
           const allCalls = sReadJson("carewell_calls", []);
@@ -930,10 +969,12 @@
       });
 
       $s("#ai-resp-2")?.addEventListener("click", () => {
+        const infoMsg = "Clinic Monday se Saturday subah 9 se 1 aur shaam 4 se 7 open rehti hai. General consultation fee ₹500 hai. Saari details aapke WhatsApp pe share kar di hain.";
         transcriptBox.innerHTML += `
           <p class="text-left"><strong class="text-amber-300">Patient:</strong> "Nahi, sirf clinic timing aur fee poochhni thi."</p>
-          <p class="text-left mt-2"><strong class="text-emerald-400">AI Voice:</strong> "Clinic Monday se Saturday subah 9 se 1 aur shaam 4 se 7 open rehti hai. General consultation fee ₹500 hai. Saari details aapke WhatsApp pe share kar di hain."</p>
+          <p class="text-left mt-2"><strong class="text-emerald-400">AI Voice:</strong> "${infoMsg}"</p>
         `;
+        speakVoice(infoMsg);
 
         controlsBox.innerHTML = `
           <button id="btn-end-ai-call" type="button" class="w-full py-2.5 rounded-xl bg-red-600 text-white text-xs font-semibold hover:bg-red-700">
@@ -942,6 +983,7 @@
         `;
 
         $s("#btn-end-ai-call")?.addEventListener("click", () => {
+          if ("speechSynthesis" in window) window.speechSynthesis.cancel();
           clearInterval(interval);
           const allCalls = sReadJson("carewell_calls", []);
           const match = allCalls.find((c) => c.id === call.id);
@@ -1106,6 +1148,11 @@
             activePortalTab === "history" ? "border-tealbrand text-tealbrand bg-white" : "border-transparent text-slate-500 hover:text-slate-800"
           }">
             ⏳ Visit History (${visits.length})
+          </button>
+          <button type="button" data-portal-tab="card" class="py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 ${
+            activePortalTab === "card" ? "border-tealbrand text-tealbrand bg-white" : "border-transparent text-slate-500 hover:text-slate-800"
+          }">
+            🪪 Digital Health Card
           </button>
         </div>
 
@@ -1302,6 +1349,46 @@
             `
               )
               .join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    if (tab === "card") {
+      return `
+        <div class="max-w-md mx-auto p-6 rounded-3xl bg-gradient-to-br from-tealbrand via-emerald-800 to-slate-900 text-white shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-white/20">
+            <div>
+              <p class="text-[10px] uppercase tracking-wider text-emerald-200 font-semibold">CareWell Digital Health ID</p>
+              <h4 class="font-display text-2xl font-bold mt-0.5">${sEscapeHtml(member.name)}</h4>
+            </div>
+            <span class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center font-bold font-display text-lg">
+              CW
+            </span>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <span class="text-slate-300 block text-[11px]">Patient ID</span>
+              <span class="font-mono font-bold text-base text-emerald-300">${sEscapeHtml(member.patientId)}</span>
+            </div>
+            <div>
+              <span class="text-slate-300 block text-[11px]">Relation & Age</span>
+              <span class="font-semibold text-white">${sEscapeHtml(member.relation)} · ${member.age} yrs</span>
+            </div>
+            <div>
+              <span class="text-slate-300 block text-[11px]">Contact Mobile</span>
+              <span class="font-mono text-white">+91 ${sEscapeHtml(member.phone)}</span>
+            </div>
+            <div>
+              <span class="text-slate-300 block text-[11px]">Blood Group</span>
+              <span class="font-bold text-amber-300">B+ Positive</span>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-white/20 flex items-center justify-between">
+            <span class="text-[11px] text-emerald-200">OPD QR Quick Check-in Armed</span>
+            <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-xs">
+              <i data-lucide="qr-code" class="w-9 h-9 text-slate-900"></i>
+            </div>
           </div>
         </div>
       `;
@@ -1805,6 +1892,46 @@
               <button type="button" onclick="window.CareWellSystem.blockDoctorDay(false)" class="flex-1 h-11 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">
                 ✅ Khol Do (Open Slots)
               </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (tab === "card") {
+      return `
+        <div class="max-w-md mx-auto p-6 rounded-3xl bg-gradient-to-br from-tealbrand via-emerald-800 to-slate-900 text-white shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-white/20">
+            <div>
+              <p class="text-[10px] uppercase tracking-wider text-emerald-200 font-semibold">CareWell Digital Health ID</p>
+              <h4 class="font-display text-2xl font-bold mt-0.5">${sEscapeHtml(member.name)}</h4>
+            </div>
+            <span class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center font-bold font-display text-lg">
+              CW
+            </span>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <span class="text-slate-300 block text-[11px]">Patient ID</span>
+              <span class="font-mono font-bold text-base text-emerald-300">${sEscapeHtml(member.patientId)}</span>
+            </div>
+            <div>
+              <span class="text-slate-300 block text-[11px]">Relation & Age</span>
+              <span class="font-semibold text-white">${sEscapeHtml(member.relation)} · ${member.age} yrs</span>
+            </div>
+            <div>
+              <span class="text-slate-300 block text-[11px]">Contact Mobile</span>
+              <span class="font-mono text-white">+91 ${sEscapeHtml(member.phone)}</span>
+            </div>
+            <div>
+              <span class="text-slate-300 block text-[11px]">Blood Group</span>
+              <span class="font-bold text-amber-300">B+ Positive</span>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-white/20 flex items-center justify-between">
+            <span class="text-[11px] text-emerald-200">OPD QR Quick Check-in Armed</span>
+            <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-xs">
+              <i data-lucide="qr-code" class="w-9 h-9 text-slate-900"></i>
             </div>
           </div>
         </div>

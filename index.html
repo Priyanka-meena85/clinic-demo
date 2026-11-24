@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0F766E">
+  <title>CareWell Clinic · Camp, Pune</title>
+  <meta name="description" content="CareWell Clinic, Camp, Pune. Book a General Consultation, Cardiology, Dermatology, Orthopedics, Gynecology, or Pediatrics slot.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,560;0,9..144,650;1,9..144,560&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tealbrand: "#0F766E",
+            mint: "#ECFDF5"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-white font-sans text-slate-800 antialiased">
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-white focus:px-4 focus:py-2">Skip to content</a>
+
+  <header class="sticky top-0 z-40 border-b border-emerald-100 bg-white/95 backdrop-blur">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+      <a href="#home" class="flex min-w-0 items-center gap-2">
+        <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white">
+          <i data-lucide="heart-pulse" class="h-5 w-5"></i>
+        </span>
+        <span class="min-w-0">
+          <span id="brand-name" class="block truncate font-display text-lg leading-none text-slate-900">CareWell</span>
+          <span class="block text-xs text-slate-500">Clinic</span>
+        </span>
+      </a>
+
+      <nav id="desktop-nav" class="hidden max-w-xl flex-wrap items-center justify-end gap-x-4 gap-y-1 text-sm font-medium text-slate-600 md:flex" aria-label="Primary"></nav>
+
+      <div class="flex items-center gap-2">
+        <button type="button" data-open-booking class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tealbrand text-white md:hidden" aria-label="Appointment book karo">
+          <i data-lucide="calendar-plus" class="h-5 w-5"></i>
+        </button>
+        <button type="button" data-open-booking class="hidden h-11 items-center rounded-full bg-tealbrand px-4 text-sm font-semibold text-white md:inline-flex">Appointment book karo</button>
+        <button type="button" id="nav-toggle" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-emerald-200 text-tealbrand md:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+          <span id="icon-menu" class="inline-flex"><i data-lucide="menu" class="h-5 w-5"></i></span>
+          <span id="icon-close" class="hidden"><i data-lucide="x" class="h-5 w-5"></i></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden border-t border-emerald-100 bg-white px-4 py-3 md:hidden"></div>
+  </header>
+
+  <!-- Interactive Senior UX Quick Jump Ribbon -->
+  <nav class="sticky top-16 z-30 border-b border-emerald-100 bg-white/95 backdrop-blur-md py-2 shadow-xs" aria-label="Feature Quick Switcher">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-2 overflow-x-auto px-4 text-xs font-semibold sm:px-6">
+      <span class="shrink-0 text-slate-400 font-medium">Quick Jump:</span>
+      <a href="#doctors" class="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-tealbrand border border-emerald-200 hover:bg-emerald-100 transition shadow-xs">
+        <i data-lucide="stethoscope" class="w-3.5 h-3.5"></i> 1. Find Doctor
+      </a>
+      <a href="#queue" class="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-mint px-3.5 py-1.5 text-tealbrand border border-emerald-200 hover:bg-emerald-100 transition shadow-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> 2. Live Queue
+      </a>
+      <a href="#whatsapp" class="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-[#075E54] border border-emerald-200 hover:bg-emerald-100 transition shadow-xs">
+        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> 3. WhatsApp Auto
+      </a>
+      <a href="#calls" class="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-tealbrand border border-emerald-200 hover:bg-emerald-100 transition shadow-xs">
+        <i data-lucide="phone-call" class="w-3.5 h-3.5"></i> 4. AI Voice Line
+      </a>
+      <a href="#portal" class="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-mint px-3.5 py-1.5 text-tealbrand border border-emerald-200 hover:bg-emerald-100 transition shadow-xs">
+        <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 5. Patient Portal
+      </a>
+      <a href="#admin" class="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3.5 py-1.5 text-white hover:bg-slate-800 transition shadow-xs">
+        <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-400"></i> 6. Clinic Desk
+      </a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <section id="home" class="bg-mint">
+      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+        <div>
+          <p id="hero-kicker" class="text-sm font-semibold text-tealbrand"></p>
+          <h1 class="mt-3 font-display text-4xl leading-[1.05] text-slate-950 sm:text-6xl">
+            <span id="hero-title"></span>
+            <span id="hero-emphasis" class="mt-1 block italic text-tealbrand"></span>
+          </h1>
+          <p id="hero-body" class="mt-5 max-w-xl text-base leading-7 text-slate-600"></p>
+          <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <button type="button" data-open-booking id="hero-primary" class="inline-flex h-12 items-center justify-center rounded-full bg-tealbrand px-5 text-sm font-semibold text-white"></button>
+            <a href="#doctors" id="hero-secondary" class="inline-flex h-12 items-center justify-center rounded-full border border-emerald-200 bg-white px-5 text-sm font-semibold text-tealbrand"></a>
+            <a id="hero-call" class="inline-flex h-12 items-center justify-center gap-2 rounded-full px-2 text-sm font-semibold text-slate-700">
+              <i data-lucide="phone" class="h-4 w-4"></i>
+              <span id="hero-call-label"></span>
+            </a>
+          </div>
+          <dl id="trust-row" class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3"></dl>
+        </div>
+
+        <aside class="rounded-[28px] border border-emerald-100 bg-white p-5 sm:p-7">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-sm font-semibold text-tealbrand">Aaj ki OPD</p>
+              <p id="clinic-status" class="mt-2 font-display text-3xl text-slate-950">Checking hours</p>
+            </div>
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-tealbrand">
+              <i data-lucide="clock" class="h-5 w-5"></i>
+            </span>
+          </div>
+          <p id="next-slot-copy" class="mt-4 text-sm leading-6 text-slate-600"></p>
+          <dl id="hours-list" class="mt-6 space-y-3 border-t border-emerald-100 pt-5"></dl>
+          <button type="button" data-open-booking class="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-tealbrand text-sm font-semibold text-white">Isi clinic ka slot lo</button>
+        </aside>
+      </div>
+    </section>
+
+    <section id="services" class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="max-w-2xl">
+        <p class="text-sm font-semibold text-tealbrand">Services</p>
+        <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Kaunsi madad chahiye?</h2>
+        <p class="mt-3 text-sm leading-6 text-slate-600">Medical department English mein hai, baaki baat seedhi Hindi-English mix mein. Card pe tap karke us specialty ke doctors dekho.</p>
+      </div>
+      <div id="service-grid" class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+    </section>
+
+    <section id="doctors" class="border-y border-emerald-100 bg-mint">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+        <div class="max-w-2xl">
+          <p class="text-sm font-semibold text-tealbrand">Doctors</p>
+          <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Kis doctor se milna hai?</h2>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Mobile pe cards ek column mein rehte hain. Slot book karo, form niche se full screen khulega.</p>
+        </div>
+        <label class="mt-6 block text-sm font-semibold text-slate-800" for="doctor-search">Search by name / specialization</label>
+        <input id="doctor-search" class="mt-2 h-12 w-full rounded-2xl border border-emerald-200 bg-white px-3 text-base outline-none" placeholder="Jaise Meera, Skin, ENT">
+        <div id="doctor-filters" class="mt-4 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Filter by specialization"></div>
+        <div id="location-filters" class="mt-3 flex gap-2 overflow-x-auto pb-1" aria-label="Filter by location">
+          <button type="button" data-location="All" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">All</button>
+          <button type="button" data-location="Near Me" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">Near Me</button>
+          <button type="button" data-location="Bhiwadi" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">Bhiwadi</button>
+          <button type="button" data-location="Jaipur" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">Jaipur</button>
+        </div>
+        <div id="availability-filters" class="mt-2 flex gap-2 overflow-x-auto pb-1">
+          <button type="button" data-availability="All" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">All days</button>
+          <button type="button" data-availability="today" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">Today Available</button>
+          <button type="button" data-availability="tomorrow" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">Tomorrow</button>
+        </div>
+        <div id="fee-filters" class="mt-2 flex gap-2 overflow-x-auto pb-1">
+          <button type="button" data-fee="All" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">All fees</button>
+          <button type="button" data-fee="under400" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">Under ₹400</button>
+          <button type="button" data-fee="mid" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">₹400 - ₹600</button>
+          <button type="button" data-fee="high" class="finder-chip shrink-0 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold">₹600+</button>
+        </div>
+        <p id="doctor-empty" class="mt-4 hidden rounded-2xl border border-dashed border-emerald-200 bg-white p-4 text-sm text-slate-600"></p>
+        <div id="doctor-grid" class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+      </div>
+    </section>
+
+    <section id="steps" class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="max-w-2xl">
+        <p class="text-sm font-semibold text-tealbrand">Booking</p>
+        <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Teeno steps, phir clinic.</h2>
+      </div>
+      <ol id="step-list" class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3"></ol>
+    </section>
+
+    <section id="stories" class="bg-mint">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+        <div class="max-w-2xl">
+          <p class="text-sm font-semibold text-tealbrand">Patient stories</p>
+          <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Jo log aake gaye, unki baat.</h2>
+        </div>
+        <div id="story-grid" class="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3"></div>
+      </div>
+    </section>
+
+    <section id="faq" class="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
+      <p class="text-sm font-semibold text-tealbrand">FAQ</p>
+      <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Pehle se pucha jaata hai</h2>
+      <div id="faq-list" class="mt-6 border-t border-emerald-100"></div>
+    </section>
+
+    <section id="bookings" class="border-y border-emerald-100 bg-mint">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div class="max-w-2xl">
+            <p class="text-sm font-semibold text-tealbrand">Your bookings</p>
+            <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Aapki appointments</h2>
+            <p class="mt-3 text-sm leading-6 text-slate-600">Demo data is browser ke LocalStorage mein rehta hai. Cancel karoge to slot wapas khul jayega.</p>
+          </div>
+          <button type="button" data-open-booking class="inline-flex h-12 items-center justify-center rounded-full bg-tealbrand px-5 text-sm font-semibold text-white">Naya slot book karo</button>
+        </div>
+        <div id="booking-list" class="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2"></div>
+      </div>
+    </section>
+
+    <section id="visit" class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div>
+          <p class="text-sm font-semibold text-tealbrand">Visit</p>
+          <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Clinic kahan hai?</h2>
+          <p id="visit-address" class="mt-4 text-base leading-7 text-slate-700"></p>
+          <dl id="visit-hours" class="mt-5 space-y-2 text-sm text-slate-600"></dl>
+          <p id="emergency-note" class="mt-5 rounded-2xl bg-mint p-4 text-sm leading-6 text-slate-700"></p>
+          <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a id="emergency-call" class="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-red-600 px-5 text-sm font-semibold text-white">
+              <i data-lucide="phone" class="h-4 w-4"></i>
+              <span>Emergency? Direct Call</span>
+            </a>
+            <a id="visit-call" class="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-tealbrand px-5 text-sm font-semibold text-white">
+              <i data-lucide="phone" class="h-4 w-4"></i>
+              <span>Call clinic</span>
+            </a>
+            <a id="visit-whatsapp" target="_blank" rel="noopener" class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-emerald-200 px-5 text-sm font-semibold text-tealbrand">
+              <i data-lucide="message-circle" class="h-4 w-4"></i>
+              <span>WhatsApp</span>
+            </a>
+            <a id="visit-maps" target="_blank" rel="noopener" class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-emerald-200 px-5 text-sm font-semibold text-tealbrand">
+              <i data-lucide="map-pin" class="h-4 w-4"></i>
+              <span>Directions</span>
+            </a>
+          </div>
+        </div>
+
+        <form id="visit-form" novalidate class="rounded-[28px] border border-emerald-100 bg-mint p-5 sm:p-7">
+          <h3 class="font-display text-2xl text-slate-950">Clinic ko message karo</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Timing, reports, ya department ke baare mein poochho. Reply demo mein save hota hai.</p>
+          <label class="mt-5 block text-sm font-semibold text-slate-800" for="enquiry-name">Naam</label>
+          <input id="enquiry-name" name="name" autocomplete="name" maxlength="60" class="mt-2 h-12 w-full rounded-2xl border border-emerald-200 bg-white px-3 text-base outline-none" placeholder="Aapka naam">
+          <label class="mt-4 block text-sm font-semibold text-slate-800" for="enquiry-phone">Phone</label>
+          <input id="enquiry-phone" name="phone" inputmode="numeric" autocomplete="tel" maxlength="10" class="mt-2 h-12 w-full rounded-2xl border border-emerald-200 bg-white px-3 text-base outline-none" placeholder="10 digit mobile">
+          <label class="mt-4 block text-sm font-semibold text-slate-800" for="enquiry-message">Message</label>
+          <textarea id="enquiry-message" name="message" maxlength="400" rows="4" class="mt-2 w-full rounded-2xl border border-emerald-200 bg-white px-3 py-3 text-base outline-none" placeholder="Jaise: kal shaam Dermatology ka slot hai kya?"></textarea>
+          <p id="visit-error" class="mt-3 hidden text-sm font-medium text-red-700" role="alert"></p>
+          <p id="visit-success" class="mt-3 hidden text-sm font-medium text-tealbrand" role="status"></p>
+          <button type="submit" class="mt-4 inline-flex h-12 w-full items-center justify-center rounded-full bg-tealbrand text-sm font-semibold text-white">Message bhejo</button>
+        </form>
+      </div>
+    </section>
+    <section id="queue" class="border-t border-emerald-100 bg-mint">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+        <p class="text-sm font-semibold text-tealbrand">Live token</p>
+        <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Queue abhi kahan hai?</h2>
+        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">Ghar se nikalna tab, jab number nazdeek ho. Do ghante waiting room mein nahi.</p>
+        <div id="queue-panel" class="mt-6"></div>
+      </div>
+    </section>
+
+    <section id="whatsapp" class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <p class="text-sm font-semibold text-tealbrand">WhatsApp automation</p>
+      <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Booking ka message auto jayega</h2>
+      <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">1 confirm karta hai, 2 cancel. Demo is screen pe chalta hai. Live WhatsApp Business API baad mein judti hai.</p>
+      <div id="wa-panel" class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2"></div>
+    </section>
+
+    <section id="calls" class="bg-mint">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+        <p class="text-sm font-semibold text-tealbrand">AI calling</p>
+        <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Missed call wapas cover hogi</h2>
+        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">Patient ka call miss ho to AI callback ka script yahin chalega. Asli voice line provider ke baad judti hai.</p>
+        <div id="call-panel" class="mt-6"></div>
+      </div>
+    </section>
+
+    <section id="portal" class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <p class="text-sm font-semibold text-tealbrand">Patient portal</p>
+      <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Phone + OTP, phir poori file</h2>
+      <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">Demo login: 9811111111. OTP screen pe aa jayega, kyunki SMS provider abhi nahi juda.</p>
+      <div id="portal-panel" class="mt-6"></div>
+    </section>
+
+    <section id="admin" class="border-t border-emerald-100 bg-mint">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+        <p class="text-sm font-semibold text-tealbrand">Clinic desk</p>
+        <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Doctor aur staff ka dashboard</h2>
+        <div id="admin-panel" class="mt-6"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="fixed bottom-4 right-4 z-40 flex flex-col gap-2">
+    <a id="emergency-float" class="inline-flex h-12 items-center justify-center rounded-full bg-red-600 px-4 text-sm font-semibold text-white shadow-lg">Emergency</a>
+    <a id="wa-float" target="_blank" rel="noopener" class="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-tealbrand px-4 text-sm font-semibold text-white shadow-lg">
+      <i data-lucide="message-circle" class="h-4 w-4"></i>
+      WhatsApp
+    </a>
+  </div>
+
+  <footer class="bg-tealbrand text-emerald-50">
+    <div id="site-footer" class="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3"></div>
+  </footer>
+
+  <div id="toast" class="fixed left-4 right-4 top-20 z-[60] hidden rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white shadow-lg sm:left-auto sm:right-6 sm:w-80" role="status"></div>
+
+  <div id="booking-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="booking-title">
+    <button type="button" id="booking-backdrop" class="absolute inset-0 bg-slate-900/50" aria-label="Close booking"></button>
+    <div id="booking-sheet">
+      <div id="booking-form-view" class="flex flex-col">
+        <header class="flex items-start justify-between gap-3 border-b border-emerald-100 px-4 py-4 sm:px-6">
+          <div>
+            <h2 id="booking-title" class="font-display text-2xl text-slate-950">Appointment book karo</h2>
+            <p class="mt-1 text-sm text-slate-500">Details bharo. Slot confirm hote hi token milta hai.</p>
+          </div>
+          <button type="button" id="booking-close" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-emerald-200 text-slate-700" aria-label="Close booking">
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </header>
+        <form id="booking-form" novalidate class="flex min-h-0 flex-1 flex-col">
+          <div class="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-6">
+            <div>
+              <label class="text-sm font-semibold text-slate-800" for="patient-name">Patient ka naam</label>
+              <input id="patient-name" name="name" autocomplete="name" maxlength="60" class="mt-2 h-12 w-full rounded-2xl border border-emerald-200 px-3 text-base outline-none" placeholder="Jaise Ritu Sharma">
+            </div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label class="text-sm font-semibold text-slate-800" for="patient-phone">Phone</label>
+                <input id="patient-phone" name="phone" inputmode="numeric" autocomplete="tel" maxlength="10" class="mt-2 h-12 w-full rounded-2xl border border-emerald-200 px-3 text-base outline-none" placeholder="10 digit mobile">
+              </div>
+              <div>
+                <label class="text-sm font-semibold text-slate-800" for="patient-age">Age</label>
+                <input id="patient-age" name="age" inputmode="numeric" maxlength="3" class="mt-2 h-12 w-full rounded-2xl border border-emerald-200 px-3 text-base outline-none" placeholder="Jaise 28">
+              </div>
+            </div>
+            <fieldset>
+              <legend class="text-sm font-semibold text-slate-800">Visit type</legend>
+              <div class="mt-2 grid grid-cols-2 gap-2">
+                <label class="flex min-h-11 items-center gap-2 rounded-2xl border border-emerald-200 px-3 text-sm">
+                  <input type="radio" name="visit-type" value="New visit" checked>
+                  New visit
+                </label>
+                <label class="flex min-h-11 items-center gap-2 rounded-2xl border border-emerald-200 px-3 text-sm">
+                  <input type="radio" name="visit-type" value="Follow-up">
+                  Follow-up
+                </label>
+              </div>
+            </fieldset>
+            <div>
+              <label class="text-sm font-semibold text-slate-800" for="patient-doctor">Doctor</label>
+              <select id="patient-doctor" class="mt-2 h-12 w-full rounded-2xl border border-emerald-200 bg-white px-3 text-base outline-none"></select>
+              <p id="doctor-meta" class="mt-2 text-sm text-slate-500"></p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-slate-800">Date</p>
+              <div id="date-chips" class="mt-2 flex gap-2 overflow-x-auto pb-1"></div>
+              <label class="mt-2 block text-xs text-slate-500" for="patient-date">Koi aur din</label>
+              <input id="patient-date" type="date" class="mt-1 h-12 w-full rounded-2xl border border-emerald-200 px-3 text-base outline-none">
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-slate-800">Live time slots</p>
+              <p class="mt-1 text-xs text-slate-500">Green available hai. Orange jaldi bhar raha hai. Grey full hai.</p>
+              <p id="slot-empty" class="mt-2 text-sm text-slate-500"></p>
+              <div id="slot-grid" class="mt-3 space-y-4"></div>
+            </div>
+            <div>
+              <label class="text-sm font-semibold text-slate-800" for="patient-reason">Problem</label>
+              <textarea id="patient-reason" maxlength="180" rows="3" class="mt-2 w-full rounded-2xl border border-emerald-200 px-3 py-3 text-base outline-none" placeholder="Jaise fever 3 din se, ya BP follow-up"></textarea>
+            </div>
+            <p class="text-xs leading-5 text-slate-500">Demo mode: booking is device ke LocalStorage mein rehti hai. Emergency symptoms pe slot wait mat karo.</p>
+            <p id="booking-error" class="hidden rounded-2xl bg-red-50 px-3 py-2 text-sm font-medium text-red-700" role="alert"></p>
+          </div>
+          <div class="sheet-footer border-t border-emerald-100 px-4 pt-4 sm:px-6">
+            <button type="submit" class="inline-flex h-12 w-full items-center justify-center rounded-full bg-tealbrand text-sm font-semibold text-white">Booking confirm karo</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="booking-success-view" hidden class="overflow-y-auto px-4 py-6 sm:px-6">
+        <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-tealbrand">
+          <i data-lucide="check" class="h-6 w-6"></i>
+        </div>
+        <h2 class="mt-4 font-display text-3xl text-slate-950">Slot lock ho gaya</h2>
+        <p id="success-copy" class="mt-2 text-sm leading-6 text-slate-600"></p>
+        <dl id="success-details" class="mt-5 space-y-3 rounded-3xl bg-mint p-4 text-sm"></dl>
+        <div class="mt-5 grid grid-cols-1 gap-3">
+          <p id="success-channels" class="mt-3 text-sm leading-6 text-slate-600"></p>
+          <button type="button" id="success-email" class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand">
+            <i data-lucide="mail" class="h-4 w-4"></i>
+            Email confirmation
+          </button>
+          <button type="button" id="success-whatsapp" class="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-tealbrand text-sm font-semibold text-white">
+            <i data-lucide="message-circle" class="h-4 w-4"></i>
+            WhatsApp pe confirmation
+          </button>
+          <button type="button" id="success-calendar" class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand">
+            <i data-lucide="download" class="h-4 w-4"></i>
+            Calendar file save karo
+          </button>
+          <button type="button" id="success-done" class="inline-flex h-12 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-slate-700">Bookings dekho</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script src="system.js"></script>
+</body>
+</html>

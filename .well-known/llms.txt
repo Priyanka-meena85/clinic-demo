@@ -1,0 +1,7 @@
+# CareWell Multi-Speciality Clinic — LLMS.txt Guide for AI Models
+# Mirror location: /.well-known/llms.txt
+# Canonical: https://carewell.clinic/llms.txt
+
+# See https://carewell.clinic/llms.txt for full clinical documentation.
+User-agent: *
+Canonical-URL: https://carewell.clinic/llms.txt

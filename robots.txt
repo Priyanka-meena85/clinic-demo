@@ -1,0 +1,20 @@
+# Robots.txt for CareWell Multi-Speciality Clinic
+User-agent: *
+Allow: /
+Allow: /sitemap.xml
+Allow: /llms.txt
+Allow: /index.html
+Allow: /login.html
+
+# Prevent crawling of authenticated private patient/doctor/admin records
+Disallow: /api/
+Disallow: /admin.html
+Disallow: /doctor.html
+Disallow: /patient.html
+
+# XML Sitemap
+Sitemap: https://carewell.clinic/sitemap.xml
+
+# LLMS.txt Guide for AI Crawlers (ChatGPT, Claude, Gemini, Perplexity)
+# Reference: https://llmstxt.org/
+LLMs-Txt: https://carewell.clinic/llms.txt

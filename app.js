@@ -217,10 +217,10 @@ function renderNav() {
       }).join("")}
       <div class="pt-2 mt-1 border-t border-slate-100 flex flex-col gap-2">
         <button type="button" onclick="window.CareWellAuth ? window.CareWellAuth.openModal('patient', 'login') : window.location.href='login.html'" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-tealbrand text-xs font-semibold text-white shadow-2xs">
-          <i data-lucide="key-round" class="w-4 h-4"></i> Login / Sign Up (Patient, Doctor, Admin)
+          <span class="icon icon-key"></span> Login / Sign Up (Patient, Doctor, Admin)
         </button>
         <a href="login.html" class="inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-mint border border-emerald-200 text-xs font-semibold text-tealbrand">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> All Roles Gateway
+          <span class="icon icon-shield"></span> All Roles Gateway
         </a>
         <button type="button" data-open-booking class="inline-flex h-11 items-center justify-center rounded-xl border border-emerald-300 bg-white text-xs font-semibold text-tealbrand">Appointment book karo</button>
       </div>
@@ -289,12 +289,12 @@ function renderServices() {
   $("#service-grid").innerHTML = CareWellData.services.map((service) => `
     <article class="flex h-full flex-col rounded-3xl border border-emerald-100 bg-white p-5">
       <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-mint text-tealbrand">
-        <i data-lucide="${escapeHtml(service.icon)}" class="h-5 w-5"></i>
+        <span class="icon icon-stethoscope text-tealbrand"></span>
       </span>
       <h3 class="mt-4 font-display text-2xl text-slate-950">${escapeHtml(service.title)}</h3>
       <p class="mt-2 flex-1 text-sm leading-6 text-slate-600">${escapeHtml(service.text)}</p>
       <button type="button" data-jump-specialty="${escapeHtml(service.specialty)}" class="mt-5 inline-flex h-11 items-center gap-2 text-sm font-semibold text-tealbrand">
-        Doctors dekho <i data-lucide="arrow-right" class="h-4 w-4"></i>
+        Doctors dekho <span class="icon icon-arrow-right"></span>
       </button>
     </article>`).join("");
 }
@@ -417,7 +417,7 @@ function renderDoctors() {
       ${state.openReviews === doctor.id ? `<ul class="mt-2.5 space-y-2 text-xs text-slate-600 animate-in fade-in">${(doctor.reviews || []).map((review) => `<li class="rounded-xl bg-slate-50 border border-slate-100 p-2.5"><span class="font-semibold text-slate-800">${escapeHtml(review.name)}:</span> "${escapeHtml(review.text)}"</li>`).join("")}</ul>` : ""}
 
       <button type="button" data-open-booking data-doctor="${escapeHtml(doctor.id)}" class="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-tealbrand text-xs sm:text-sm font-semibold text-white hover:bg-teal-700 transition shadow-xs">
-        <i data-lucide="calendar" class="w-4 h-4"></i>
+        <span class="icon icon-calendar"></span>
         ${CareWellData.messages.bookCta}
       </button>
     </article>`).join("");
@@ -427,7 +427,7 @@ function renderSteps() {
   $("#step-list").innerHTML = CareWellData.steps.map((step, index) => `
     <li class="rounded-3xl border border-emerald-100 p-5">
       <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-mint text-tealbrand">
-        <i data-lucide="${escapeHtml(step.icon)}" class="h-5 w-5"></i>
+        <span class="icon icon-check text-tealbrand"></span>
       </span>
       <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">Step ${index + 1}</p>
       <h3 class="mt-1 font-display text-2xl text-slate-950">${escapeHtml(step.title)}</h3>
@@ -438,7 +438,7 @@ function renderSteps() {
 function renderStories() {
   $("#story-grid").innerHTML = CareWellData.testimonials.map((story) => `
     <figure class="flex h-full flex-col rounded-3xl border border-emerald-100 bg-white p-5">
-      <i data-lucide="quote" class="h-5 w-5 text-tealbrand"></i>
+      <span class="icon icon-quote text-tealbrand"></span>
       <blockquote class="mt-3 flex-1 text-base leading-7 text-slate-800">“${escapeHtml(story.quote)}”</blockquote>
       <figcaption class="mt-5 text-sm">
         <span class="font-semibold text-slate-900">${escapeHtml(story.name)}</span>
@@ -453,7 +453,7 @@ function renderFaqs() {
     <div class="border-b border-emerald-100">
       <button type="button" class="flex w-full items-center justify-between gap-4 py-4 text-left" data-faq-button aria-expanded="false" aria-controls="faq-panel-${index}">
         <span class="font-semibold text-slate-900">${escapeHtml(item.q)}</span>
-        <i data-lucide="chevron-down" class="chevron h-5 w-5 shrink-0 text-tealbrand"></i>
+        <span class="icon icon-chevron-down text-tealbrand"></span>
       </button>
       <div id="faq-panel-${index}" class="hidden pb-4 text-sm leading-6 text-slate-600" data-faq-panel>${escapeHtml(item.a)}</div>
     </div>`).join("");
@@ -591,7 +591,7 @@ function renderFooter() {
         </div>
       </div>
       <button type="button" onclick="window.CareWellSecurity ? window.CareWellSecurity.openSecurityAuditModal() : null" class="px-5 py-2.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 font-bold text-xs shadow-md transition flex items-center justify-center gap-2 shrink-0">
-        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+        <span class="icon icon-shield"></span>
         <span>View 20-Point Security Report</span>
       </button>
     </div>
@@ -603,7 +603,7 @@ function renderFooter() {
       <div class="lg:col-span-2 space-y-4">
         <div class="flex items-center gap-2.5">
           <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-tealbrand shadow-xs">
-            <i data-lucide="heart-pulse" class="h-5 w-5"></i>
+            <span class="icon icon-heart text-tealbrand"></span>
           </span>
           <div>
             <span class="block font-display text-xl font-bold leading-none text-white">${escapeHtml(clinic.name)}</span>
@@ -627,22 +627,22 @@ function renderFooter() {
         </span>
         <div class="flex flex-col gap-2 text-emerald-200/90">
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="stethoscope" class="w-3.5 h-3.5 text-emerald-300"></i> General Physician OPD
+            <span class="icon icon-stethoscope text-emerald-300"></span> General Physician OPD
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="baby" class="w-3.5 h-3.5 text-emerald-300"></i> Pediatrics & Child Care
+            <span class="icon icon-heart text-emerald-300"></span> Pediatrics & Child Care
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="sun" class="w-3.5 h-3.5 text-emerald-300"></i> Dermatology & Skin Care
+            <span class="icon icon-heart text-emerald-300"></span> Dermatology & Skin Care
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="smile" class="w-3.5 h-3.5 text-emerald-300"></i> Dental Surgery & Toothache
+            <span class="icon icon-heart text-emerald-300"></span> Dental Surgery & Toothache
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="ear" class="w-3.5 h-3.5 text-emerald-300"></i> ENT (Ear, Nose, Throat)
+            <span class="icon icon-heart text-emerald-300"></span> ENT (Ear, Nose, Throat)
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#services">
-            <i data-lucide="bone" class="w-3.5 h-3.5 text-emerald-300"></i> Orthopedics & Joint Care
+            <span class="icon icon-heart text-emerald-300"></span> Orthopedics & Joint Care
           </a>
         </div>
       </div>
@@ -654,22 +654,22 @@ function renderFooter() {
         </span>
         <div class="flex flex-col gap-2 text-emerald-200/90">
           <a class="hover:text-white transition flex items-center gap-1.5" href="patient.html">
-            <i data-lucide="user-round" class="w-3.5 h-3.5 text-emerald-300"></i> Patient Portal (Rx & Reports)
+            <span class="icon icon-user text-emerald-300"></span> Patient Portal (Rx & Reports)
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="doctor.html">
-            <i data-lucide="stethoscope" class="w-3.5 h-3.5 text-emerald-300"></i> Doctor OPD Console
+            <span class="icon icon-stethoscope text-emerald-300"></span> Doctor OPD Console
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="admin.html">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-300"></i> Reception & Admin Desk
+            <span class="icon icon-shield"></span> Reception & Admin Desk
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="login.html">
-            <i data-lucide="key-round" class="w-3.5 h-3.5 text-emerald-300"></i> Role Gateway & Sign Up
+            <span class="icon icon-key"></span> Role Gateway & Sign Up
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#queue">
-            <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-300"></i> Live OPD Token Stepper
+            <span class="icon icon-radio text-emerald-300"></span> Live OPD Token Stepper
           </a>
           <button type="button" onclick="window.CareWellSystem ? window.CareWellSystem.openAICallModal() : null" class="text-left hover:text-white transition flex items-center gap-1.5 text-amber-300 font-semibold">
-            <i data-lucide="bot" class="w-3.5 h-3.5 text-amber-400"></i> 24/7 AI Night Receptionist
+            <span class="icon icon-bot text-tealbrand"></span> 24/7 AI Night Receptionist
           </button>
         </div>
       </div>

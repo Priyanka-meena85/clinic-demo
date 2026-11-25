@@ -33,7 +33,7 @@
       <div class="flex items-center gap-3">
         <a href="index.html" class="flex items-center gap-2" title="Back to Patient Website">
           <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white shadow-xs">
-            <i data-lucide="stethoscope" class="h-5 w-5"></i>
+            <span class="icon icon-stethoscope"></span>
           </span>
           <div>
             <span class="block font-display text-lg leading-none text-slate-900 font-bold">CareWell Doctor Desk</span>
@@ -47,16 +47,16 @@
 
       <div class="flex items-center gap-3 text-xs font-semibold">
         <a href="patient.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition">
-          <i data-lucide="user-round" class="w-3.5 h-3.5 text-tealbrand"></i> Patient Portal
+          <span class="icon icon-user"></span> Patient Portal
         </a>
         <a href="admin.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand hover:bg-emerald-100 transition">
-          <i data-lucide="shield" class="w-3.5 h-3.5"></i> Admin Desk →
+          <span class="icon icon-shield"></span> Admin Desk →
         </a>
         <a href="login.html" class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition" title="Role Gateway">
-          <i data-lucide="key-round" class="w-3.5 h-3.5"></i> Portals
+          <span class="icon icon-check"></span> Portals
         </a>
         <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
-          <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Website
+          <span class="icon icon-check"></span> Website
         </a>
         <button id="btn-doc-logout" type="button" class="hidden text-xs text-red-600 hover:underline px-2 font-medium">Logout</button>
       </div>
@@ -68,7 +68,7 @@
     <!-- Doctor Login Screen (Shown when not authenticated) -->
     <div id="doc-login-view" class="max-w-md mx-auto my-12 bg-white rounded-3xl border border-emerald-100 p-8 shadow-sm text-center">
       <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mint text-tealbrand mb-4 shadow-xs">
-        <i data-lucide="user-check" class="w-7 h-7"></i>
+        <span class="icon icon-check"></span>
       </span>
       <h2 class="font-display text-2xl font-bold text-slate-900">Doctor Portal Login</h2>
       <p class="text-xs text-slate-500 mt-1">Select your profile to open your OPD Room Console</p>
@@ -163,10 +163,10 @@
 
             <div class="mt-4 flex flex-wrap gap-2 pt-3 border-t border-slate-100">
               <button type="button" onclick="window.CareWellDoctor.callNextPatient()" class="px-4 py-2.5 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 shadow-xs flex items-center gap-1.5">
-                <i data-lucide="chevron-right-circle" class="w-4 h-4"></i> Call Next Patient (+1)
+                <span class="icon icon-check"></span> Call Next Patient (+1)
               </button>
               <button type="button" onclick="window.CareWellDoctor.markConsultDone()" class="px-4 py-2.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 flex items-center gap-1.5">
-                <i data-lucide="check" class="w-4 h-4"></i> Mark Done
+                <span class="icon icon-check"></span> Mark Done
               </button>
               <button type="button" onclick="window.CareWellDoctor.viewCurrentPatientHistory()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50">
                  View Lab History
@@ -243,7 +243,7 @@
 
               <div class="flex justify-end gap-2 pt-2">
                 <button type="submit" class="px-6 py-3 rounded-xl bg-tealbrand text-white font-semibold text-xs hover:bg-teal-700 shadow-xs flex items-center gap-2">
-                  <i data-lucide="send" class="w-4 h-4"></i> Sign & Send Rx to Patient
+                  <span class="icon icon-check"></span> Sign & Send Rx to Patient
                 </button>
               </div>
             </form>

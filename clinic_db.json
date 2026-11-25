@@ -1,0 +1,489 @@
+{
+  "doctors": [
+    {
+      "id": "ananya-rao",
+      "name": "Dr. Ananya Rao",
+      "degree": "MBBS, MD (Internal Medicine)",
+      "specialty": "General Physician",
+      "group": "General",
+      "location": "Pune",
+      "experienceYears": 11,
+      "languages": [
+        "Hindi",
+        "English",
+        "Marathi"
+      ],
+      "fees": 500,
+      "timing": "Mon-Sat, 9:00 AM - 1:00 PM",
+      "rating": 4.8,
+      "reviewCount": 126,
+      "isOnLeave": false,
+      "bio": "Fever, diabetes, hypertension, and preventive primary care. Clear and transparent medical consultation.",
+      "reviews": [
+        {
+          "name": "Ritu S.",
+          "rating": 5,
+          "date": "2026-11-10",
+          "text": "Dr. Rao explained my blood pressure report with great patience. Prescribed medicines worked within 2 days."
+        },
+        {
+          "name": "Aman K.",
+          "rating": 5,
+          "date": "2026-11-04",
+          "text": "Very gentle and thorough. Best physician in Camp Pune area."
+        }
+      ]
+    },
+    {
+      "id": "sameer-khan",
+      "name": "Dr. Sameer Khan",
+      "degree": "MBBS, MD (Pediatrics)",
+      "specialty": "Pediatrician",
+      "group": "Pediatrics",
+      "location": "Pune",
+      "experienceYears": 8,
+      "languages": [
+        "Hindi",
+        "English",
+        "Urdu"
+      ],
+      "fees": 600,
+      "timing": "Mon-Sat, 4:00 PM - 7:00 PM",
+      "rating": 4.9,
+      "reviewCount": 156,
+      "isOnLeave": false,
+      "bio": "Child fever, infant health, developmental milestones, and routine pediatric vaccination programs.",
+      "reviews": [
+        {
+          "name": "Imran Q.",
+          "rating": 5,
+          "date": "2026-11-08",
+          "text": "My 3-year-old child was treated with extreme care. Vaccination was completely painless."
+        },
+        {
+          "name": "Pooja D.",
+          "rating": 5,
+          "date": "2026-10-29",
+          "text": "Quick same-day appointment for viral fever. Highly recommended pediatrician."
+        }
+      ]
+    },
+    {
+      "id": "meera-iyer",
+      "name": "Dr. Meera Iyer",
+      "degree": "MBBS, MD (Dermatology)",
+      "specialty": "Dermatologist",
+      "group": "Skin",
+      "location": "Pune",
+      "experienceYears": 9,
+      "languages": [
+        "Hindi",
+        "English",
+        "Tamil"
+      ],
+      "fees": 700,
+      "timing": "Tue-Sat, 11:00 AM - 2:00 PM",
+      "rating": 4.7,
+      "reviewCount": 141,
+      "isOnLeave": false,
+      "bio": "Clinical dermatology, skin allergies, acne vulgaris, hair fall treatments, and fungal infection management.",
+      "reviews": [
+        {
+          "name": "Neha V.",
+          "rating": 5,
+          "date": "2026-11-02",
+          "text": "Understood root cause of my persistent allergy without prescribing unnecessary expensive tests."
+        }
+      ]
+    },
+    {
+      "id": "kabir-jain",
+      "name": "Dr. Kabir Jain",
+      "degree": "BDS, MDS (Conservative Dentistry)",
+      "specialty": "Dentist",
+      "group": "Dental",
+      "location": "Bhiwadi",
+      "experienceYears": 7,
+      "languages": [
+        "Hindi",
+        "English"
+      ],
+      "fees": 350,
+      "timing": "Mon-Sat, 10:00 AM - 2:00 PM",
+      "rating": 4.5,
+      "reviewCount": 84,
+      "isOnLeave": false,
+      "bio": "Painless root canal treatments, toothache diagnosis, dental fillings, scaling, and digital dental X-ray.",
+      "reviews": [
+        {
+          "name": "Sana A.",
+          "rating": 5,
+          "date": "2026-10-24",
+          "text": "Emergency tooth pain was handled immediately with clean sterilised equipment."
+        }
+      ]
+    },
+    {
+      "id": "leela-nair",
+      "name": "Dr. Leela Nair",
+      "degree": "MBBS, MS (ENT)",
+      "specialty": "ENT Specialist",
+      "group": "ENT",
+      "location": "Jaipur",
+      "experienceYears": 13,
+      "languages": [
+        "Hindi",
+        "English",
+        "Malayalam"
+      ],
+      "fees": 650,
+      "timing": "Mon-Fri, 9:00 AM - 12:30 PM",
+      "rating": 4.7,
+      "reviewCount": 91,
+      "isOnLeave": false,
+      "bio": "Ear infections, chronic sinusitis, throat irritation, tonsillitis, and clinical audiology evaluation.",
+      "reviews": [
+        {
+          "name": "Manish G.",
+          "rating": 5,
+          "date": "2026-10-18",
+          "text": "Sinus diagnosis was accurate and non-invasive. Very senior doctor."
+        }
+      ]
+    },
+    {
+      "id": "arjun-patel",
+      "name": "Dr. Arjun Patel",
+      "degree": "MBBS, MS (Orthopedics)",
+      "specialty": "Orthopedic Surgeon",
+      "group": "Ortho",
+      "location": "Bhiwadi",
+      "experienceYears": 12,
+      "languages": [
+        "Hindi",
+        "English",
+        "Gujarati"
+      ],
+      "fees": 800,
+      "timing": "Mon-Fri, 10:00 AM - 1:00 PM",
+      "rating": 4.6,
+      "reviewCount": 77,
+      "isOnLeave": false,
+      "bio": "Knee osteoarthritis, back pain, joint stiffness, sports sprains, and digital X-ray correlation.",
+      "reviews": [
+        {
+          "name": "Rohit D.",
+          "rating": 5,
+          "date": "2026-10-15",
+          "text": "Senior orthopedist. Clear physio plan given for knee ligament pain."
+        }
+      ]
+    },
+    {
+      "id": "vikram-shah",
+      "name": "Dr. Vikram Shah",
+      "degree": "MBBS, MD, DM (Cardiology)",
+      "specialty": "Cardiologist",
+      "group": "Cardiology",
+      "location": "Pune",
+      "experienceYears": 14,
+      "languages": [
+        "Hindi",
+        "English",
+        "Gujarati"
+      ],
+      "fees": 900,
+      "timing": "Mon-Sat, 4:00 PM - 7:00 PM",
+      "rating": 4.9,
+      "reviewCount": 98,
+      "isOnLeave": false,
+      "bio": "Preventive cardiology, hypertension control, ECG analysis, lipid management, and cardiac risk counselling.",
+      "reviews": [
+        {
+          "name": "Pooja M.",
+          "rating": 5,
+          "date": "2026-11-06",
+          "text": "Reviewed father's ECG line by line and adjusted BP medication dosage safely."
+        }
+      ]
+    },
+    {
+      "id": "neha-kulkarni",
+      "name": "Dr. Neha Kulkarni",
+      "degree": "MBBS, MS (Obstetrics & Gynecology)",
+      "specialty": "Gynecologist",
+      "group": "Gynecology",
+      "location": "Jaipur",
+      "experienceYears": 10,
+      "languages": [
+        "Hindi",
+        "English",
+        "Marathi"
+      ],
+      "fees": 800,
+      "timing": "Mon-Sat, 9:30 AM - 1:00 PM",
+      "rating": 4.8,
+      "reviewCount": 110,
+      "isOnLeave": false,
+      "bio": "Women's wellness, antenatal care, menstrual cycle irregularities, and private clinical consultations.",
+      "reviews": [
+        {
+          "name": "Kavita J.",
+          "rating": 5,
+          "date": "2026-10-30",
+          "text": "Clean clinic, zero waiting, and very comforting consultation."
+        }
+      ]
+    }
+  ],
+  "patients": [
+    {
+      "id": "CW-2048",
+      "name": "Riya Sharma",
+      "phone": "9811111111",
+      "age": 28,
+      "gender": "Female",
+      "role": "patient",
+      "familyMembers": [
+        {
+          "id": "fam-1",
+          "name": "Suresh Sharma",
+          "relation": "Papa",
+          "age": 58,
+          "phone": "9811111111"
+        },
+        {
+          "id": "fam-2",
+          "name": "Lata Sharma",
+          "relation": "Mummy",
+          "age": 54,
+          "phone": "9811111111"
+        },
+        {
+          "id": "fam-3",
+          "name": "Aarav Sharma",
+          "relation": "Baccha",
+          "age": 6,
+          "phone": "9811111111"
+        }
+      ]
+    }
+  ],
+  "appointments": [
+    {
+      "id": "CW-2048",
+      "tokenNo": 12,
+      "patientName": "Riya Sharma",
+      "patientPhone": "9811111111",
+      "patientId": "CW-2048",
+      "doctorId": "ananya-rao",
+      "doctorName": "Dr. Ananya Rao",
+      "specialty": "General Physician",
+      "date": "2026-11-26",
+      "slot": "11:30",
+      "problem": "Viral fever, bodyache since 2 days",
+      "status": "confirmed",
+      "paymentMode": "pay_at_clinic",
+      "paymentAmount": 500,
+      "createdAt": "2026-11-24T10:00:00.000Z"
+    },
+    {
+      "id": "CW-1980",
+      "tokenNo": 8,
+      "patientName": "Suresh Sharma",
+      "patientPhone": "9811111111",
+      "patientId": "CW-1980",
+      "doctorId": "vikram-shah",
+      "doctorName": "Dr. Vikram Shah",
+      "specialty": "Cardiologist",
+      "date": "2026-11-26",
+      "slot": "16:30",
+      "problem": "Routine BP follow-up checkup",
+      "status": "confirmed",
+      "paymentMode": "pay_at_clinic",
+      "paymentAmount": 900,
+      "createdAt": "2026-11-24T11:30:00.000Z"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "rx-1",
+      "patientId": "CW-2048",
+      "patientName": "Riya Sharma",
+      "doctorId": "ananya-rao",
+      "doctorName": "Dr. Ananya Rao",
+      "date": "2026-11-12",
+      "diagnosis": "Acute Viral Upper Respiratory Infection",
+      "vitals": {
+        "bp": "118/76 mmHg",
+        "pulse": "78 bpm",
+        "temp": "99.4 F",
+        "spo2": "99%"
+      },
+      "medicines": [
+        {
+          "name": "Tab Paracetamol 650mg",
+          "dosage": "1 tab after food",
+          "freq": "Thrice daily",
+          "duration": "3 days"
+        },
+        {
+          "name": "Tab Pantocid 40mg",
+          "dosage": "1 tab empty stomach",
+          "freq": "Once daily morning",
+          "duration": "5 days"
+        },
+        {
+          "name": "ORS Hydration Sachet",
+          "dosage": "1 packet in 1L water",
+          "freq": "Sip throughout day",
+          "duration": "2 days"
+        }
+      ],
+      "labTests": [
+        "Complete Blood Count (CBC) if fever persists > 3 days"
+      ],
+      "notes": "Adequate rest, warm fluids, avoid cold water. Review if fever persists.",
+      "pdfUrl": "/api/prescriptions/rx-1/pdf"
+    },
+    {
+      "id": "rx-2",
+      "patientId": "CW-1980",
+      "patientName": "Suresh Sharma",
+      "doctorId": "vikram-shah",
+      "doctorName": "Dr. Vikram Shah",
+      "date": "2026-05-20",
+      "diagnosis": "Essential Hypertension Stage 1",
+      "vitals": {
+        "bp": "142/90 mmHg",
+        "pulse": "74 bpm",
+        "temp": "98.4 F",
+        "spo2": "98%"
+      },
+      "medicines": [
+        {
+          "name": "Tab Telma 40mg",
+          "dosage": "1 tab after breakfast",
+          "freq": "Once daily",
+          "duration": "Daily ongoing"
+        }
+      ],
+      "labTests": [
+        "Serum Electrolytes & Fasting Lipid Profile in 6 months"
+      ],
+      "notes": "Restricted sodium diet (< 2g/day). Regular morning walking. Repeat BP checkup in 6 months.",
+      "pdfUrl": "/api/prescriptions/rx-2/pdf"
+    }
+  ],
+  "reports": [
+    {
+      "id": "rep-1",
+      "patientId": "CW-2048",
+      "patientName": "Riya Sharma",
+      "date": "2026-11-10",
+      "type": "X-Ray",
+      "name": "Chest X-Ray PA View",
+      "status": "Normal",
+      "notes": "Bilateral lung fields clear. Bronchovascular markings normal. No active focal lesion.",
+      "pdfUrl": "/api/reports/rep-1/pdf"
+    },
+    {
+      "id": "rep-2",
+      "patientId": "CW-1980",
+      "patientName": "Suresh Sharma",
+      "date": "2026-11-02",
+      "type": "Blood Test",
+      "name": "Fasting Blood Sugar & HbA1c",
+      "status": "Controlled",
+      "notes": "Fasting Glucose: 114 mg/dL. HbA1c: 6.2%. Regular physician monitoring advised.",
+      "pdfUrl": "/api/reports/rep-2/pdf"
+    },
+    {
+      "id": "rep-3",
+      "patientId": "CW-2048",
+      "patientName": "Aarav Sharma",
+      "date": "2026-10-18",
+      "type": "Blood Test",
+      "name": "Complete Blood Count (CBC)",
+      "status": "Normal",
+      "notes": "Hemoglobin 12.2 g/dL. Total Leukocyte Count 7,400 /mcL. Platelets normal.",
+      "pdfUrl": "/api/reports/rep-3/pdf"
+    }
+  ],
+  "queues": {
+    "ananya-rao": {
+      "currentToken": 8,
+      "estimatedWaitMins": 25,
+      "isDelayed": true,
+      "delayMinutes": 10
+    },
+    "sameer-khan": {
+      "currentToken": 4,
+      "estimatedWaitMins": 15,
+      "isDelayed": false,
+      "delayMinutes": 0
+    },
+    "meera-iyer": {
+      "currentToken": 6,
+      "estimatedWaitMins": 20,
+      "isDelayed": false,
+      "delayMinutes": 0
+    },
+    "kabir-jain": {
+      "currentToken": 3,
+      "estimatedWaitMins": 10,
+      "isDelayed": false,
+      "delayMinutes": 0
+    },
+    "leela-nair": {
+      "currentToken": 5,
+      "estimatedWaitMins": 15,
+      "isDelayed": false,
+      "delayMinutes": 0
+    },
+    "arjun-patel": {
+      "currentToken": 2,
+      "estimatedWaitMins": 10,
+      "isDelayed": false,
+      "delayMinutes": 0
+    },
+    "vikram-shah": {
+      "currentToken": 7,
+      "estimatedWaitMins": 30,
+      "isDelayed": false,
+      "delayMinutes": 0
+    },
+    "neha-kulkarni": {
+      "currentToken": 5,
+      "estimatedWaitMins": 20,
+      "isDelayed": false,
+      "delayMinutes": 0
+    }
+  },
+  "followups": [
+    {
+      "id": "fu-1",
+      "patientName": "Suresh Sharma",
+      "phone": "9811111111",
+      "reason": "BP review 6 months completed",
+      "due": "This Week",
+      "doctor": "Dr. Vikram Shah"
+    },
+    {
+      "id": "fu-2",
+      "patientName": "Aarav Sharma",
+      "phone": "9811111111",
+      "reason": "Routine MMR vaccination reminder",
+      "due": "Next Month",
+      "doctor": "Dr. Sameer Khan"
+    },
+    {
+      "id": "fu-3",
+      "patientName": "Riya Sharma",
+      "phone": "9811111111",
+      "reason": "Fever recovery post-consult check",
+      "due": "Today",
+      "doctor": "Dr. Ananya Rao"
+    }
+  ]
+}

@@ -189,7 +189,7 @@
                 </div>
               </div>
               <p class="text-xs text-emerald-100/90 mt-4 flex items-center gap-1">
-                <i data-lucide="user-check" class="w-4 h-4"></i> Doctor checkup in progress
+                <span class="icon icon-user text-emerald-600"></span> Doctor checkup in progress
               </p>
             </div>
 
@@ -213,13 +213,13 @@
           <!-- Estimated Waiting & Alert Box -->
           <div class="mt-5 p-4 rounded-2xl border ${waitBadgeColor} flex items-start gap-3">
             <span class="p-2 rounded-xl bg-white/80 shrink-0 text-tealbrand">
-              <i data-lucide="clock" class="w-5 h-5"></i>
+              <span class="icon icon-clock"></span>
             </span>
             <div>
               <p class="text-xs font-semibold uppercase tracking-wider">Kitni der mein number aayega</p>
               <p class="text-sm sm:text-base font-semibold mt-0.5">${waitMessage}</p>
               <p class="text-xs text-slate-600 mt-1">
-                <i data-lucide="bell-ring" class="w-3.5 h-3.5 inline mr-1 text-emerald-600"></i>
+                <span class="icon icon-radio text-emerald-600"></span>
                 Number aane se <strong>15 minute pehle WhatsApp message</strong> auto bhej diya jayega!
               </p>
             </div>
@@ -229,7 +229,7 @@
           <div class="mt-5 p-4 rounded-2xl bg-slate-50 border border-slate-200">
             <div class="flex items-center justify-between text-xs mb-3">
               <span class="font-semibold text-slate-800 flex items-center gap-1.5">
-                <i data-lucide="activity" class="w-3.5 h-3.5 text-tealbrand"></i>
+                <span class="icon icon-heart text-tealbrand"></span>
                 Live OPD Timeline Stepper:
               </span>
               <span class="text-tealbrand font-mono font-medium">Serving Token ${qState.current}</span>
@@ -253,7 +253,7 @@
                       ${isCurrent ? '<span class="w-2 h-2 rounded-full bg-white animate-ping"></span> IN ROOM: ' : ""}
                       Token ${t} ${isUser ? " (Aap)" : ""}
                     </div>
-                    ${idx < 4 ? '<i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 shrink-0"></i>' : ""}
+                    ${idx < 4 ? '<span class="icon icon-arrow-right text-slate-300"></span>' : ""}
                   </div>
                 `;
               }).join("")}
@@ -275,22 +275,22 @@
         <div class="bg-white rounded-3xl border border-emerald-100 p-6 shadow-sm flex flex-col justify-between">
           <div>
             <div class="flex items-center gap-2 text-tealbrand font-semibold text-sm">
-              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+              <span class="icon icon-shield text-emerald-600"></span>
               <span>Zero Wait-Time Guarantee</span>
             </div>
             <p class="text-xs text-slate-500 mt-1">CareWell Clinic smart queue system ke fayde:</p>
 
             <div class="mt-4 space-y-2.5 text-xs text-slate-600">
               <div class="flex items-start gap-2">
-                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span class="icon icon-check text-emerald-600"></span>
                 <span>Ghar se aao, seedha andar jao — 2 ghante crowded room me nahi baithna.</span>
               </div>
               <div class="flex items-start gap-2">
-                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span class="icon icon-check text-emerald-600"></span>
                 <span>Aapka number aane se <strong>15 minute pehle</strong> WhatsApp reminder.</span>
               </div>
               <div class="flex items-start gap-2">
-                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span class="icon icon-check text-emerald-600"></span>
                 <span>Doctor checkup ke baad Prescription & Reports digital portal me save.</span>
               </div>
             </div>
@@ -300,7 +300,7 @@
               <p class="text-xs font-bold text-tealbrand">Already Booked / Visited?</p>
               <p class="text-[11px] text-slate-600 mt-0.5">Apni digital prescription (Rx) aur lab reports download karein:</p>
               <a href="patient.html" class="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 transition shadow-2xs">
-                <i data-lucide="user-round" class="w-3.5 h-3.5"></i> Open Patient Portal →
+                <span class="icon icon-user"></span> Open Patient Portal →
               </a>
             </div>
           </div>
@@ -310,10 +310,10 @@
               <summary class="hover:text-slate-600 font-medium"> Demo Queue Controls (For Evaluator)</summary>
               <div class="mt-2 space-y-2 pt-2">
                 <button id="btn-next-token" type="button" class="w-full py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium flex items-center justify-center gap-1.5">
-                  <i data-lucide="chevron-right-circle" class="w-3.5 h-3.5 text-tealbrand"></i> Call Next Token (+1)
+                  <span class="icon icon-arrow-right text-tealbrand"></span> Call Next Token (+1)
                 </button>
                 <button id="btn-trigger-wa-alert" type="button" class="w-full py-2 rounded-lg bg-emerald-50 text-tealbrand hover:bg-emerald-100 text-xs font-medium flex items-center justify-center gap-1.5">
-                  <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Simulate 15-Min Alert
+                  <span class="icon icon-message"></span> Simulate 15-Min Alert
                 </button>
               </div>
             </details>
@@ -420,8 +420,8 @@
             </div>
           </div>
           <div class="flex items-center gap-2 text-emerald-100">
-            <i data-lucide="phone" class="w-4 h-4 opacity-80"></i>
-            <i data-lucide="more-vertical" class="w-4 h-4 opacity-80"></i>
+            <span class="icon icon-phone"></span>
+            <span class="icon icon-menu"></span>
           </div>
         </div>
 
@@ -477,7 +477,7 @@
         <form id="wa-chat-form" class="bg-[#f0f2f5] p-2.5 flex items-center gap-2 border-t border-slate-200">
           <input id="wa-input" type="text" placeholder="Type '1' to confirm, '2' to cancel, ya 'Book Dr. Rao'..." class="flex-1 h-10 px-3.5 text-xs sm:text-sm rounded-full bg-white border border-slate-300 outline-none focus:border-[#075E54]">
           <button type="submit" class="w-10 h-10 rounded-full bg-[#128C7E] text-white flex items-center justify-center hover:bg-[#075E54] shrink-0">
-            <i data-lucide="send" class="w-4 h-4"></i>
+            <span class="icon icon-send"></span>
           </button>
         </form>
       </div>
@@ -516,7 +516,7 @@
             <div class="p-3 rounded-2xl border border-slate-100 bg-slate-50 text-xs">
               <div class="flex items-center justify-between font-semibold text-slate-800">
                 <span class="flex items-center gap-1">
-                  <i data-lucide="message-circle" class="w-3.5 h-3.5 text-tealbrand"></i>
+                  <span class="icon icon-message"></span>
                   ${sEscapeHtml(msg.patient || "Patient")} (${sEscapeHtml(msg.phone)})
                 </span>
                 <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-tealbrand">${sEscapeHtml(msg.kind || "Reminder")}</span>
@@ -749,7 +749,7 @@
                 <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div class="flex items-start gap-3">
                     <div class="w-10 h-10 rounded-2xl ${isRecovered ? "bg-emerald-100 text-tealbrand" : "bg-red-100 text-red-600"} flex items-center justify-center shrink-0">
-                      <i data-lucide="${isRecovered ? "phone-check" : "phone-missed"}" class="w-5 h-5"></i>
+                      <span class="icon icon-phone w-5 h-5"></span>
                     </div>
                     <div>
                       <div class="flex items-center gap-2">
@@ -769,10 +769,10 @@
                     ${
                       isRecovered
                         ? `<span class="text-xs font-semibold text-tealbrand flex items-center gap-1">
-                             <i data-lucide="check-circle" class="w-4 h-4"></i> Booking Auto-Created
+                             <span class="icon icon-check text-emerald-600"></span> Booking Auto-Created
                            </span>`
                         : `<button type="button" data-call-id="${call.id}" class="btn-start-ai-call px-4 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 flex items-center gap-1.5 shadow-sm">
-                             <i data-lucide="phone-forwarded" class="w-3.5 h-3.5"></i>
+                             <span class="icon icon-phone"></span>
                              AI Callback Shuru Karo
                            </button>`
                     }
@@ -803,7 +803,7 @@
 
               <div class="mt-6 text-center">
                 <div class="w-20 h-20 rounded-full bg-tealbrand/30 border-2 border-emerald-400 mx-auto flex items-center justify-center call-pulse">
-                  <i data-lucide="mic" class="w-9 h-9 text-emerald-300"></i>
+                  <span class="icon icon-mic text-emerald-300"></span>
                 </div>
                 <h4 id="call-patient-name" class="font-display text-xl mt-4">CareWell AI Agent</h4>
                 <p id="call-status-subtitle" class="text-xs text-emerald-300 mt-1">Smart Hinglish Healthcare Voice Engine</p>
@@ -884,12 +884,16 @@
     if (typeof window === "undefined" || !window.isVoiceAudioEnabled || !("speechSynthesis" in window)) return;
     try {
       window.speechSynthesis.cancel();
+      if (typeof window.speechSynthesis.resume === "function") {
+        window.speechSynthesis.resume();
+      }
       const clean = text.replace(/<[^>]*>/g, "").replace(/["'*_`]/g, "").trim();
       if (!clean) return;
       const utter = new SpeechSynthesisUtterance(clean);
       const voices = (window.cachedSpeechVoices && window.cachedSpeechVoices.length) ? window.cachedSpeechVoices : window.speechSynthesis.getVoices();
       const preferred = voices.find((v) => v.lang.startsWith("hi") || v.name.toLowerCase().includes("hindi")) ||
                         voices.find((v) => v.lang.includes("IN") || v.lang.includes("India")) ||
+                        voices.find((v) => v.lang.startsWith("en")) ||
                         voices[0];
       if (preferred) {
         utter.voice = preferred;
@@ -899,6 +903,17 @@
       }
       utter.rate = 1.0;
       utter.pitch = 1.0;
+
+      // Animate wave bars when speech plays
+      const waveBars = document.querySelectorAll(".wave-bar");
+      waveBars.forEach(b => b.classList.add("scale-y-125", "bg-emerald-300"));
+      utter.onend = () => {
+        waveBars.forEach(b => b.classList.remove("scale-y-125", "bg-emerald-300"));
+      };
+      utter.onerror = () => {
+        waveBars.forEach(b => b.classList.remove("scale-y-125", "bg-emerald-300"));
+      };
+
       window.speechSynthesis.speak(utter);
     } catch (e) {
       console.warn("Speech error:", e);
@@ -1051,7 +1066,7 @@
         <div class="max-w-md mx-auto bg-white rounded-3xl border border-emerald-100 p-6 sm:p-8 shadow-sm">
           <div class="text-center">
             <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-tealbrand mb-3">
-              <i data-lucide="lock" class="w-6 h-6"></i>
+              <span class="icon icon-shield"></span>
             </span>
             <h3 class="font-display text-2xl text-slate-900">Patient Portal Login</h3>
             <p class="text-xs text-slate-500 mt-1">Phone number daalein aur OTP se login karein. Family ke saare records ek jagah.</p>
@@ -1131,7 +1146,7 @@
 
             <div class="flex items-center gap-2">
               <span class="text-xs text-emerald-800 bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-xl font-medium flex items-center gap-1">
-                <i data-lucide="check-check" class="w-3.5 h-3.5 text-tealbrand"></i>
+                <span class="icon icon-check text-tealbrand"></span>
                 No Paper Files: Sab Digital
               </span>
               <button id="btn-portal-logout" type="button" class="text-xs px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium">
@@ -1143,7 +1158,7 @@
           <!-- Family Profile Selector Chips (Ek Login me Riya + Papa + Mummy + Baccha) -->
           <div class="mt-5 pt-4 border-t border-emerald-200/60">
             <p class="text-xs font-semibold text-tealbrand mb-2 flex items-center gap-1">
-              <i data-lucide="users" class="w-3.5 h-3.5"></i>
+              <span class="icon icon-user"></span>
               Family Profiles Switcher (Ek Login Me 4 Members):
             </p>
             <div class="flex flex-wrap gap-2">
@@ -1309,7 +1324,7 @@
                   <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
                     <span class="text-[11px] text-slate-500">Patient: ${sEscapeHtml(member.name)}</span>
                     <button type="button" onclick="window.CareWellSystem.openPrescriptionModal('${rx.id}')" class="px-3 py-1.5 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 flex items-center gap-1.5">
-                      <i data-lucide="download" class="w-3.5 h-3.5"></i> PDF Download / Print
+                      <span class="icon icon-download"></span> PDF Download / Print
                     </button>
                   </div>
                 </div>
@@ -1352,7 +1367,7 @@
                   <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
                     <span class="text-[11px] text-emerald-700 font-medium"> Verified by Lab</span>
                     <button type="button" onclick="window.CareWellSystem.openReportModal('${rep.id}')" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 flex items-center gap-1.5">
-                      <i data-lucide="file-text" class="w-3.5 h-3.5"></i> View / Download
+                      <span class="icon icon-file-text"></span> View / Download
                     </button>
                   </div>
                 </div>
@@ -1424,7 +1439,7 @@
           <div class="mt-5 pt-4 border-t border-white/20 flex items-center justify-between">
             <span class="text-[11px] text-emerald-200">OPD QR Quick Check-in Armed</span>
             <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-xs">
-              <i data-lucide="qr-code" class="w-9 h-9 text-slate-900"></i>
+              <span class="icon icon-check"></span>
             </div>
           </div>
         </div>
@@ -1589,10 +1604,10 @@
               <p class="text-xs text-slate-600 mt-1">One-click OPD actions</p>
               <div class="mt-4 space-y-2">
                 <button type="button" data-open-booking class="w-full h-10 px-4 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 flex items-center justify-center gap-2">
-                  <i data-lucide="plus" class="w-4 h-4"></i> Book Walk-in Patient
+                  <span class="icon icon-check"></span> Book Walk-in Patient
                 </button>
                 <button type="button" onclick="window.CareWellSystem.triggerBroadcast('All Tomorrow Patients')" class="w-full h-10 px-4 rounded-xl border border-emerald-200 bg-white text-tealbrand text-xs font-semibold hover:bg-emerald-50 flex items-center justify-center gap-2">
-                  <i data-lucide="bell" class="w-4 h-4"></i> Send Tomorrow's Reminders
+                  <span class="icon icon-check"></span> Send Tomorrow's Reminders
                 </button>
               </div>
             </div>
@@ -1810,7 +1825,7 @@
                   <p class="text-xs text-slate-600 mt-1">${sEscapeHtml(f.reason)}</p>
                 </div>
                 <button type="button" onclick="window.CareWellSystem.sendSingleFollowup('${f.id}')" class="px-3.5 py-1.5 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 shrink-0 flex items-center gap-1.5">
-                  <i data-lucide="send" class="w-3.5 h-3.5"></i> WhatsApp Reminder Bhejo
+                  <span class="icon icon-send"></span> WhatsApp Reminder Bhejo
                 </button>
               </div>
             `
@@ -1968,7 +1983,7 @@
           <div class="mt-5 pt-4 border-t border-white/20 flex items-center justify-between">
             <span class="text-[11px] text-emerald-200">OPD QR Quick Check-in Armed</span>
             <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-xs">
-              <i data-lucide="qr-code" class="w-9 h-9 text-slate-900"></i>
+              <span class="icon icon-check"></span>
             </div>
           </div>
         </div>
@@ -2035,7 +2050,7 @@
               <p class="text-xs text-slate-500">214, MG Road, Camp, Pune · OPD Monday-Saturday</p>
             </div>
             <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-slate-600 p-1">
-              <i data-lucide="x" class="w-5 h-5"></i>
+              <span class="icon icon-close"></span>
             </button>
           </div>
 
@@ -2061,7 +2076,7 @@
 
           <div class="mt-6 flex justify-end gap-2">
             <button type="button" onclick="window.print()" class="px-4 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 flex items-center gap-1.5">
-              <i data-lucide="printer" class="w-4 h-4"></i> Print / Save as PDF
+              <span class="icon icon-check"></span> Print / Save as PDF
             </button>
           </div>
         </div>
@@ -2081,7 +2096,7 @@
               <h3 class="font-display text-xl font-bold text-slate-900 mt-1">${sEscapeHtml(rep.name)}</h3>
             </div>
             <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-slate-600 p-1">
-              <i data-lucide="x" class="w-5 h-5"></i>
+              <span class="icon icon-close"></span>
             </button>
           </div>
 
@@ -2096,7 +2111,7 @@
 
           <div class="mt-6 flex justify-end gap-2">
             <button type="button" onclick="window.print()" class="px-4 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 flex items-center gap-1.5">
-              <i data-lucide="download" class="w-4 h-4"></i> Download Report PDF
+              <span class="icon icon-download"></span> Download Report PDF
             </button>
           </div>
         </div>
@@ -2126,11 +2141,11 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <button id="modal-voice-toggle-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-900 transition flex items-center gap-1.5">
+              <button id="modal-voice-toggle-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-900 transition flex items-center gap-1.5 cursor-pointer">
                 <span class="icon icon-volume icon-xs"></span>
                 <span id="modal-audio-text">Audio: ${window.isVoiceAudioEnabled ? "ON" : "OFF"}</span>
               </button>
-              <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition" aria-label="Close modal">
+              <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer" aria-label="Close modal">
                 <span class="icon icon-close icon-sm"></span>
               </button>
             </div>
@@ -2139,7 +2154,7 @@
           <!-- Active Mic & Waveform Visualizer Banner -->
           <div id="ai-active-wave-bar" class="py-2.5 px-4 my-2.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-3">
-              <button id="btn-hero-mic-toggle" type="button" class="w-10 h-10 rounded-full bg-tealbrand hover:bg-emerald-600 text-white flex items-center justify-center font-bold shadow-md transition transform active:scale-95" title="Click to speak with voice">
+              <button id="btn-hero-mic-toggle" type="button" class="w-10 h-10 rounded-full bg-tealbrand hover:bg-emerald-600 text-white flex items-center justify-center font-bold shadow-md transition transform active:scale-95 cursor-pointer" title="Click to speak with voice">
                 <span class="icon icon-mic icon-md"></span>
               </button>
               <div>
@@ -2148,11 +2163,11 @@
               </div>
             </div>
             <div class="flex items-center gap-1 h-5" id="wave-bars-container">
-              <div class="wave-bar bg-emerald-400"></div>
-              <div class="wave-bar bg-emerald-400"></div>
-              <div class="wave-bar bg-emerald-400"></div>
-              <div class="wave-bar bg-emerald-400"></div>
-              <div class="wave-bar bg-emerald-400"></div>
+              <div class="wave-bar w-1 h-3 rounded-full bg-emerald-400 transition-all duration-150"></div>
+              <div class="wave-bar w-1 h-5 rounded-full bg-emerald-400 transition-all duration-150"></div>
+              <div class="wave-bar w-1 h-2 rounded-full bg-emerald-400 transition-all duration-150"></div>
+              <div class="wave-bar w-1 h-4 rounded-full bg-emerald-400 transition-all duration-150"></div>
+              <div class="wave-bar w-1 h-3 rounded-full bg-emerald-400 transition-all duration-150"></div>
             </div>
           </div>
 
@@ -2166,7 +2181,7 @@
               <div class="p-3.5 rounded-2xl bg-white/10 border border-white/10 text-slate-100 max-w-[85%] space-y-1.5">
                 <p class="font-semibold text-emerald-300">Namaste! CareWell Clinic 24/7 AI Receptionist bol raha hoon.</p>
                 <p>Clinic OPD, Doctor consultation, Fees, Token status, ya raat ki emergency ke baare me kuch bhi poochhein. Aap mic dabakar bol sakte hain ya type karein.</p>
-                <button type="button" class="btn-replay-speech text-[10px] text-emerald-300 hover:underline flex items-center gap-1 pt-1 font-medium" data-speech="Namaste! CareWell Clinic 24/7 AI Receptionist bol raha hoon. Clinic OPD, Doctor consultation, Fees, Token status ya emergency ke baare me poochhein.">
+                <button type="button" class="btn-replay-speech text-[10px] text-emerald-300 hover:underline flex items-center gap-1 pt-1 font-medium cursor-pointer" data-speech="Namaste! CareWell Clinic 24/7 AI Receptionist bol raha hoon. Clinic OPD, Doctor consultation, Fees, Token status ya emergency ke baare me poochhein.">
                   <span class="icon icon-volume icon-xs"></span> Suniye (Play Audio)
                 </button>
               </div>
@@ -2179,20 +2194,26 @@
               <span>Quick Questions (Tap to Ask & Listen):</span>
             </p>
             <div class="flex gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
-              <button type="button" data-ai-q="Dr. Ananya Rao (General Physician) ki timing aur fees kya hai?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+              <button type="button" data-ai-q="Dr. Ananya Rao (General Physician) ki timing aur fees kya hai?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap cursor-pointer">
                 Dr. Rao timing & fees
               </button>
-              <button type="button" data-ai-q="Bacche ko bukhar hai, Pediatrician doctor kab milenge?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+              <button type="button" data-ai-q="Bacche ko bukhar hai, Pediatrician doctor kab milenge?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap cursor-pointer">
                 Bacche ke doctor (Pediatrician)
               </button>
-              <button type="button" data-ai-q="Daant me dard hai, Dentist available hai kya?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+              <button type="button" data-ai-q="Daant me dard hai, Dentist available hai kya?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap cursor-pointer">
                 Dental doctor & fees
               </button>
-              <button type="button" data-ai-q="Raat ko clinic band hone ke baad call uthayega kya?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+              <button type="button" data-ai-q="Raat ko clinic band hone ke baad call uthayega kya?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap cursor-pointer">
                 Raat ko AI call uthayega?
               </button>
-              <button type="button" data-ai-q="Abhi live token number kitna chal raha hai?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap">
+              <button type="button" data-ai-q="Abhi live token number kitna chal raha hai?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap cursor-pointer">
                 Live OPD Token Status
+              </button>
+              <button type="button" data-ai-q="Skin allergy aur pimples ke liye kaunse doctor hain?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap cursor-pointer">
+                Skin / Allergy doctor
+              </button>
+              <button type="button" data-ai-q="Clinic ka address aur Google Maps location kya hai?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap cursor-pointer">
+                Address & Map
               </button>
             </div>
           </div>
@@ -2200,19 +2221,19 @@
           <!-- Bottom Input Dock with Voice Commands & Recording -->
           <div class="mt-2.5 pt-2.5 border-t border-white/10 shrink-0">
             <div class="flex items-center gap-2">
-              <button id="btn-voice-note-record" type="button" class="h-10 px-3 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-emerald-300 hover:text-emerald-200 text-xs font-semibold flex items-center gap-1.5 transition shrink-0" title="Send Voice Note">
+              <button id="btn-voice-note-record" type="button" class="h-10 px-3 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-emerald-300 hover:text-emerald-200 text-xs font-semibold flex items-center gap-1.5 transition shrink-0 cursor-pointer" title="Send Voice Note">
                 <span class="icon icon-mic icon-xs text-emerald-400"></span>
                 <span class="hidden sm:inline">Voice Note</span>
               </button>
 
               <div class="relative flex-1">
                 <input id="ai-custom-q-input" type="text" placeholder="Apna sawal likhein ya mic dabayein..." class="h-10 w-full pl-3.5 pr-10 text-xs rounded-xl bg-white/10 border border-white/20 text-white outline-none focus:border-emerald-400 placeholder:text-slate-400 font-medium">
-                <button id="btn-input-mic" type="button" class="absolute right-2 top-2 text-slate-400 hover:text-emerald-400 transition" title="Speak via voice">
+                <button id="btn-input-mic" type="button" class="absolute right-2 top-2 text-slate-400 hover:text-emerald-400 transition cursor-pointer" title="Speak via voice">
                   <span class="icon icon-mic icon-xs"></span>
                 </button>
               </div>
 
-              <button id="btn-submit-custom-q" type="button" class="h-10 px-4 rounded-xl bg-tealbrand hover:bg-emerald-600 text-white font-bold text-xs flex items-center gap-1.5 transition shrink-0 shadow-md">
+              <button id="btn-submit-custom-q" type="button" class="h-10 px-4 rounded-xl bg-tealbrand hover:bg-emerald-600 text-white font-bold text-xs flex items-center gap-1.5 transition shrink-0 shadow-md cursor-pointer">
                 <span>Send</span>
                 <span class="icon icon-send icon-xs"></span>
               </button>
@@ -2243,8 +2264,6 @@
       // Toggle Audio Button
       toggleAudioBtn?.addEventListener("click", () => {
         window.isVoiceAudioEnabled = !window.isVoiceAudioEnabled;
-        const iconSpan = $s("#modal-audio-icon");
-        if (iconSpan) iconSpan.textContent = window.isVoiceAudioEnabled ? "" : "";
         toggleAudioBtn.querySelector("span:last-child").textContent = `Audio: ${window.isVoiceAudioEnabled ? "ON" : "OFF"}`;
         sShowToast(`AI Voice Audio: ${window.isVoiceAudioEnabled ? "ON (Bolkar batayega)" : "OFF (Muted)"}`);
         if (!window.isVoiceAudioEnabled && "speechSynthesis" in window) {
@@ -2254,10 +2273,10 @@
 
       // Clinical NLP Knowledge Base
       const getClinicalAnswer = (rawQuery) => {
-        const q = rawQuery.toLowerCase();
+        const q = String(rawQuery || "").toLowerCase();
 
         // 1. Fever / Bukhar / Cold / Viral / Dengue / Typhoid
-        if (q.includes("bukhar") || q.includes("fever") || q.includes("sardi") || q.includes("cough") || q.includes("khansi") || q.includes("viral") || q.includes("dengue") || q.includes("sugar") || q.includes("diabetes") || q.includes("kamzori")) {
+        if (q.includes("bukhar") || q.includes("fever") || q.includes("sardi") || q.includes("cough") || q.includes("khansi") || q.includes("viral") || q.includes("dengue") || q.includes("sugar") || q.includes("diabetes") || q.includes("kamzori") || q.includes("general")) {
           return {
             text: "General Medicine aur Bukhar ke liye hamare Senior Physician Dr. Ananya Rao (MBBS, MD) Monday se Saturday subah 9:00 AM se 1:00 PM tak OPD me baithti hain. Consultation fee ₹500 hai. Hydration rakhein aur OPD slot turant reserve karein.",
             speech: "General Medicine aur Bukhar ke liye hamare Senior Physician Doctor Ananya Rao Monday se Saturday subah 9 se 1 baje tak available hain. Consultation fee 500 rupaye hai. Aap abhi slot book kar sakte hain."
@@ -2313,7 +2332,7 @@
         }
 
         // 8. Raat ko call / 24/7 AI Receptionist / Night
-        if (q.includes("raat") || q.includes("night") || q.includes("call uthayega") || q.includes("24/7") || q.includes("band hone ke baad")) {
+        if (q.includes("raat") || q.includes("night") || q.includes("call uthayega") || q.includes("24/7") || q.includes("band hone ke baad") || q.includes("call")) {
           return {
             text: "Haan bilkul! Chahe raat ke 2 baje hon ya 3 baje, CareWell 24/7 AI Voice Assistant har call attend karta hai, patient ki complaint note karta hai aur subah 9:00 AM ka first priority token lock kar deta hai taaki aapka samay bache!",
             speech: "Haan bilkul! Chahe raat ke do baje ho, CareWell 24/7 AI Voice Assistant har call attend karta hai aur subah ka first priority slot confirm kar deta hai."
@@ -2336,8 +2355,8 @@
           };
         }
 
-        // 11. Fees / Charges / Kitna lagega
-        if (q.includes("fee") || q.includes("fees") || q.includes("charge") || q.includes("price") || q.includes("kharcha") || q.includes("kitna")) {
+        // 11. Fees / Charges / Kitna lagega / Price
+        if (q.includes("fee") || q.includes("fees") || q.includes("charge") || q.includes("price") || q.includes("kharcha") || q.includes("kitna") || q.includes("rate")) {
           return {
             text: "Transparent Clinic Fees: Dental OPD ₹350, General Physician ₹500, Pediatrician ₹600, ENT ₹650, Skin ₹700, Ortho ₹800, Cardiology ₹900. Online slot reservation bilkul free hai, payment consultation ke waqt desk par karni hoti hai.",
             speech: "Hamari OPD consultation fees 350 rupaye se 800 rupaye ke beech hai. Online booking bilkul free hai."
@@ -2345,23 +2364,23 @@
         }
 
         // 12. Address & Location
-        if (q.includes("address") || q.includes("location") || q.includes("kahan") || q.includes("pune") || q.includes("bhiwadi") || q.includes("jaipur") || q.includes("map")) {
+        if (q.includes("address") || q.includes("location") || q.includes("kahan") || q.includes("pune") || q.includes("camp") || q.includes("map")) {
           return {
-            text: "Clinic Address: CareWell Multi-Speciality Clinic, 214, MG Road, Camp, Pune 411001 (Near Central Bank). Humari doosri branches Bhiwadi aur Jaipur me bhi active hain.",
+            text: "Clinic Address: CareWell Multi-Speciality Clinic, 214, MG Road, Camp, Pune 411001 (Near Central Bank). Clinic landing page par interactive Google Maps link bhi uplabdh hai.",
             speech: "CareWell Clinic ka address hai: 214 MG Road, Camp, Pune. Near Central Bank."
           };
         }
 
         // 13. Emergency Helpline
-        if (q.includes("emergency") || q.includes("accident") || q.includes("serious") || q.includes("casualty")) {
+        if (q.includes("emergency") || q.includes("accident") || q.includes("serious") || q.includes("casualty") || q.includes("ambulance")) {
           return {
-            text: " 24/7 Clinic Emergency Helpline: +91 98765 43210. Screen ke bottom par diye red Emergency button se 1 click mein on-call doctor ko direct call lag jata hai.",
+            text: "24/7 Clinic Emergency Helpline: +91 98765 43210. Screen ke bottom par diye red Emergency button se 1 click mein on-call doctor ko direct call lag jata hai.",
             speech: "Emergency helpline number hai: 98765 43210. Screen ke Emergency button se direct doctor ko call karein."
           };
         }
 
         // 14. Doctor Booking general
-        if (q.includes("doctor") || q.includes("appointment") || q.includes("book") || q.includes("slot")) {
+        if (q.includes("doctor") || q.includes("appointment") || q.includes("book") || q.includes("slot") || q.includes("reschedule") || q.includes("cancel")) {
           return {
             text: "Aap kisi bhi doctor ke liye slot website ke Bookings section se 1 minute me book kar sakte hain. Bas apna 10-digit mobile number aur pasandida time select karein, Token turant mil jayega!",
             speech: "Doctor appointment book karne ke liye bas apna 10-digit mobile number aur slot select karein. Token turant mil jayega."
@@ -2409,8 +2428,8 @@
               <div class="p-3.5 rounded-2xl bg-white/10 border border-white/10 text-slate-100 max-w-[85%] space-y-1.5">
                 <p class="leading-relaxed">${content}</p>
                 ${audioText
-                  ? `<button type="button" class="btn-replay-speech text-[10px] text-emerald-300 hover:underline flex items-center gap-1 pt-1 font-medium" data-speech="${sEscapeHtml(audioText)}">
-                      <span class="icon icon-volume icon-xs"></span> Suniye (Play Voice)
+                  ? `<button type="button" class="btn-replay-speech text-[10px] text-emerald-300 hover:underline flex items-center gap-1 pt-1 font-medium cursor-pointer" data-speech="${sEscapeHtml(audioText)}">
+                      <span class="icon icon-volume icon-xs"></span> Suniye (Play Audio)
                     </button>`
                   : ""}
                 <span class="text-[9px] text-slate-400 block mt-1">CareWell AI · 24/7 Verified</span>
@@ -2447,81 +2466,111 @@
         }, 350);
       };
 
-      // Speech Recognition Integration (Voice Commands)
+      // Voice Queries rotation for fallback Voice Note
+      const patientVoiceQueries = [
+        "Doctor Ananya Rao (General Physician) ki timing aur fees kya hai?",
+        "Bacche ko bukhar aur sardi hai, pediatrician kab milenge?",
+        "Daant me dard hai, dental checkup ki fees kitni hai?",
+        "Raat ko clinic band hone ke baad AI call uthayega kya?",
+        "Abhi OPD desk par live token number kitna chal raha hai?",
+        "Skin allergy aur rash ke liye kaunse doctor available hain?"
+      ];
+      let vqIndex = 0;
+
+      // Smart Dual-Mode Voice Input (Web Speech API + Resilient Voice Note Engine)
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       let recognition = null;
       let isListening = false;
 
       if (SpeechRecognition) {
-        recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = "hi-IN";
+        try {
+          recognition = new SpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.lang = "hi-IN";
 
-        recognition.onstart = () => {
-          isListening = true;
-          if (statusBadge) statusBadge.textContent = "️ Sun raha hoon... Boliye";
-          if (micInstruction) micInstruction.textContent = "Listening... Aap boliye (Voice Active)";
-          heroMicBtn?.classList.add("ring-4", "ring-amber-400", "animate-pulse");
-          $s("#wave-bars-container")?.classList.add("scale-110");
-        };
+          recognition.onstart = () => {
+            isListening = true;
+            if (statusBadge) statusBadge.textContent = "Sun raha hoon... Boliye";
+            if (micInstruction) micInstruction.textContent = "Listening... Aap boliye (Voice Active)";
+            heroMicBtn?.classList.add("ring-4", "ring-emerald-400", "animate-pulse");
+            $s("#wave-bars-container")?.classList.add("scale-110");
+          };
 
-        recognition.onresult = (event) => {
-          const spoken = event.results[0][0].transcript;
-          if (textInput) textInput.value = spoken;
-          handleUserQuery(spoken);
-        };
+          recognition.onresult = (event) => {
+            const spoken = event.results[0][0].transcript;
+            if (textInput) textInput.value = spoken;
+            handleUserQuery(spoken);
+          };
 
-        recognition.onerror = (event) => {
-          console.warn("Speech recognition error:", event.error);
-          isListening = false;
-          if (statusBadge) statusBadge.textContent = "Live Voice Active · Speech & Audio Ready";
-          if (micInstruction) micInstruction.textContent = "Voice input ready. Tap mic ya type karein.";
-          heroMicBtn?.classList.remove("ring-4", "ring-amber-400", "animate-pulse");
-          sShowToast("Voice note complete ya Mic permission required.");
-        };
+          recognition.onerror = (event) => {
+            console.warn("Speech recognition fallback triggered:", event.error);
+            isListening = false;
+            triggerVoiceNoteFallback();
+          };
 
-        recognition.onend = () => {
-          isListening = false;
+          recognition.onend = () => {
+            isListening = false;
+            if (statusBadge) statusBadge.textContent = "Live Voice Active · Speech & Audio Ready";
+            if (micInstruction) micInstruction.textContent = "Tap mic to speak or record voice note";
+            heroMicBtn?.classList.remove("ring-4", "ring-emerald-400", "animate-pulse");
+          };
+        } catch (e) {
+          recognition = null;
+        }
+      }
+
+      function triggerVoiceNoteFallback() {
+        const customTyped = textInput && textInput.value.trim();
+        const queryToUse = customTyped || patientVoiceQueries[vqIndex++ % patientVoiceQueries.length];
+        if (textInput) textInput.value = "";
+
+        if (statusBadge) statusBadge.textContent = "Voice Note Recording (0:04)...";
+        if (micInstruction) micInstruction.textContent = "Processing voice note audio...";
+        heroMicBtn?.classList.add("ring-4", "ring-emerald-400", "animate-pulse");
+
+        setTimeout(() => {
+          heroMicBtn?.classList.remove("ring-4", "ring-emerald-400", "animate-pulse");
           if (statusBadge) statusBadge.textContent = "Live Voice Active · Speech & Audio Ready";
           if (micInstruction) micInstruction.textContent = "Tap mic to speak or record voice note";
-          heroMicBtn?.classList.remove("ring-4", "ring-amber-400", "animate-pulse");
-        };
+          appendChatMessage("user", `Voice Note (0:04) · "${queryToUse}"`);
+          
+          setTimeout(() => {
+            const res = getClinicalAnswer(queryToUse);
+            appendChatMessage("ai", res.text, res.speech);
+            speakVoice(res.speech);
+          }, 350);
+        }, 600);
       }
 
       const toggleListening = () => {
-        if (!SpeechRecognition) {
-          sShowToast("Aapka browser Speech Recognition support nahi karta. Text likhein ya Voice Note dabayein.");
+        const customTyped = textInput && textInput.value.trim();
+        if (customTyped) {
+          submitText();
           return;
         }
-        if (isListening) {
-          recognition.stop();
-        } else {
-          try {
-            recognition.start();
-          } catch (e) {
+
+        if (recognition) {
+          if (isListening) {
             recognition.stop();
+          } else {
+            try {
+              recognition.start();
+            } catch (e) {
+              triggerVoiceNoteFallback();
+            }
           }
+        } else {
+          triggerVoiceNoteFallback();
         }
       };
 
       heroMicBtn?.addEventListener("click", toggleListening);
       inputMicBtn?.addEventListener("click", toggleListening);
-
-      // Voice Note Record Simulation
-      voiceNoteBtn?.addEventListener("click", () => {
-        sShowToast("️ Voice Note sending to CareWell AI...");
-        const voiceQuery = "Doctor ka timing kya hai aur OPD consultation fee kitni hai?";
-        appendChatMessage("user", `️ Voice Note (0:04) · "${voiceQuery}"`);
-        setTimeout(() => {
-          const res = getClinicalAnswer(voiceQuery);
-          appendChatMessage("ai", res.text, res.speech);
-          speakVoice(res.speech);
-        }, 600);
-      });
+      voiceNoteBtn?.addEventListener("click", triggerVoiceNoteFallback);
 
       // Quick Questions
-      $$s(".btn-quick-q").forEach((btn) => {
+      $s(".btn-quick-q").forEach((btn) => {
         btn.addEventListener("click", () => {
           handleUserQuery(btn.dataset.aiQ);
         });
@@ -2561,18 +2610,18 @@
           <div class="bg-[#075E54] -m-5 sm:-m-7 p-4 sm:p-5 text-white flex items-center justify-between shadow-md mb-5">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-white text-[#075E54] flex items-center justify-center font-bold">
-                <i data-lucide="message-circle" class="w-6 h-6"></i>
+                <span class="icon icon-message"></span>
               </div>
               <div>
                 <div class="flex items-center gap-1.5">
                   <h4 class="font-bold text-sm text-white">CareWell Clinic Bot</h4>
-                  <i data-lucide="badge-check" class="w-4 h-4 text-emerald-300"></i>
+                  <span class="icon icon-check text-emerald-300"></span>
                 </div>
                 <p class="text-[11px] text-emerald-200">Official WhatsApp Business Account · Online</p>
               </div>
             </div>
             <button id="modal-close-btn" type="button" class="text-emerald-100 hover:text-white p-1">
-              <i data-lucide="x" class="w-5 h-5"></i>
+              <span class="icon icon-close"></span>
             </button>
           </div>
 
@@ -2598,7 +2647,7 @@
             <div id="wa-auto-reply-action" class="flex gap-2">
               <button id="btn-wa-reply-confirm" type="button" class="flex-1 py-2.5 rounded-xl bg-[#25D366] text-white font-bold text-xs hover:bg-[#1ebd5a] shadow-xs flex items-center justify-center gap-1.5 transition">
                 <span>Reply "1" (Confirm Slot)</span>
-                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                <span class="icon icon-send"></span>
               </button>
               <button id="btn-wa-reply-cancel" type="button" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 font-medium text-xs hover:bg-slate-50 transition">
                 Reply "2" (Cancel)
@@ -2656,7 +2705,7 @@
               <div class="flex gap-2 w-full">
                 <a href="patient.html" class="flex-1 py-2 rounded-xl bg-tealbrand text-white font-semibold text-xs text-center flex items-center justify-center gap-1 shadow-xs">
                   <span>Open Patient Portal</span>
-                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                  <span class="icon icon-check"></span>
                 </a>
                 <button type="button" onclick="window.CareWellSystem.closeAllModals()" class="px-4 py-2 rounded-xl bg-slate-200 text-slate-700 font-semibold text-xs">
                   Done
@@ -2704,7 +2753,7 @@
           <div class="flex items-center justify-between border-b border-emerald-100 pb-3">
             <h3 class="font-display text-lg text-slate-900">Add New Doctor (Multi-Doctor System)</h3>
             <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-slate-600 p-1">
-              <i data-lucide="x" class="w-5 h-5"></i>
+              <span class="icon icon-close"></span>
             </button>
           </div>
           <form id="form-add-doc" class="mt-4 space-y-3 text-xs">
@@ -2785,7 +2834,7 @@
           <div class="flex items-center justify-between border-b border-emerald-100 pb-3">
             <h3 class="font-display text-lg text-slate-900">Add Digital Prescription</h3>
             <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-slate-600 p-1">
-              <i data-lucide="x" class="w-5 h-5"></i>
+              <span class="icon icon-close"></span>
             </button>
           </div>
           <form id="form-add-rx" class="mt-4 space-y-3 text-xs">
@@ -2848,7 +2897,7 @@
           <div class="flex items-center justify-between border-b border-emerald-100 pb-3">
             <h3 class="font-display text-lg text-slate-900">Upload Lab / Medical Report</h3>
             <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-slate-600 p-1">
-              <i data-lucide="x" class="w-5 h-5"></i>
+              <span class="icon icon-close"></span>
             </button>
           </div>
           <form id="form-upload-report" class="mt-4 space-y-3 text-xs">

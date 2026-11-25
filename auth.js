@@ -126,7 +126,7 @@
         <div class="bg-slate-50 border-b border-emerald-100 p-4 sm:p-5 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-tealbrand text-white shadow-xs">
-              <i data-lucide="shield-check" class="w-5 h-5"></i>
+              <span class="icon icon-shield text-white"></span>
             </span>
             <div>
               <h3 class="font-display text-lg font-bold text-slate-900 leading-tight">CareWell Portals Access</h3>
@@ -134,7 +134,7 @@
             </div>
           </div>
           <button type="button" id="auth-modal-close" class="h-9 w-9 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-100 flex items-center justify-center transition" aria-label="Close">
-            <i data-lucide="x" class="w-4 h-4"></i>
+            <span class="icon icon-close text-slate-500"></span>
           </button>
         </div>
 
@@ -148,7 +148,7 @@
                   ? "bg-tealbrand text-white border-tealbrand shadow-xs"
                   : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50"
               }">
-                <i data-lucide="user-round" class="w-4 h-4"></i>
+                <span class="icon icon-user ${role === "patient" ? "text-white" : "text-slate-700"}"></span>
                 <span>Patient</span>
               </button>
               <button type="button" data-role-btn="doctor" class="py-2.5 px-3 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
@@ -156,7 +156,7 @@
                   ? "bg-tealbrand text-white border-tealbrand shadow-xs"
                   : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50"
               }">
-                <i data-lucide="stethoscope" class="w-4 h-4"></i>
+                <span class="icon icon-stethoscope ${role === "doctor" ? "text-white" : "text-slate-700"}"></span>
                 <span>Doctor</span>
               </button>
               <button type="button" data-role-btn="admin" class="py-2.5 px-3 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
@@ -164,7 +164,7 @@
                   ? "bg-tealbrand text-white border-tealbrand shadow-xs"
                   : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50"
               }">
-                <i data-lucide="shield" class="w-4 h-4"></i>
+                <span class="icon icon-shield ${role === "admin" ? "text-white" : "text-slate-700"}"></span>
                 <span>Admin / Staff</span>
               </button>
             </div>
@@ -172,15 +172,15 @@
 
           <!-- 2. Login vs Sign Up Tab Switcher -->
           <div class="flex rounded-xl bg-slate-100 p-1 border border-slate-200/80">
-            <button type="button" data-tab-btn="login" class="flex-1 py-2 text-xs font-bold rounded-lg transition ${
+            <button type="button" data-tab-btn="login" class="flex-1 py-2 text-xs font-bold rounded-lg transition inline-flex items-center justify-center gap-1.5 ${
               tab === "login" ? "bg-white text-slate-900 shadow-2xs" : "text-slate-500 hover:text-slate-800"
             }">
-              🔑 Login Karo
+              <span class="icon icon-key"></span> Login Karo
             </button>
-            <button type="button" data-tab-btn="signup" class="flex-1 py-2 text-xs font-bold rounded-lg transition ${
+            <button type="button" data-tab-btn="signup" class="flex-1 py-2 text-xs font-bold rounded-lg transition inline-flex items-center justify-center gap-1.5 ${
               tab === "signup" ? "bg-white text-slate-900 shadow-2xs" : "text-slate-500 hover:text-slate-800"
             }">
-              📝 Naya Sign Up
+              <span class="icon icon-file-text"></span> Naya Sign Up
             </button>
           </div>
 
@@ -209,10 +209,10 @@
             </div>
             <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs flex items-center justify-center gap-1.5">
               <span>Patient Portal Login</span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              <span class="icon icon-arrow-right"></span>
             </button>
-            <button id="btn-quick-demo-patient" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition">
-              ⚡ 1-Click Demo Login as Riya Sharma (CW-2048)
+            <button id="btn-quick-demo-patient" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5">
+              <span class="icon icon-user"></span> 1-Click Demo Login as Riya Sharma (CW-2048)
             </button>
           </form>
         `;
@@ -248,10 +248,10 @@
                 <input id="up-pat-pwd" type="password" value="1234" required class="h-10 w-full px-3 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
               </div>
             </div>
-            <p class="text-[11px] text-slate-500">✓ Naya Digital Health ID (CW-XXXX) turant generate hoga.</p>
+            <p class="text-[11px] text-slate-500">Naya Digital Health ID (CW-XXXX) turant generate hoga.</p>
             <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs flex items-center justify-center gap-1.5 mt-2">
               <span>Sign Up & Patient Portal Kholein</span>
-              <i data-lucide="check" class="w-4 h-4"></i>
+              <span class="icon icon-check"></span>
             </button>
           </form>
         `;
@@ -277,10 +277,10 @@
             </div>
             <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs flex items-center justify-center gap-1.5">
               <span>Doctor OPD Room Kholein</span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              <span class="icon icon-arrow-right"></span>
             </button>
-            <button id="btn-quick-demo-doctor" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition">
-              ⚡ 1-Click Demo Login as Dr. Ananya Rao
+            <button id="btn-quick-demo-doctor" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5">
+              <span class="icon icon-stethoscope"></span> 1-Click Demo Login as Dr. Ananya Rao
             </button>
           </form>
         `;
@@ -320,10 +320,10 @@
                 <input id="up-doc-pin" type="password" value="1234" required class="h-10 w-full px-3 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
               </div>
             </div>
-            <p class="text-[11px] text-slate-500">✓ Doctor OPD room register ho jayegi aur calendar mein jud jayegi.</p>
+            <p class="text-[11px] text-slate-500">Doctor OPD room register ho jayegi aur calendar mein jud jayegi.</p>
             <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs flex items-center justify-center gap-1.5 mt-2">
               <span>Register Doctor & Open Workspace</span>
-              <i data-lucide="check" class="w-4 h-4"></i>
+              <span class="icon icon-check"></span>
             </button>
           </form>
         `;
@@ -347,10 +347,10 @@
             </div>
             <button type="submit" class="w-full h-11 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition shadow-xs flex items-center justify-center gap-1.5">
               <span>Admin Portal Login</span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              <span class="icon icon-arrow-right"></span>
             </button>
-            <button id="btn-quick-demo-admin" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition">
-              ⚡ 1-Click Demo Login as Clinic Admin
+            <button id="btn-quick-demo-admin" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5">
+              <span class="icon icon-shield"></span> 1-Click Demo Login as Clinic Admin
             </button>
           </form>
         `;
@@ -382,7 +382,7 @@
             </div>
             <button type="submit" class="w-full h-11 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition shadow-xs flex items-center justify-center gap-1.5 mt-2">
               <span>Register Staff & Open Admin Desk</span>
-              <i data-lucide="check" class="w-4 h-4"></i>
+              <span class="icon icon-check"></span>
             </button>
           </form>
         `;
@@ -632,37 +632,37 @@
       const user = AuthState.getActiveUser();
 
       if (!user) {
-        // Not logged in: Show single clean high-end "Login / Sign Up" button
+        // Not logged in: Show single clean high-end "Portals" button with pure CSS icon
         authSlot.innerHTML = `
-          <button type="button" onclick="window.CareWellAuth.openModal('patient', 'login')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-emerald-200 bg-mint text-tealbrand text-xs font-bold hover:bg-emerald-100 transition shadow-2xs">
-            <i data-lucide="key-round" class="w-3.5 h-3.5"></i>
-            <span>Login / Sign Up</span>
+          <button type="button" onclick="window.CareWellAuth.openModal('patient', 'login')" class="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition shadow-2xs" title="Portals Login (Patient, Doctor, Admin)">
+            <span class="icon icon-user text-slate-600"></span>
+            <span class="hidden sm:inline">Portals</span>
           </button>
         `;
       } else {
         // Logged in: Show active user role pill + Portal link + Logout
         let portalUrl = "patient.html";
-        let iconName = "user-round";
+        let iconClass = "icon-user";
         let roleBadge = "Patient";
 
         if (user.role === "doctor") {
           portalUrl = "doctor.html";
-          iconName = "stethoscope";
+          iconClass = "icon-stethoscope";
           roleBadge = "Doctor";
         } else if (user.role === "admin") {
           portalUrl = "admin.html";
-          iconName = "shield-check";
+          iconClass = "icon-shield";
           roleBadge = "Admin";
         }
 
         authSlot.innerHTML = `
           <div class="flex items-center gap-1.5">
-            <a href="${portalUrl}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-emerald-200 bg-mint text-tealbrand text-xs font-bold hover:bg-emerald-100 transition shadow-2xs" title="Open Your ${roleBadge} Workspace">
-              <i data-lucide="${iconName}" class="w-3.5 h-3.5"></i>
-              <span>${escapeHtml(user.name.split(" ")[0])} (${roleBadge}) →</span>
+            <a href="${portalUrl}" class="inline-flex items-center gap-1.5 h-10 px-3 rounded-full border border-emerald-200 bg-mint text-tealbrand text-xs font-bold hover:bg-emerald-100 transition shadow-2xs" title="Open Your ${roleBadge} Workspace">
+              <span class="icon ${iconClass} text-tealbrand"></span>
+              <span>${escapeHtml(user.name.split(" ")[0])} (${roleBadge})</span>
             </a>
-            <button type="button" onclick="window.CareWellAuth.logout()" class="px-2.5 py-1.5 rounded-full text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition" title="Logout">
-              Logout
+            <button type="button" onclick="window.CareWellAuth.logout()" class="h-10 px-2 rounded-full text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition" title="Logout">
+              <span class="icon icon-close text-slate-500"></span>
             </button>
           </div>
         `;

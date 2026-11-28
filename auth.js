@@ -73,6 +73,16 @@
   // Authentication State Getters & Setters
   const AuthState = {
     getActiveRole() {
+      const exp = Number(localStorage.getItem("carewell_session_exp") || 0);
+      if (exp && Date.now() > exp) {
+        localStorage.removeItem("carewell_admin_auth");
+        localStorage.removeItem("carewell_receptionist_auth");
+        localStorage.removeItem("carewell_doctor_auth_id");
+        localStorage.removeItem("carewell_patient_auth");
+        localStorage.removeItem("carewell_active_patient_user");
+        localStorage.removeItem("carewell_session_exp");
+        return null;
+      }
       if (localStorage.getItem("carewell_admin_auth") === "true") return "admin";
       if (localStorage.getItem("carewell_receptionist_auth") === "true") return "receptionist";
       if (localStorage.getItem("carewell_doctor_auth_id")) return "doctor";
@@ -218,8 +228,8 @@
               <input id="in-pat-phone" type="tel" autocomplete="tel" maxlength="10" placeholder="Jaise 9811111111" value="9811111111" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
             </div>
             <div>
-              <label for="in-pat-otp" class="font-semibold text-slate-700 block mb-1">OTP Code / Password (Demo: 1234)</label>
-              <input id="in-pat-otp" type="password" autocomplete="current-password" maxlength="6" value="1234" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+              <label for="in-pat-otp" class="font-semibold text-slate-700 block mb-1">OTP Code / Password</label>
+              <input id="in-pat-otp" type="password" autocomplete="current-password" maxlength="6" placeholder="Enter OTP (Demo: 1234)" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
             </div>
             <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs flex items-center justify-center gap-1.5">
               <span>Patient Portal Login</span>
@@ -355,15 +365,12 @@
             <input id="in-rec-user" type="text" autocomplete="username" value="reception@carewell" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
           </div>
           <div>
-            <label for="in-rec-pin" class="font-semibold text-slate-700 block mb-1">Front Desk PIN (Demo: 1234)</label>
-            <input id="in-rec-pin" type="password" autocomplete="current-password" value="1234" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+            <label for="in-rec-pin" class="font-semibold text-slate-700 block mb-1">Front Desk PIN</label>
+            <input id="in-rec-pin" type="password" autocomplete="current-password" placeholder="Enter Desk PIN (Demo: 1234)" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
           </div>
           <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs flex items-center justify-center gap-1.5">
             <span>Open Receptionist Desk</span>
             <span class="icon icon-arrow-right"></span>
-          </button>
-          <button id="btn-quick-demo-rec" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5">
-            <span class="icon icon-calendar"></span> 1-Click Demo Login as Front Desk Receptionist
           </button>
         </form>
       `;
@@ -377,20 +384,18 @@
         return `
           <form id="form-auth-admin-login" class="space-y-4 text-xs">
             <div>
-              <label class="font-semibold text-slate-700 block mb-1">Admin Username / Email</label>
-              <input id="in-admin-user" type="text" value="admin@carewell" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+              <label for="in-admin-user" class="font-semibold text-slate-700 block mb-1">Admin Username / Email</label>
+              <input id="in-admin-user" type="text" autocomplete="username" placeholder="admin@carewell" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
             </div>
             <div>
-              <label class="font-semibold text-slate-700 block mb-1">Admin Password (Demo: carewell123)</label>
-              <input id="in-admin-pwd" type="password" value="carewell123" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+              <label for="in-admin-pwd" class="font-semibold text-slate-700 block mb-1">Admin Password</label>
+              <input id="in-admin-pwd" type="password" autocomplete="current-password" placeholder="Enter Admin Password" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
             </div>
             <button type="submit" class="w-full h-11 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition shadow-xs flex items-center justify-center gap-1.5">
-              <span>Admin Portal Login</span>
+              <span>Verify &amp; Open Admin Portal</span>
               <span class="icon icon-arrow-right"></span>
             </button>
-            <button id="btn-quick-demo-admin" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5">
-              <span class="icon icon-shield"></span> 1-Click Demo Login as Clinic Admin
-            </button>
+            <p class="text-[11px] text-slate-400 text-center">Demo: <code>admin@carewell</code> / <code>carewell123</code> (Rate-limited)</p>
           </form>
         `;
       } else {

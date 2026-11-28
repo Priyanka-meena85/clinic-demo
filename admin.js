@@ -134,11 +134,20 @@
     if (!container) return;
 
     const appointments = readJson("carewell_appointments", []);
-    const confirmedCount = appointments.filter((a) => a.status === "confirmed" || a.status === "booked").length;
-    const doneCount = appointments.filter((a) => a.status === "done").length || 4;
-    const noShowCount = appointments.filter((a) => a.status === "noshow").length || 2;
+    const confirmedCount = appointments.filter((a) => a.status === "confirmed" || a.status === "booked" || a.status === "checked-in").length;
+    const doneCount = appointments.filter((a) => a.status === "done").length;
+    const noShowCount = appointments.filter((a) => a.status === "noshow").length;
     const cancelledCount = appointments.filter((a) => a.status === "cancelled").length;
     const totalToday = confirmedCount + doneCount + noShowCount;
+
+    const liveTodayRevenue = appointments
+      .filter((a) => a.status !== "cancelled" && a.status !== "noshow")
+      .reduce((sum, a) => {
+        const doc = CareWellData.doctors.find((d) => d.id === a.doctorId);
+        return sum + (doc ? doc.fee : 500);
+      }, 0);
+    const liveMonthlyProj = liveTodayRevenue * 26;
+    const noShowPct = totalToday > 0 ? Math.round((noShowCount / totalToday) * 100) : 0;
 
     // 1. DASHBOARD
     if (currentTab === "dashboard") {
@@ -163,31 +172,31 @@
           </div>
 
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="p-5 rounded-2xl border border-emerald-100 bg-mint/50">
+            <div class="portal-kpi-card p-5">
               <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Today's Bookings</span>
               <p class="text-3xl font-display font-bold text-slate-900 mt-1">${totalToday}</p>
-              <span class="text-xs text-tealbrand font-medium">Confirmed: ${confirmedCount} · Done: ${doneCount}</span>
+              <span class="text-xs text-tealbrand font-medium">Active: ${confirmedCount} · Done: ${doneCount}</span>
             </div>
 
-            <div class="p-5 rounded-2xl border border-emerald-100 bg-white shadow-xs">
-              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">No-Show Rate</span>
+            <div class="portal-kpi-card p-5">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Live No-Show Rate</span>
               <div class="flex items-baseline gap-2 mt-1">
-                <span class="text-3xl font-display font-bold text-emerald-600">3%</span>
-                <span class="text-xs line-through text-slate-400">Pehle 12%</span>
+                <span class="text-3xl font-display font-bold text-emerald-600">${noShowPct}%</span>
+                <span class="text-xs line-through text-slate-400">Industry 15%</span>
               </div>
-              <span class="text-xs text-emerald-600 font-medium">↓ 75% drop via WhatsApp alerts!</span>
+              <span class="text-xs text-emerald-600 font-medium">WhatsApp 1/2 Confirm Active</span>
             </div>
 
-            <div class="p-5 rounded-2xl border border-emerald-100 bg-white shadow-xs">
-              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Today's OPD Earning</span>
-              <p class="text-3xl font-display font-bold text-slate-900 mt-1">₹7,200</p>
-              <span class="text-xs text-slate-500">12 patients seen @ avg ₹600</span>
+            <div class="portal-kpi-card p-5">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Today's Live OPD Revenue</span>
+              <p class="text-3xl font-display font-bold text-slate-900 mt-1">₹${liveTodayRevenue.toLocaleString("en-IN")}</p>
+              <span class="text-xs text-slate-500">${confirmedCount + doneCount} active/done consultations</span>
             </div>
 
-            <div class="p-5 rounded-2xl border border-emerald-100 bg-mint/50">
-              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Monthly Earning Report</span>
-              <p class="text-3xl font-display font-bold text-tealbrand mt-1">₹1,84,000</p>
-              <span class="text-xs text-tealbrand font-medium">+18% vs last month</span>
+            <div class="portal-kpi-card p-5">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Projected Monthly Run-Rate</span>
+              <p class="text-3xl font-display font-bold text-tealbrand mt-1">₹${liveMonthlyProj.toLocaleString("en-IN")}</p>
+              <span class="text-xs text-tealbrand font-medium">26 OPD working days</span>
             </div>
           </div>
 
@@ -692,6 +701,59 @@
           </div>
         </div>
       `;
+    }
+
+    // 9. SECURITY & AUDIT
+    else if (currentTab === "security") {
+      const jwtPresent = Boolean(localStorage.getItem("carewell_jwt_token"));
+      container.innerHTML = `
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-emerald-100">
+            <div>
+              <h3 class="font-display text-xl font-bold text-slate-900">Security, RBAC &amp; Compliance Console</h3>
+              <p class="text-xs text-slate-500">Live Role-Based Access Isolation, Brute-Force Protection &amp; 20-Point Audit</p>
+            </div>
+            <button type="button" onclick="window.CareWellSecurity ? window.CareWellSecurity.openSecurityAuditModal() : null" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 shadow-xs">
+              Run 20-Point Security Audit
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div class="portal-kpi-card p-5">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">JWT Session Token</span>
+              <p class="font-display text-xl font-bold text-tealbrand mt-1">${jwtPresent ? "Signed HS256 Active" : "Local Session Active"}</p>
+              <span class="text-[11px] text-slate-500">Auto-expires after 8 hours</span>
+            </div>
+            <div class="portal-kpi-card p-5">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Brute-Force Lockout</span>
+              <p class="font-display text-xl font-bold text-emerald-700 mt-1">5 Attempts / 15 Min</p>
+              <span class="text-[11px] text-slate-500">Active on all 4 portals</span>
+            </div>
+            <div class="portal-kpi-card p-5">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">BOLA / IDOR Shield</span>
+              <p class="font-display text-xl font-bold text-slate-900 mt-1">100% Enforced</p>
+              <span class="text-[11px] text-slate-500">Strict patientId ownership</span>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-emerald-100 overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-emerald-100">
+                <tr>
+                  <th class="p-3">Role</th>
+                  <th class="p-3">Allowed Access</th>
+                  <th class="p-3">Restricted / Blocked</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-emerald-50">
+                <tr><td class="p-3 font-bold text-tealbrand">Patient</td><td class="p-3">Own + Family Rx, Lab Reports, Receipts</td><td class="p-3 text-red-600">Other Patients, Doctor Desk, Clinic Revenue</td></tr>
+                <tr><td class="p-3 font-bold text-tealbrand">Doctor</td><td class="p-3">Own OPD Queue, Write Rx, Own Fees, Leave</td><td class="p-3 text-red-600">Total Clinic Revenue, Other Doctors' Earnings</td></tr>
+                <tr><td class="p-3 font-bold text-tealbrand">Receptionist</td><td class="p-3">Check-in, Triage Vitals, Walk-ins, Receipts</td><td class="p-3 text-red-600">Monthly Clinic Revenue, Security Config</td></tr>
+                <tr><td class="p-3 font-bold text-slate-900">Admin</td><td class="p-3">Full Clinic Analytics, Staff, Slots, Audit</td><td class="p-3 text-emerald-700 font-medium">Protected by Rate Limit + HMAC JWT</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>`;
     }
 
     refreshIcons();

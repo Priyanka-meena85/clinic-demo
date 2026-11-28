@@ -28,38 +28,35 @@
   </script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
-  <!-- Top Navigation Bar -->
-  <header class="sticky top-0 z-40 bg-white border-b border-emerald-100 shadow-xs">
-    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+  <!-- Premium Top Navigation Bar -->
+  <header class="portal-header-premium sticky top-0 z-40 shadow-md">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-3">
-        <a href="index.html" class="flex items-center gap-2" title="Back to Patient Website">
-          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white shadow-xs">
+        <a href="index.html" class="flex items-center gap-2.5" title="Back to Patient Website">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/15 border border-emerald-300/30 text-emerald-200 shadow-xs">
             <span class="icon icon-shield"></span>
           </span>
           <div>
-            <span class="block font-display text-lg leading-none text-slate-900 font-bold">CareWell Admin</span>
-            <span class="block text-[11px] text-tealbrand font-medium">Reception & Clinic Desk Portal</span>
+            <span class="block font-display text-lg leading-none text-white font-bold">CareWell Executive Admin</span>
+            <span class="block text-[11px] text-emerald-200 font-medium">Clinic Operations, Revenue &amp; Security Control</span>
           </div>
         </a>
-        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-tealbrand border border-emerald-200">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live OPD Session
+        <span class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> RBAC &amp; JWT Active
         </span>
       </div>
 
-      <div class="flex items-center gap-3 text-xs font-semibold">
-        <a href="patient.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition">
-          <span class="icon icon-user"></span> Patient Portal
+      <div class="flex items-center gap-2 text-xs font-semibold">
+        <a href="doctor.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          Doctor Desk
         </a>
-        <a href="doctor.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand hover:bg-emerald-100 transition">
-          <span class="icon icon-stethoscope"></span> Doctor Portal →
+        <a href="receptionist.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          Reception
         </a>
-        <a href="login.html" class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition" title="Role Gateway">
-          <span class="icon icon-check"></span> Portals
+        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 transition shadow-xs">
+          Website
         </a>
-        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
-          <span class="icon icon-check"></span> Website
-        </a>
-        <button id="btn-admin-logout" type="button" class="hidden text-xs text-red-600 hover:underline px-2">Logout</button>
+        <button id="btn-admin-logout" type="button" class="hidden text-xs bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-500/30 px-3 py-1.5 rounded-xl transition">Logout</button>
       </div>
     </div>
   </header>
@@ -77,18 +74,16 @@
       <form id="form-admin-login" class="mt-6 space-y-4 text-left text-xs">
         <div>
           <label for="admin-username" class="font-semibold text-slate-700 block mb-1">Username / ID</label>
-          <input id="admin-username" type="text" autocomplete="username" value="admin@carewell" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <input id="admin-username" type="text" autocomplete="username" placeholder="admin@carewell" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <div>
           <label for="admin-password" class="font-semibold text-slate-700 block mb-1">Password</label>
-          <input id="admin-password" type="password" autocomplete="current-password" value="carewell123" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <input id="admin-password" type="password" autocomplete="current-password" placeholder="Enter admin password" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
-        <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
-          Login to Admin Portal
+        <button type="submit" class="w-full h-11 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition shadow-xs">
+          Verify &amp; Open Admin Console
         </button>
-        <button id="btn-quick-admin-login" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition">
-           1-Click Demo Login as Reception Admin
-        </button>
+        <p class="text-[11px] text-slate-400 text-center">Demo credentials: <code>admin@carewell</code> / <code>carewell123</code> (Rate-limited: 5 attempts)</p>
         <div class="pt-3 text-center border-t border-slate-100">
           <p class="text-[11px] text-slate-500">Naye clinic staff hain? 
             <a href="login.html?role=admin&tab=signup" class="text-tealbrand font-bold hover:underline">Staff Registration / Sign Up →</a>
@@ -125,6 +120,9 @@
           </button>
           <button type="button" data-admin-tab="slots" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
              Slot Control
+          </button>
+          <button type="button" data-admin-tab="security" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
+             Security &amp; Audit
           </button>
         </div>
       </div>

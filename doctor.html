@@ -28,38 +28,29 @@
   </script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
-  <!-- Top Navigation Bar -->
-  <header class="sticky top-0 z-40 bg-white border-b border-emerald-100 shadow-xs">
-    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+  <!-- Premium Top Navigation Bar -->
+  <header class="portal-header-premium sticky top-0 z-40 shadow-md">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-3">
-        <a href="index.html" class="flex items-center gap-2" title="Back to Patient Website">
-          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white shadow-xs">
+        <a href="index.html" class="flex items-center gap-2.5" title="Back to Patient Website">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/15 border border-emerald-300/30 text-emerald-200 shadow-xs">
             <span class="icon icon-stethoscope"></span>
           </span>
           <div>
-            <span class="block font-display text-lg leading-none text-slate-900 font-bold">CareWell Doctor Desk</span>
-            <span class="block text-[11px] text-tealbrand font-medium">OPD Room Consultation Workspace</span>
+            <span class="block font-display text-lg leading-none text-white font-bold">CareWell Doctor Desk</span>
+            <span class="block text-[11px] text-emerald-200 font-medium">OPD Consultation, Vitals &amp; Digital Rx</span>
           </div>
         </a>
-        <span id="doc-active-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-tealbrand border border-emerald-200">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Consulting Live
+        <span id="doc-active-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Consulting Live
         </span>
       </div>
 
-      <div class="flex items-center gap-3 text-xs font-semibold">
-        <a href="patient.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition">
-          <span class="icon icon-user"></span> Patient Portal
-        </a>
-        <a href="admin.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand hover:bg-emerald-100 transition">
-          <span class="icon icon-shield"></span> Admin Desk →
-        </a>
-        <a href="login.html" class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition" title="Role Gateway">
-          <span class="icon icon-check"></span> Portals
-        </a>
-        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
-          <span class="icon icon-check"></span> Website
-        </a>
-        <button id="btn-doc-logout" type="button" class="hidden text-xs text-red-600 hover:underline px-2 font-medium">Logout</button>
+      <div class="flex items-center gap-2 text-xs font-semibold">
+        <a href="receptionist.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">Reception</a>
+        <a href="patient.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">Patient Portal</a>
+        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 transition shadow-xs">Website</a>
+        <button id="btn-doc-logout" type="button" class="hidden text-xs bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-500/30 px-3 py-1.5 rounded-xl transition">Logout</button>
       </div>
     </div>
   </header>
@@ -82,12 +73,13 @@
           </select>
         </div>
         <div>
-          <label for="doc-pin-input" class="font-semibold text-slate-700 block mb-1">Doctor PIN (Demo: 1234)</label>
-          <input id="doc-pin-input" type="password" autocomplete="current-password" value="1234" maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <label for="doc-pin-input" class="font-semibold text-slate-700 block mb-1">Doctor PIN</label>
+          <input id="doc-pin-input" type="password" autocomplete="current-password" placeholder="Enter 4-6 digit PIN" required maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
-          Open Doctor Workspace
+          Verify PIN &amp; Open Doctor Workspace
         </button>
+        <p class="text-[11px] text-slate-400 text-center">Demo Doctor PIN: <code>1234</code> (Rate-limited: 5 attempts)</p>
         <div class="pt-2 space-y-2">
           <button id="btn-quick-login-rao" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition">
              1-Click Login: Dr. Ananya Rao (General)
@@ -188,11 +180,11 @@
             <form id="form-doc-rx" class="mt-4 space-y-4 text-xs">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="font-semibold text-slate-700 block mb-1">Patient</label>
+                  <label for="rx-doc-patient-name" class="font-semibold text-slate-700 block mb-1">Patient</label>
                   <input id="rx-doc-patient-name" type="text" value="Ritu Sharma (CW-2048)" readonly class="h-10 w-full px-3.5 rounded-xl bg-slate-50 border border-slate-200 font-semibold text-slate-800">
                 </div>
                 <div>
-                  <label class="font-semibold text-slate-700 block mb-1">Clinical Diagnosis</label>
+                  <label for="rx-doc-diagnosis" class="font-semibold text-slate-700 block mb-1">Clinical Diagnosis</label>
                   <input id="rx-doc-diagnosis" type="text" placeholder="Acute Viral Fever / Upper Respiratory" value="Viral Fever" class="h-10 w-full px-3.5 rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
                 </div>
               </div>
@@ -217,19 +209,19 @@
                 </span>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                   <div>
-                    <label class="text-[10px] text-slate-500 block">Blood Pressure (BP)</label>
+                    <label for="rx-vitals-bp" class="text-[10px] text-slate-500 block">Blood Pressure (BP)</label>
                     <input id="rx-vitals-bp" type="text" placeholder="120/80 mmHg" value="120/80 mmHg" class="h-8 w-full px-2 text-xs rounded-lg border border-slate-200 bg-white font-mono">
                   </div>
                   <div>
-                    <label class="text-[10px] text-slate-500 block">Pulse Rate</label>
+                    <label for="rx-vitals-pulse" class="text-[10px] text-slate-500 block">Pulse Rate</label>
                     <input id="rx-vitals-pulse" type="text" placeholder="76 bpm" value="76 bpm" class="h-8 w-full px-2 text-xs rounded-lg border border-slate-200 bg-white font-mono">
                   </div>
                   <div>
-                    <label class="text-[10px] text-slate-500 block">Temperature (°F)</label>
+                    <label for="rx-vitals-temp" class="text-[10px] text-slate-500 block">Temperature (°F)</label>
                     <input id="rx-vitals-temp" type="text" placeholder="99.2 °F" value="99.2 °F" class="h-8 w-full px-2 text-xs rounded-lg border border-slate-200 bg-white font-mono">
                   </div>
                   <div>
-                    <label class="text-[10px] text-slate-500 block">Oxygen SpO2 (%)</label>
+                    <label for="rx-vitals-spo2" class="text-[10px] text-slate-500 block">Oxygen SpO2 (%)</label>
                     <input id="rx-vitals-spo2" type="text" placeholder="98%" value="98%" class="h-8 w-full px-2 text-xs rounded-lg border border-slate-200 bg-white font-mono">
                   </div>
                 </div>
@@ -246,7 +238,7 @@
               </div>
 
               <div>
-                <label class="font-semibold text-slate-700 block mb-1">Doctor Advice / Diet / Follow-up Notice</label>
+                <label for="rx-doc-advice" class="font-semibold text-slate-700 block mb-1">Doctor Advice / Diet / Follow-up Notice</label>
                 <input id="rx-doc-advice" type="text" placeholder="Plenty of fluids. Review after 3 days if fever persists." value="Plenty of warm fluids. Review in 3 days." class="h-10 w-full px-3.5 rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
               </div>
 

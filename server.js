@@ -1263,7 +1263,11 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  let filePath = path.resolve(__dirname, pathname === "/" ? "index.html" : pathname.replace(/^\/+/, ""));
+  let targetPath = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
+  if (!path.extname(targetPath) && fs.existsSync(path.join(__dirname, targetPath + ".html"))) {
+    targetPath += ".html";
+  }
+  let filePath = path.resolve(__dirname, targetPath);
 
   if (!filePath.startsWith(__dirname + path.sep) && filePath !== path.join(__dirname, "index.html")) {
     res.writeHead(403);

@@ -28,29 +28,25 @@
   </script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
-  <!-- Top Navigation Bar -->
-  <header class="sticky top-0 z-40 bg-white border-b border-emerald-100 shadow-xs">
-    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+  <!-- Premium Top Navigation Bar -->
+  <header class="portal-header-premium sticky top-0 z-40 shadow-md">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-3">
-        <a href="index.html" class="flex items-center gap-2" title="Back to Patient Website">
-          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white shadow-xs">
+        <a href="index.html" class="flex items-center gap-2.5" title="Back to Patient Website">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/15 border border-emerald-300/30 text-emerald-200 shadow-xs">
             <span class="icon icon-user"></span>
           </span>
           <div>
-            <span class="block font-display text-lg leading-none text-slate-900 font-bold">CareWell Patient Portal</span>
-            <span class="block text-[11px] text-tealbrand font-medium">Digital Health Records & Appointments</span>
+            <span class="block font-display text-lg leading-none text-white font-bold">CareWell Patient Portal</span>
+            <span class="block text-[11px] text-emerald-200 font-medium">Digital Health Records, Rx &amp; Family Vault</span>
           </div>
         </a>
       </div>
 
-      <div class="flex items-center gap-3 text-xs font-semibold">
-        <a href="index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
-          <span class="icon icon-check"></span> Website
-        </a>
-        <a href="login.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand hover:bg-emerald-100 transition">
-          <span class="icon icon-check"></span> All Portals
-        </a>
-        <button id="btn-patient-logout" type="button" class="hidden text-xs text-red-600 hover:underline px-2 font-medium">Logout</button>
+      <div class="flex items-center gap-2 text-xs font-semibold">
+        <a href="login.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">All Portals</a>
+        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 transition shadow-xs">Website</a>
+        <button id="btn-patient-logout" type="button" class="hidden text-xs bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-500/30 px-3 py-1.5 rounded-xl transition">Logout</button>
       </div>
     </div>
   </header>
@@ -75,7 +71,7 @@
             <label for="patient-login-otp" class="font-semibold text-slate-700">OTP Code (Demo: 1234)</label>
             <button type="button" id="btn-send-patient-otp" class="text-[11px] font-bold text-tealbrand hover:underline">Send OTP</button>
           </div>
-          <input id="patient-login-otp" type="password" autocomplete="one-time-code" value="1234" maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <input id="patient-login-otp" type="password" autocomplete="one-time-code" placeholder="Enter 4-digit OTP" required maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
           Verify OTP & Open Portal

@@ -336,6 +336,24 @@ textarea:focus-visible {
   .ux-card-hover:hover, .card-3d-tilt { transform: none !important; }
 }
 
+/* Premium Portal Shell & Executive Header */
+.portal-header-premium {
+  background: linear-gradient(90deg, #0f172a 0%, #134e4a 55%, #0f766e 100%);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(110, 231, 183, 0.25);
+}
+.portal-kpi-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #d1fae5;
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px -4px rgba(15, 118, 110, 0.08);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.portal-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(15, 118, 110, 0.16);
+}
+
 /* Animations & system UI styling */
 @keyframes pulse-ring {
   0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }

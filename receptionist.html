@@ -22,28 +22,28 @@
   </script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
-  <header class="sticky top-0 z-40 bg-white border-b border-emerald-100 shadow-xs">
+  <header class="portal-header-premium sticky top-0 z-40 shadow-md">
     <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-3">
-        <a href="index.html" class="flex items-center gap-2">
-          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white shadow-xs">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/15 border border-emerald-300/30 text-emerald-200 shadow-xs">
             <span class="icon icon-calendar"></span>
           </span>
           <div>
-            <span class="block font-display text-lg leading-none text-slate-900 font-bold">CareWell Front Desk</span>
-            <span class="block text-[11px] text-tealbrand font-medium">Receptionist Check-in, Walk-in &amp; Billing</span>
+            <span class="block font-display text-lg leading-none text-white font-bold">CareWell Front Desk</span>
+            <span class="block text-[11px] text-emerald-200 font-medium">Receptionist Check-in, Walk-in &amp; Billing</span>
           </div>
         </a>
-        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-tealbrand border border-emerald-200">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Desk Active
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Desk Active
         </span>
       </div>
 
       <div class="flex items-center gap-2 text-xs font-semibold">
-        <a href="doctor.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition">Doctor Desk</a>
-        <a href="admin.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand hover:bg-emerald-100 transition">Admin</a>
-        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">Website</a>
-        <button id="btn-rec-logout" type="button" class="hidden text-xs text-red-600 hover:underline px-2">Logout</button>
+        <a href="doctor.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">Doctor Desk</a>
+        <a href="admin.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">Admin</a>
+        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 transition shadow-xs">Website</a>
+        <button id="btn-rec-logout" type="button" class="hidden text-xs bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-500/30 px-3 py-1.5 rounded-xl transition">Logout</button>
       </div>
     </div>
   </header>
@@ -60,18 +60,16 @@
       <form id="form-rec-login" class="mt-6 space-y-4 text-left text-xs">
         <div>
           <label for="rec-username" class="font-semibold text-slate-700 block mb-1">Receptionist ID</label>
-          <input id="rec-username" type="text" autocomplete="username" value="reception@carewell" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <input id="rec-username" type="text" autocomplete="username" placeholder="reception@carewell" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <div>
-          <label for="rec-pin" class="font-semibold text-slate-700 block mb-1">Desk PIN (Demo: 1234)</label>
-          <input id="rec-pin" type="password" autocomplete="current-password" value="1234" maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <label for="rec-pin" class="font-semibold text-slate-700 block mb-1">Desk PIN</label>
+          <input id="rec-pin" type="password" autocomplete="current-password" placeholder="Enter desk PIN" required maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
-          Open Front Desk Console
+          Verify &amp; Open Front Desk Console
         </button>
-        <button id="btn-quick-rec-login" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition">
-          1-Click Demo Login as Front Desk Receptionist
-        </button>
+        <p class="text-[11px] text-slate-400 text-center">Demo credentials: <code>reception@carewell</code> / PIN <code>1234</code></p>
       </form>
     </div>
 

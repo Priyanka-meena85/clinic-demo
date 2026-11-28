@@ -326,8 +326,8 @@ function renderPackages() {
         </div>
       </div>
       <p class="mt-2 flex-1 text-xs leading-5 text-slate-600">${escapeHtml(pkg.tests)}</p>
-      <p class="mt-2 text-[11px] font-semibold text-emerald-700">${escapeHtml(pkg.turnaround)}</p>
-      <button type="button" data-book-package="${escapeHtml(pkg.title)}" data-doctor="${escapeHtml(pkg.doctorId)}" class="mt-4 inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-mint border border-emerald-200 text-xs font-bold text-tealbrand hover:bg-emerald-100 transition">
+      <p class="mt-2 text-[11px] font-semibold text-emerald-700 mb-4">${escapeHtml(pkg.turnaround)}</p>
+      <button type="button" data-book-package="${escapeHtml(pkg.title)}" data-doctor="${escapeHtml(pkg.doctorId)}" class="mt-auto pt-0 inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-mint border border-emerald-200 text-xs font-bold text-tealbrand hover:bg-emerald-100 transition">
         Book Package · ${formatInr(pkg.price)}
       </button>
     </article>`).join("");
@@ -1389,6 +1389,43 @@ function init() {
   fillDoctorSelect("");
   bindEvents();
   refreshIcons();
+  initMotionAnd3D();
+}
+
+function initMotionAnd3D() {
+  const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sections = document.querySelectorAll("main section");
+  sections.forEach((sec, idx) => {
+    if (idx > 0) sec.classList.add("reveal-up");
+  });
+
+  if (!reduced && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll(".reveal-up").forEach((el) => observer.observe(el));
+  } else {
+    document.querySelectorAll(".reveal-up").forEach((el) => el.classList.add("is-visible"));
+  }
+
+  // Interactive 3D tilt on Hero OPD card for fine pointer devices
+  const heroCard = $("#hero-opd-card");
+  if (heroCard && !reduced && window.matchMedia("(pointer: fine)").matches) {
+    heroCard.addEventListener("mousemove", (e) => {
+      const rect = heroCard.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      heroCard.style.transform = `perspective(1000px) rotateX(${(-y * 6).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg) translateY(-4px)`;
+    });
+    heroCard.addEventListener("mouseleave", () => {
+      heroCard.style.transform = "";
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);

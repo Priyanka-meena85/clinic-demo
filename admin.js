@@ -59,6 +59,12 @@
   function bindAuth() {
     $("#form-admin-login")?.addEventListener("submit", (e) => {
       e.preventDefault();
+      const username = ($("#admin-username")?.value || "").trim();
+      const password = ($("#admin-password")?.value || "").trim();
+      if (username !== "admin@carewell" || password !== "carewell123") {
+        showToast("Invalid Admin credentials! Demo: admin@carewell / carewell123");
+        return;
+      }
       isAdminLoggedIn = true;
       localStorage.setItem("carewell_admin_auth", "true");
       showWorkspace();
@@ -131,7 +137,10 @@
               <h3 class="font-display text-2xl font-bold text-slate-900">Today's Clinic Overview</h3>
               <p class="text-xs text-slate-500">Live reception statistics, appointments velocity, and revenue summary</p>
             </div>
-            <div class="flex gap-2">
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="window.CareWellAdmin.openWalkinTokenModal()" class="px-3.5 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 shadow-xs">
+                + Walk-in Token
+              </button>
               <button type="button" onclick="window.CareWellAdmin.openAddDoctorModal()" class="px-3.5 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 shadow-xs">
                 + Add Doctor
               </button>
@@ -921,6 +930,88 @@
         writeJson("carewell_reports", repList);
         closeModal();
         showToast("Report attached to patient records!");
+        renderTabContent();
+      });
+    },
+
+    openWalkinTokenModal() {
+      const doctors = CareWellData?.doctors || [];
+      showModal(`
+        <div class="p-6 sm:p-8">
+          <div class="flex items-center justify-between border-b border-emerald-100 pb-3">
+            <h3 class="font-display text-lg text-slate-900 font-bold">Issue Quick Walk-in Token</h3>
+            <button id="modal-close-btn" type="button" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+          </div>
+          <form id="form-walkin-token" class="mt-4 space-y-3 text-xs">
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">Patient Name</label>
+              <input id="walkin-name" type="text" placeholder="e.g. Amit Kulkarni" required class="h-9 w-full px-3 rounded-xl border border-emerald-200 outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="font-semibold text-slate-700 block mb-1">Mobile (10 Digits)</label>
+                <input id="walkin-phone" type="tel" maxlength="10" placeholder="98XXXXXXXX" required class="h-9 w-full px-3 rounded-xl border border-emerald-200 outline-none font-mono">
+              </div>
+              <div>
+                <label class="font-semibold text-slate-700 block mb-1">Age</label>
+                <input id="walkin-age" type="number" min="1" max="110" value="30" required class="h-9 w-full px-3 rounded-xl border border-emerald-200 outline-none">
+              </div>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">Doctor</label>
+              <select id="walkin-doctor" class="h-9 w-full px-3 rounded-xl border border-emerald-200 bg-white outline-none">
+                ${doctors.map((d) => `<option value="${d.id}">${escapeHtml(d.name)} (${escapeHtml(d.specialty)})</option>`).join("")}
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">Reason / Complaint</label>
+              <input id="walkin-reason" type="text" placeholder="Walk-in OPD checkup" value="Walk-in OPD checkup" class="h-9 w-full px-3 rounded-xl border border-emerald-200 outline-none">
+            </div>
+            <div class="pt-2 flex justify-end gap-2">
+              <button type="submit" class="px-5 py-2.5 rounded-xl bg-tealbrand text-white font-semibold hover:bg-teal-700">Generate Walk-in Token</button>
+            </div>
+          </form>
+        </div>
+      `);
+
+      $("#form-walkin-token")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const patientName = ($("#walkin-name")?.value || "").trim();
+        const phone = ($("#walkin-phone")?.value || "").replace(/\D/g, "").slice(0, 10);
+        const age = Number($("#walkin-age")?.value || 30);
+        const doctorId = $("#walkin-doctor")?.value || "ananya-rao";
+        const reason = ($("#walkin-reason")?.value || "Walk-in OPD checkup").trim();
+        if (patientName.length < 2 || phone.length !== 10) {
+          showToast("Valid patient name aur 10-digit mobile number enter karein.");
+          return;
+        }
+        const today = new Date().toISOString().split("T")[0];
+        const appointments = readJson("carewell_appointments", []);
+        const usedTokens = appointments
+          .filter((a) => a.doctorId === doctorId && a.date === today && a.status !== "cancelled")
+          .map((a) => Number(a.tokenNo) || 0);
+        const tokenNo = Math.max(8, ...usedTokens, 0) + 1;
+        const bookingId = `CW-${String(2000 + (Date.now() % 7000)).padStart(4, "0")}`;
+        appointments.push({
+          id: `cw-walkin-${Date.now()}`,
+          bookingId,
+          tokenNo,
+          token: bookingId,
+          patientName,
+          phone,
+          age,
+          doctorId,
+          date: today,
+          slot: "Walk-in",
+          reason,
+          visitType: "Walk-in",
+          paymentMode: "Pay at Clinic",
+          status: "confirmed",
+          createdAt: new Date().toISOString()
+        });
+        writeJson("carewell_appointments", appointments);
+        closeModal();
+        showToast(`Walk-in Token #${tokenNo} (${bookingId}) issued for ${patientName}!`);
         renderTabContent();
       });
     }

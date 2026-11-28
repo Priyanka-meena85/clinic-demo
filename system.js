@@ -2009,21 +2009,34 @@
   function showModalHtml(html) {
     const container = ensureModalContainer();
     container.innerHTML = `
-      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95">
+      <div id="system-modal-backdrop" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div id="system-modal-dialog" class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95">
           ${html}
         </div>
       </div>
     `;
     sRefreshIcons();
-    // close button binding
+    // close button & backdrop binding
     $s("#modal-close-btn")?.addEventListener("click", closeModalHtml);
+    $s("#system-modal-backdrop")?.addEventListener("click", (e) => {
+      if (e.target && e.target.id === "system-modal-backdrop") closeModalHtml();
+    });
   }
 
   function closeModalHtml() {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+    }
     const container = $s("#carewell-system-modals");
     if (container) container.innerHTML = "";
   }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const container = $s("#carewell-system-modals");
+      if (container && container.innerHTML.trim() !== "") closeModalHtml();
+    }
+  });
 
   // -------------------------------------------------------------
   // PUBLIC SYSTEM ACTIONS (window.CareWellSystem)
@@ -2569,8 +2582,15 @@
       inputMicBtn?.addEventListener("click", toggleListening);
       voiceNoteBtn?.addEventListener("click", triggerVoiceNoteFallback);
 
+      // Initial greeting replay button
+      chatContainer?.querySelectorAll(".btn-replay-speech").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          speakVoice(btn.dataset.speech || "");
+        });
+      });
+
       // Quick Questions
-      $s(".btn-quick-q").forEach((btn) => {
+      $$s(".btn-quick-q").forEach((btn) => {
         btn.addEventListener("click", () => {
           handleUserQuery(btn.dataset.aiQ);
         });

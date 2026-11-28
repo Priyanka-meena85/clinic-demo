@@ -11,8 +11,13 @@ const CareWellData = {
     phone: "9876543210",
     phoneDisplay: "+91 98765 43210",
     whatsapp: "9876543210",
-    email: "hello@carewell.example",
+    email: "care@carewellclinic.in",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=214+MG+Road+Camp+Pune",
+    branches: [
+      { city: "Pune", label: "Camp, Pune (Main)", address: "214, MG Road, Camp, Pune 411001" },
+      { city: "Bhiwadi", label: "Bhiwadi Branch", address: "Sector 3, Alwar Bypass Road, Bhiwadi 301019" },
+      { city: "Jaipur", label: "Jaipur Branch", address: "C-Scheme, Ashok Marg, Jaipur 302001" }
+    ],
     closedWeekdays: [0],
     slots: [
       "09:00",
@@ -197,7 +202,7 @@ const CareWellData = {
   faqs: [
     {
       q: "Appointment kaise book karun?",
-      a: "Doctor choose karo, 10 digit mobile number daalo, date aur slot select karo. Token turant milta hai. Yeh demo hai, isliye booking is phone ke LocalStorage mein save hoti hai."
+      a: "Doctor choose karo, 10 digit mobile number daalo, date aur slot select karo. Token aur WhatsApp confirmation turant milta hai."
     },
     {
       q: "Fees kitni hai?",

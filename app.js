@@ -540,7 +540,7 @@ function renderAppointments() {
           <span class="rounded-full bg-mint px-3 py-1 text-xs font-semibold text-tealbrand">${escapeHtml(row.status === "booked" ? "Confirmed" : row.status)}</span>
         </div>
         <p class="mt-4 text-sm font-medium text-slate-800">${formatDate(row.date)} · ${formatSlot(row.slot)}</p>
-        <p class="mt-1 text-sm text-slate-500">${escapeHtml(row.phone)}${row.reason ? ` · ${escapeHtml(row.reason)}` : ""}</p>
+        <p class="mt-1 text-sm text-slate-500">${escapeHtml(row.phone)}${row.reason ? ` · ${escapeHtml(row.reason)}` : ""}${row.paymentMode ? ` · ${escapeHtml(row.paymentMode)}` : ""}</p>
         <div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
           <a class="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand" target="_blank" rel="noopener" href="${whatsappUrl(bookingShareText(row))}">WhatsApp</a>
           <button type="button" data-calendar="${escapeHtml(row.id)}" class="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand">Calendar</button>
@@ -554,6 +554,15 @@ function renderAppointments() {
 function renderVisit() {
   const { clinic } = CareWellData;
   $("#visit-address").textContent = `${clinic.address}. ${clinic.city}.`;
+  const branchesBox = $("#visit-branches");
+  if (branchesBox && Array.isArray(clinic.branches)) {
+    branchesBox.innerHTML = clinic.branches.map((b) => `
+      <div class="rounded-2xl border border-emerald-100 bg-mint/60 p-3">
+        <p class="font-semibold text-tealbrand">${escapeHtml(b.label)}</p>
+        <p class="mt-0.5 text-slate-600">${escapeHtml(b.address)}</p>
+      </div>
+    `).join("");
+  }
   $("#visit-hours").innerHTML = clinic.hours.map((row) => `
     <div class="flex justify-between gap-4">
       <dt>${escapeHtml(row.days)}</dt>
@@ -842,6 +851,7 @@ function showBookingSuccess(row) {
     ["Phone", row.phone],
     ["Age", row.age || "—"],
     ["Visit", row.visitType],
+    ["Payment", row.paymentMode || "Pay at Clinic"],
     ["When", `${formatDate(row.date)} · ${formatSlot(row.slot)}`]
   ].map(([label, value]) => `
     <div class="flex justify-between gap-4">
@@ -969,6 +979,7 @@ function submitBooking(event) {
   const reason = $("#patient-reason").value.trim();
   const age = Number($("#patient-age").value);
   const visitType = document.querySelector('input[name="visit-type"]:checked')?.value || "New visit";
+  const paymentMode = document.querySelector('input[name="payment-mode"]:checked')?.value || "Pay at Clinic";
 
   if (patientName.length < 2) return setBookingError(messages.name);
   if (!validPhone(phone)) return setBookingError(messages.phone);
@@ -1000,6 +1011,7 @@ function submitBooking(event) {
     slot: state.selectedSlot,
     reason,
     visitType,
+    paymentMode,
     status: "confirmed",
     createdAt: existing?.createdAt || new Date().toISOString()
   };
@@ -1208,15 +1220,26 @@ function bindEvents() {
     if (state.lastBooking) downloadCalendar(state.lastBooking);
   });
 
-  // Reel Feature 1: Hold a Free Slot form submission -> Test WhatsApp Auto-Booking
+  // Priority OPD Slot form submission -> WhatsApp Auto-Booking
   const freeSlotForm = $("#form-hold-free-slot");
   if (freeSlotForm) {
     freeSlotForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const name = $("#free-slot-name")?.value.trim() || "Ritu Sharma";
-      const phone = $("#free-slot-phone")?.value.trim() || "9811111111";
+      const name = ($("#free-slot-name")?.value || "").trim();
+      const phone = phoneDigits($("#free-slot-phone")?.value || "");
+      if ($("#free-slot-phone")) $("#free-slot-phone").value = phone;
+      if (name.length < 2) {
+        showToast(CareWellData.messages.name);
+        $("#free-slot-name")?.focus();
+        return;
+      }
+      if (!validPhone(phone)) {
+        showToast(CareWellData.messages.phone);
+        $("#free-slot-phone")?.focus();
+        return;
+      }
       const service = $("#free-slot-service")?.value || "General Physician OPD Consultation";
-      const slot = $("#free-slot-time")?.value || "Tuesday 11:30 AM";
+      const slot = $("#free-slot-time")?.value || "Today 11:30 AM";
       if (window.CareWellSystem && typeof window.CareWellSystem.testWhatsAppAutoBooking === "function") {
         window.CareWellSystem.testWhatsAppAutoBooking(name, phone, service, slot);
       }

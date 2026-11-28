@@ -69,6 +69,11 @@
   function bindAuth() {
     $("#form-doc-login")?.addEventListener("submit", (e) => {
       e.preventDefault();
+      const pin = ($("#doc-pin-input")?.value || "").trim();
+      if (pin !== "1234") {
+        showToast("Invalid Doctor PIN! Demo PIN is 1234.");
+        return;
+      }
       const sel = $("#doc-select-profile");
       activeDoctorId = sel ? sel.value : "ananya-rao";
       localStorage.setItem("carewell_doctor_auth_id", activeDoctorId);

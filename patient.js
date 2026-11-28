@@ -78,9 +78,14 @@
   function bindAuth() {
     $("#form-patient-login")?.addEventListener("submit", (e) => {
       e.preventDefault();
-      const phone = $("#patient-login-phone")?.value.trim();
-      if (!phone || phone.length !== 10) {
+      const phone = ($("#patient-login-phone")?.value || "").replace(/\D/g, "");
+      const otp = ($("#patient-login-otp")?.value || "").trim();
+      if (phone.length !== 10) {
         showToast("Kripya 10-digit mobile number enter karein");
+        return;
+      }
+      if (otp !== "1234") {
+        showToast("Invalid OTP! Demo OTP is 1234.");
         return;
       }
       isPatientLoggedIn = true;

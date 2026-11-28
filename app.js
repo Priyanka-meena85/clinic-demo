@@ -205,7 +205,7 @@ function refreshIcons() {
 function renderNav() {
   const linkHtml = CareWellData.nav.map((item) => {
     const count = item.count ? ' <span class="booking-count rounded-full bg-mint px-2 py-0.5 text-xs text-tealbrand font-bold">0</span>' : "";
-    return `<a href="${item.href}" class="inline-flex items-center gap-1 hover:text-tealbrand text-xs font-semibold px-2 py-1 rounded-lg transition" data-nav-link>${item.label}${count}</a>`;
+    return `<a href="${item.href}" class="inline-flex items-center gap-1 whitespace-nowrap hover:text-tealbrand text-xs font-semibold px-2 py-1 rounded-lg transition" data-nav-link>${item.label}${count}</a>`;
   }).join("");
 
   $("#desktop-nav").innerHTML = linkHtml;
@@ -253,9 +253,9 @@ function renderHero() {
     </div>`).join("");
 
   $("#hours-list").innerHTML = clinic.hours.map((row) => `
-    <div class="flex items-start justify-between gap-4 text-sm">
-      <dt class="text-slate-500">${escapeHtml(row.days)}</dt>
-      <dd class="text-right font-medium text-slate-800">${escapeHtml(row.time)}</dd>
+    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-xs sm:text-sm">
+      <dt class="whitespace-nowrap text-slate-500">${escapeHtml(row.days)}</dt>
+      <dd class="text-right font-medium text-slate-800 whitespace-nowrap">${escapeHtml(row.time)}</dd>
     </div>`).join("");
 }
 
@@ -1242,7 +1242,45 @@ function bindEvents() {
       const slot = $("#free-slot-time")?.value || "Today 11:30 AM";
       if (window.CareWellSystem && typeof window.CareWellSystem.testWhatsAppAutoBooking === "function") {
         window.CareWellSystem.testWhatsAppAutoBooking(name, phone, service, slot);
+        freeSlotForm.reset();
       }
+    });
+  }
+
+  // Sync booking count & lists when WhatsApp Hold or Admin updates appointments
+  document.addEventListener("carewell:bookings-updated", () => {
+    updateBookingCountAndLists();
+  });
+
+  // Language Toggle (Hinglish / English)
+  const langToggle = $("#lang-toggle");
+  if (langToggle) {
+    let currentLang = localStorage.getItem("carewell_lang") || "hi";
+    const applyLang = (lang) => {
+      langToggle.textContent = lang === "en" ? "HI" : "EN";
+      const isEn = lang === "en";
+      $("#hero-title").textContent = isEn ? "Healthcare on time," : CareWellData.hero.title;
+      $("#hero-emphasis").textContent = isEn ? "without the waiting room." : CareWellData.hero.titleEmphasis;
+      $("#hero-body").textContent = isEn
+        ? "From General Consultation to Cardiology. Choose your doctor, lock a live slot, and walk in right on time."
+        : CareWellData.hero.body;
+      $("#hero-primary").textContent = isEn ? "Book Appointment" : CareWellData.hero.primaryCta;
+      $("#hero-secondary").textContent = isEn ? "View Doctors" : CareWellData.hero.secondaryCta;
+      const h2Services = document.querySelector("#services h2");
+      if (h2Services) h2Services.textContent = isEn ? "How can we help you?" : "Kaunsi madad chahiye?";
+      const h2Doctors = document.querySelector("#doctors h2");
+      if (h2Doctors) h2Doctors.textContent = isEn ? "Choose your doctor" : "Kis doctor se milna hai?";
+      const h2Queue = document.querySelector("#queue h2");
+      if (h2Queue) h2Queue.textContent = isEn ? "Live OPD Token Status" : "Queue abhi kahan hai?";
+      const h2Bookings = document.querySelector("#bookings h2");
+      if (h2Bookings) h2Bookings.textContent = isEn ? "Your Appointments" : "Aapki appointments";
+    };
+    if (currentLang === "en") applyLang("en");
+    langToggle.addEventListener("click", () => {
+      currentLang = currentLang === "en" ? "hi" : "en";
+      localStorage.setItem("carewell_lang", currentLang);
+      applyLang(currentLang);
+      showToast(currentLang === "en" ? "Language switched to English" : "Language switched to Hinglish");
     });
   }
 

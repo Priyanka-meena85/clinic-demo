@@ -458,7 +458,7 @@
         </div>
 
         <!-- Quick Action Suggestion Pills -->
-        <div class="bg-[#f0f2f5] px-3 py-2 border-t border-slate-200 flex gap-2 overflow-x-auto text-xs">
+        <div class="bg-[#f0f2f5] px-3 py-2 border-t border-slate-200 flex flex-wrap gap-1.5 text-xs">
           <button type="button" data-wa-quick="1" class="shrink-0 px-3 py-1 rounded-full bg-white border border-emerald-300 text-emerald-800 font-medium hover:bg-emerald-50">
             1️⃣ Confirm Appointment
           </button>
@@ -475,7 +475,7 @@
 
         <!-- Chat Input Bar -->
         <form id="wa-chat-form" class="bg-[#f0f2f5] p-2.5 flex items-center gap-2 border-t border-slate-200">
-          <input id="wa-input" type="text" placeholder="Type '1' to confirm, '2' to cancel, ya 'Book Dr. Rao'..." class="flex-1 h-10 px-3.5 text-xs sm:text-sm rounded-full bg-white border border-slate-300 outline-none focus:border-[#075E54]">
+          <input id="wa-input" type="text" aria-label="WhatsApp simulator message" placeholder="Type '1' to confirm, '2' to cancel, ya 'Book Dr. Rao'..." class="flex-1 h-10 px-3.5 text-xs sm:text-sm rounded-full bg-white border border-slate-300 outline-none focus:border-[#075E54]">
           <button type="submit" class="w-10 h-10 rounded-full bg-[#128C7E] text-white flex items-center justify-center hover:bg-[#075E54] shrink-0">
             <span class="icon icon-send"></span>
           </button>
@@ -2042,6 +2042,10 @@
   // PUBLIC SYSTEM ACTIONS (window.CareWellSystem)
   // -------------------------------------------------------------
   window.CareWellSystem = {
+    closeAllModals() {
+      closeModalHtml();
+    },
+
     refresh() {
       renderQueuePanel();
       renderWhatsAppPanel();
@@ -2206,7 +2210,7 @@
             <p class="text-[10px] text-emerald-300 font-bold uppercase tracking-wider mb-2 flex items-center gap-1">
               <span>Quick Questions (Tap to Ask & Listen):</span>
             </p>
-            <div class="flex gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
+            <div class="flex flex-wrap gap-1.5 pb-1 text-xs">
               <button type="button" data-ai-q="Dr. Ananya Rao (General Physician) ki timing aur fees kya hai?" class="btn-quick-q shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 text-slate-200 hover:text-white transition whitespace-nowrap cursor-pointer">
                 Dr. Rao timing & fees
               </button>
@@ -2621,8 +2625,55 @@
       }
     },
 
-    testWhatsAppAutoBooking(name = "Ritu Sharma", phone = "9811111111", service = "General Physician OPD Consultation", slot = "Tuesday 11:30 AM") {
-      sShowToast(` WhatsApp Auto-Booking initiated for ${name}!`);
+    testWhatsAppAutoBooking(name = "Ritu Sharma", phone = "9811111111", service = "General Physician OPD Consultation", slot = "Today 11:30 AM") {
+      sShowToast(`WhatsApp Slot Hold initiated for ${name}!`);
+
+      // Save booking & outbox entry immediately so Bookings + Outbox update
+      const todayIso = new Date().toISOString().split("T")[0];
+      const bookingId = `CW-${String(2000 + (Date.now() % 7000)).padStart(4, "0")}`;
+      const existingAppts = sReadJson("carewell_appointments", []);
+      const usedTokens = existingAppts
+        .filter((a) => a.status !== "cancelled")
+        .map((a) => Number(a.tokenNo) || 0);
+      const tokenNo = Math.max(8, ...usedTokens, 0) + 1;
+      const newApptId = `cw-wa-${Date.now()}`;
+      const matchedDoc = (CareWellData?.doctors || []).find((d) =>
+        service.toLowerCase().includes(d.name.replace(/^Dr\.\s*/i, "").toLowerCase()) ||
+        service.toLowerCase().includes((d.specialty || "").toLowerCase())
+      ) || CareWellData?.doctors?.[0];
+
+      existingAppts.push({
+        id: newApptId,
+        bookingId,
+        tokenNo,
+        token: bookingId,
+        patientName: name,
+        phone,
+        age: "",
+        doctorId: matchedDoc ? matchedDoc.id : "ananya-rao",
+        date: todayIso,
+        slot,
+        reason: service,
+        visitType: "Priority OPD",
+        paymentMode: "Pay at Clinic",
+        status: "confirmed",
+        createdAt: new Date().toISOString()
+      });
+      sWriteJson("carewell_appointments", existingAppts);
+
+      const outbox = sReadJson("carewell_outbox", []);
+      outbox.unshift({
+        id: `out-${Date.now()}`,
+        phone,
+        patient: name,
+        kind: "WhatsApp Slot Hold",
+        text: `Namaste ${name} ji! ${service} (${slot}) hold ho gaya hai. Token No: ${tokenNo} (${bookingId}). Reply 1 to confirm, 2 to cancel.`,
+        status: "Delivered",
+        createdAt: new Date().toISOString()
+      });
+      sWriteJson("carewell_outbox", outbox.slice(0, 40));
+      renderWhatsAppPanel();
+      document.dispatchEvent(new Event("carewell:bookings-updated"));
 
       const waModalHtml = `
         <div class="p-5 sm:p-7 bg-[#ECE5DD] rounded-3xl relative overflow-hidden" id="wa-reel-modal">
@@ -2739,6 +2790,12 @@
 
       const simulateCancel = () => {
         if (!chatBox) return;
+
+        const appts = sReadJson("carewell_appointments", []).map((a) =>
+          a.id === newApptId ? { ...a, status: "cancelled" } : a
+        );
+        sWriteJson("carewell_appointments", appts);
+        document.dispatchEvent(new Event("carewell:bookings-updated"));
 
         chatBox.innerHTML += `
           <div class="flex justify-end animate-in fade-in">

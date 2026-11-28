@@ -36,8 +36,17 @@ const CareWellData = {
       "18:30"
     ],
     hours: [
-      { days: "Monday to Saturday", time: "9:00 AM – 1:00 PM, 4:00 PM – 7:00 PM" },
-      { days: "Sunday", time: "Closed" }
+      { days: "Monday – Saturday", time: "9:00 AM – 1:00 PM, 4:00 PM – 8:00 PM" },
+      { days: "Sunday", time: "Closed (Emergency On-Call 24/7)" }
+    ],
+    weekHours: [
+      { day: "Mon", time: "9:00 AM – 1:00 PM, 4:00 PM – 8:00 PM" },
+      { day: "Tue", time: "9:00 AM – 1:00 PM, 4:00 PM – 8:00 PM" },
+      { day: "Wed", time: "9:00 AM – 1:00 PM, 4:00 PM – 8:00 PM" },
+      { day: "Thu", time: "9:00 AM – 1:00 PM, 4:00 PM – 8:00 PM" },
+      { day: "Fri", time: "9:00 AM – 1:00 PM, 4:00 PM – 8:00 PM" },
+      { day: "Sat", time: "9:00 AM – 1:00 PM, 4:00 PM – 8:00 PM" },
+      { day: "Sun", time: "Closed (24/7 Emergency On-Call)" }
     ]
   },
   nav: [
@@ -181,25 +190,69 @@ const CareWellData = {
   ],
   testimonials: [
     {
-      quote: "Dr. Rao ne BP ke numbers simple words mein samjhaye. Waiting bhi lamba nahi tha.",
+      quote: "Dr. Rao ne BP ke numbers simple words mein samjhaye. Waiting bhi lamba nahi tha — token alert 15 min pehle WhatsApp par aa gaya.",
       name: "Ritu S.",
-      area: "Camp",
-      visit: "General Consultation"
+      area: "Camp, Pune",
+      visit: "General Consultation · BP Review",
+      rating: 5
     },
     {
-      quote: "Bacche ke fever ke liye same-day slot mil gaya. Staff ne calmly bata diya kya laana hai.",
+      quote: "Bacche ke fever ke liye same-day slot mil gaya. Staff ne calmly bata diya kya laana hai, aur 7-day follow-up free tha.",
       name: "Imran Q.",
-      area: "Kondhwa",
-      visit: "Pediatrics"
+      area: "Kondhwa, Pune",
+      visit: "Pediatrics · Child Fever",
+      rating: 5
     },
     {
-      quote: "Skin allergy ka consultation clear tha. Extra tests force nahi kiye, pehle history li.",
+      quote: "Skin allergy ka consultation clear tha. Extra tests force nahi kiye, pehle history li. Swargate se aana worth it raha.",
       name: "Pooja M.",
-      area: "Kothrud",
-      visit: "Dermatology"
+      area: "Swargate, Pune",
+      visit: "Dermatology · Skin Allergy",
+      rating: 5
+    }
+  ],
+  packages: [
+    {
+      id: "pkg-fever",
+      title: "Fever & Infection Panel",
+      price: 699,
+      mrp: 1200,
+      tests: "CBC, Malaria, Dengue NS1, Urine Routine",
+      turnaround: "Same-day report on WhatsApp",
+      doctorId: "ananya-rao"
+    },
+    {
+      id: "pkg-diabetes",
+      title: "Diabetes & BP Care Package",
+      price: 999,
+      mrp: 1800,
+      tests: "Fasting & PP Sugar, HbA1c, Lipid Profile, Creatinine + Physician Review",
+      turnaround: "Report in 6 hours + Free Doctor Review",
+      doctorId: "ananya-rao"
+    },
+    {
+      id: "pkg-fullbody",
+      title: "Full Body Health Checkup",
+      price: 1499,
+      mrp: 2999,
+      tests: "65+ Parameters (CBC, Liver, Kidney, Thyroid, Sugar, Vitamin D & B12)",
+      turnaround: "Morning sample + Digital PDF in Patient Portal",
+      doctorId: "vikram-shah"
     }
   ],
   faqs: [
+    {
+      q: "Do I need an appointment for walk-in?",
+      a: "Walk-in patients are welcome, par online/WhatsApp slot lene se aapko live token milta hai aur 2 ghante waiting room mein nahi baithna padta."
+    },
+    {
+      q: "Is parking available at the clinic?",
+      a: "Haan, 214 MG Road, Camp clinic ke bahar dedicated two-wheeler aur car parking space available hai."
+    },
+    {
+      q: "Do you take UPI / Insurance?",
+      a: "Haan, hum UPI (GPay, PhonePe, Paytm), Cards aur Cash accept karte hain. OPD bills aur digital prescriptions insurance reimbursement ke liye valid hain."
+    },
     {
       q: "Appointment kaise book karun?",
       a: "Doctor choose karo, 10 digit mobile number daalo, date aur slot select karo. Token aur WhatsApp confirmation turant milta hai."
@@ -261,6 +314,8 @@ const doctorExtras = {
   "ananya-rao": {
     group: "General",
     location: "Pune",
+    gender: "Female",
+    regNo: "MMC-2015-4821",
     timing: "Mon–Sat, 9:00 AM – 1:00 PM",
     rating: 4.8,
     reviewCount: 126,
@@ -272,6 +327,8 @@ const doctorExtras = {
   "vikram-shah": {
     group: "Cardiology",
     location: "Pune",
+    gender: "Male",
+    regNo: "MMC-2012-1934",
     timing: "Mon–Sat, 4:00 PM – 7:00 PM",
     rating: 4.9,
     reviewCount: 98,
@@ -282,6 +339,8 @@ const doctorExtras = {
   "meera-iyer": {
     group: "Skin",
     location: "Pune",
+    gender: "Female",
+    regNo: "MMC-2017-6210",
     timing: "Tue–Sat, 11:00 AM – 2:00 PM",
     rating: 4.7,
     reviewCount: 141,
@@ -292,6 +351,8 @@ const doctorExtras = {
   "arjun-patel": {
     group: "Ortho",
     location: "Bhiwadi",
+    gender: "Male",
+    regNo: "RMC-2014-3309",
     timing: "Mon–Fri, 10:00 AM – 1:00 PM",
     rating: 4.6,
     reviewCount: 77,
@@ -302,6 +363,8 @@ const doctorExtras = {
   "neha-kulkarni": {
     group: "Gynecology",
     location: "Jaipur",
+    gender: "Female",
+    regNo: "RMC-2016-7742",
     timing: "Mon–Sat, 9:30 AM – 1:00 PM",
     rating: 4.8,
     reviewCount: 110,
@@ -312,6 +375,8 @@ const doctorExtras = {
   "sameer-khan": {
     group: "Pediatrics",
     location: "Jaipur",
+    gender: "Male",
+    regNo: "RMC-2018-5518",
     timing: "Mon–Sat, 4:00 PM – 7:00 PM",
     rating: 4.9,
     reviewCount: 156,
@@ -330,6 +395,8 @@ CareWellData.doctors.push(
     specialty: "Dentist",
     group: "Dental",
     location: "Bhiwadi",
+    gender: "Male",
+    regNo: "DCI-2019-2084",
     timing: "Mon–Sat, 10:00 AM – 2:00 PM",
     qualifications: "BDS, MDS (Conservative Dentistry)",
     experienceYears: 7,
@@ -346,6 +413,8 @@ CareWellData.doctors.push(
     specialty: "ENT",
     group: "ENT",
     location: "Jaipur",
+    gender: "Female",
+    regNo: "RMC-2013-8841",
     timing: "Mon–Fri, 9:00 AM – 12:30 PM",
     qualifications: "MBBS, MS (ENT)",
     experienceYears: 13,

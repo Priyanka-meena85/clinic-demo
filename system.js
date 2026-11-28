@@ -146,6 +146,10 @@
     const doctor = CareWellData.doctors.find((d) => d.id === qState.doctorId) || CareWellData.doctors[0];
     const diff = Math.max(0, qState.yourToken - qState.current);
     const estMinutes = Math.round(diff * qState.avgMinsPerPatient);
+    const leaveTime = new Date(Date.now() + Math.max(0, estMinutes - 10) * 60000).toLocaleTimeString("en-IN", {
+      hour: "numeric",
+      minute: "2-digit"
+    });
 
     let waitMessage = "";
     let waitBadgeColor = "bg-emerald-100 text-tealbrand border-emerald-300";
@@ -156,7 +160,7 @@
       waitMessage = "Aapka number next hai! Doctor room ke bahar wait karein (Approx 5-7 min).";
       waitBadgeColor = "bg-orange-100 text-orange-800 border-orange-300";
     } else {
-      waitMessage = `${estMinutes} Min Baad Aaiye (Ghar se aao, seedha andar jao - 2 ghante wait nahi!)`;
+      waitMessage = `~${estMinutes} min wait · Leave home at ${leaveTime} (2 ghante wait nahi!)`;
     }
 
     container.innerHTML = `

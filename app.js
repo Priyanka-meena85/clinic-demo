@@ -11,6 +11,7 @@ const state = {
   location: "All",
   availability: "All",
   fee: "All",
+  gender: "All",
   query: "",
   selectedSlot: "",
   activeTrigger: null,
@@ -238,6 +239,10 @@ function renderHero() {
   $("#hero-secondary").textContent = hero.secondaryCta;
   $("#hero-call-label").textContent = hero.callCta;
   $("#hero-call").href = `tel:+91${clinic.phone}`;
+  const heroWa = $("#hero-whatsapp");
+  if (heroWa) {
+    heroWa.href = whatsappUrl("Namaste CareWell Clinic, mujhe aaj ka OPD appointment slot book karna hai.");
+  }
 
   const fees = CareWellData.doctors.map((doctor) => doctor.fee);
   const minFee = Math.min(...fees);
@@ -308,6 +313,26 @@ function doctorBadge(doctor) {
   return free.length ? CareWellData.messages.slotsOpen : CareWellData.messages.slotsFull;
 }
 
+function renderPackages() {
+  const box = $("#package-grid");
+  if (!box || !Array.isArray(CareWellData.packages)) return;
+  box.innerHTML = CareWellData.packages.map((pkg) => `
+    <article class="ux-card-hover flex h-full flex-col rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm">
+      <div class="flex items-start justify-between gap-2">
+        <h4 class="font-display text-xl font-semibold text-slate-950">${escapeHtml(pkg.title)}</h4>
+        <div class="text-right shrink-0">
+          <span class="block text-lg font-bold text-tealbrand">${formatInr(pkg.price)}</span>
+          <span class="block text-[11px] line-through text-slate-400">${formatInr(pkg.mrp)}</span>
+        </div>
+      </div>
+      <p class="mt-2 flex-1 text-xs leading-5 text-slate-600">${escapeHtml(pkg.tests)}</p>
+      <p class="mt-2 text-[11px] font-semibold text-emerald-700">${escapeHtml(pkg.turnaround)}</p>
+      <button type="button" data-book-package="${escapeHtml(pkg.title)}" data-doctor="${escapeHtml(pkg.doctorId)}" class="mt-4 inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-mint border border-emerald-200 text-xs font-bold text-tealbrand hover:bg-emerald-100 transition">
+        Book Package · ${formatInr(pkg.price)}
+      </button>
+    </article>`).join("");
+}
+
 function renderFilters() {
   const groups = ["All", "General", "Pediatrics", "Skin", "Dental", "ENT", "Ortho", "Cardiology", "Gynecology"];
   $("#doctor-filters").innerHTML = groups.map((group) => {
@@ -346,12 +371,13 @@ function filteredDoctors() {
     if (state.group !== "All" && doctor.group !== state.group) return false;
     if (state.location === "Near Me" && doctor.location !== CareWellData.clinic.nearLocation) return false;
     if (state.location !== "All" && state.location !== "Near Me" && doctor.location !== state.location) return false;
-    if (state.fee === "under400" && doctor.fee >= 400) return false;
-    if (state.fee === "mid" && (doctor.fee < 400 || doctor.fee > 600)) return false;
-    if (state.fee === "high" && doctor.fee <= 600) return false;
+    if (state.fee === "under500" && doctor.fee > 500) return false;
+    if (state.fee === "mid" && (doctor.fee < 500 || doctor.fee > 700)) return false;
+    if (state.fee === "high" && doctor.fee <= 700) return false;
+    if (state.gender === "Female" && doctor.gender !== "Female") return false;
     if (state.availability === "today" && !hasOpenSeat(doctor, today)) return false;
     if (state.availability === "tomorrow" && !hasOpenSeat(doctor, tomorrow)) return false;
-    if (query && !`${doctor.name} ${doctor.specialty} ${doctor.group}`.toLowerCase().includes(query)) return false;
+    if (query && !`${doctor.name} ${doctor.specialty} ${doctor.group} ${(doctor.languages || []).join(" ")}`.toLowerCase().includes(query)) return false;
     return true;
   });
 }
@@ -377,7 +403,7 @@ function renderDoctors() {
               <span class="text-tealbrand text-xs" title="Verified Medical Practitioner"></span>
             </div>
             <p class="mt-0.5 text-xs font-semibold text-tealbrand">${escapeHtml(doctor.specialty)} · <span class="text-slate-500 font-normal">${escapeHtml(doctor.location || "Pune")}</span></p>
-            <p class="text-[11px] font-medium text-slate-400 mt-0.5">${escapeHtml(doctor.qualifications)}</p>
+            <p class="text-[11px] font-medium text-slate-400 mt-0.5">${escapeHtml(doctor.qualifications)}${doctor.regNo ? ` · Reg: ${escapeHtml(doctor.regNo)}` : ""}</p>
           </div>
         </div>
         <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shrink-0">
@@ -438,7 +464,10 @@ function renderSteps() {
 function renderStories() {
   $("#story-grid").innerHTML = CareWellData.testimonials.map((story) => `
     <figure class="ux-card-hover flex h-full flex-col rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm">
-      <span class="icon icon-quote text-tealbrand"></span>
+      <div class="flex items-center justify-between">
+        <span class="icon icon-quote text-tealbrand"></span>
+        <span class="text-amber-500 text-xs font-bold">${"★".repeat(story.rating || 5)}</span>
+      </div>
       <blockquote class="mt-3 flex-1 text-base leading-7 text-slate-800">“${escapeHtml(story.quote)}”</blockquote>
       <figcaption class="mt-5 text-sm">
         <span class="font-semibold text-slate-900">${escapeHtml(story.name)}</span>
@@ -563,11 +592,12 @@ function renderVisit() {
       </div>
     `).join("");
   }
-  $("#visit-hours").innerHTML = clinic.hours.map((row) => `
-    <div class="flex justify-between gap-4">
-      <dt>${escapeHtml(row.days)}</dt>
-      <dd class="font-medium text-slate-800">${escapeHtml(row.time)}</dd>
-    </div>`).join("");
+  const hoursSource = Array.isArray(clinic.weekHours) ? clinic.weekHours.map((w) => ({ days: w.day, time: w.time })) : clinic.hours;
+  $("#hours-list") && ($("#visit-hours").innerHTML = hoursSource.map((row) => `
+    <div class="flex justify-between gap-4 border-b border-emerald-50 pb-1">
+      <dt class="font-semibold text-slate-700">${escapeHtml(row.days)}</dt>
+      <dd class="font-medium text-slate-800 text-right">${escapeHtml(row.time)}</dd>
+    </div>`).join(""));
   $("#emergency-note").textContent = "Emergency symptoms — chest pain, saans ki takleef, heavy bleeding — pe clinic ka wait mat karo. Nearest emergency service use karo.";
   const tel = `tel:+91${clinic.phone}`;
   $("#visit-call").href = tel;
@@ -1136,6 +1166,23 @@ function bindEvents() {
       refreshIcons();
     }
 
+    const pkgBtn = event.target.closest("[data-book-package]");
+    if (pkgBtn) {
+      openBooking(pkgBtn.dataset.doctor || "", pkgBtn);
+      const reasonInput = $("#patient-reason");
+      if (reasonInput) reasonInput.value = `Package: ${pkgBtn.dataset.bookPackage}`;
+      return;
+    }
+
+    const genderBtn = event.target.closest("[data-gender]");
+    if (genderBtn) {
+      state.gender = state.gender === "Female" ? "All" : "Female";
+      genderBtn.classList.toggle("bg-tealbrand", state.gender === "Female");
+      genderBtn.classList.toggle("text-white", state.gender === "Female");
+      renderDoctors();
+      refreshIcons();
+    }
+
     const fee = event.target.closest("[data-fee]");
     if (fee) {
       state.fee = fee.dataset.fee;
@@ -1329,6 +1376,7 @@ function init() {
   renderNav();
   renderHero();
   renderServices();
+  renderPackages();
   renderFilters();
   renderDoctors();
   renderSteps();

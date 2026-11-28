@@ -712,9 +712,9 @@ function renderFooter() {
           20-Point Security Audit Report
         </button>
         <span>·</span>
-        <a href="#home" class="hover:text-white transition">Privacy Policy</a>
+        <a href="#home" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="hover:text-white transition">Privacy Policy</a>
         <span>·</span>
-        <a href="#home" class="hover:text-white transition">Terms of Service</a>
+        <a href="#home" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="hover:text-white transition">Terms of Service</a>
         <span>·</span>
         <a href="login.html" class="hover:text-white transition">Staff Portals</a>
       </div>
@@ -1200,6 +1200,7 @@ function bindEvents() {
     $("#enquiry-phone").value = phoneDigits($("#enquiry-phone").value);
   });
   $("#booking-close").addEventListener("click", closeBooking);
+  $("#booking-success-close")?.addEventListener("click", closeBooking);
   $("#booking-backdrop").addEventListener("click", closeBooking);
   $("#success-done").addEventListener("click", () => {
     closeBooking();
@@ -1274,6 +1275,21 @@ function bindEvents() {
       if (h2Queue) h2Queue.textContent = isEn ? "Live OPD Token Status" : "Queue abhi kahan hai?";
       const h2Bookings = document.querySelector("#bookings h2");
       if (h2Bookings) h2Bookings.textContent = isEn ? "Your Appointments" : "Aapki appointments";
+      const h2Steps = document.querySelector("#steps h2");
+      if (h2Steps) h2Steps.textContent = isEn ? "Three simple steps, then visit." : "Teeno steps, phir clinic.";
+      const h2Stories = document.querySelector("#stories h2");
+      if (h2Stories) h2Stories.textContent = isEn ? "What our patients say." : "Jo log aake gaye, unki baat.";
+      const h2Faq = document.querySelector("#faq h2");
+      if (h2Faq) h2Faq.textContent = isEn ? "Frequently asked questions" : "Pehle se pucha jaata hai";
+      const h2Visit = document.querySelector("#visit h2");
+      if (h2Visit) h2Visit.textContent = isEn ? "Where is the clinic?" : "Clinic kahan hai?";
+      const opdLabel = document.querySelector("#home aside p.text-sm.font-semibold");
+      if (opdLabel) opdLabel.textContent = isEn ? "Today's OPD" : "Aaj ki OPD";
+      const opdBtn = document.querySelector("#home aside button[data-open-booking]");
+      if (opdBtn) opdBtn.textContent = isEn ? "Book a slot at this clinic" : "Isi clinic ka slot lo";
+      document.querySelectorAll("#service-grid button[data-jump-specialty]").forEach((b) => {
+        b.innerHTML = `${isEn ? "View Doctors" : "Doctors dekho"} <span class="icon icon-arrow-right"></span>`;
+      });
     };
     if (currentLang === "en") applyLang("en");
     langToggle.addEventListener("click", () => {

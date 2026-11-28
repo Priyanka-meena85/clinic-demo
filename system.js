@@ -172,7 +172,7 @@
               <p class="text-xs text-slate-500">${sEscapeHtml(doctor.specialty)} · ${sEscapeHtml(doctor.timing || "Monday to Saturday")}</p>
             </div>
             <div>
-              <label class="text-xs font-semibold text-slate-600 block mb-1">Doctor badlein</label>
+              <label for="queue-doctor-select" class="text-xs font-semibold text-slate-600 block mb-1">Doctor badlein</label>
               <select id="queue-doctor-select" class="h-10 px-3 text-sm rounded-xl border border-emerald-200 bg-white outline-none">
                 ${CareWellData.doctors.map((d) => `<option value="${d.id}" ${d.id === qState.doctorId ? "selected" : ""}>${sEscapeHtml(d.name)} (${sEscapeHtml(d.specialty)})</option>`).join("")}
               </select>
@@ -264,7 +264,7 @@
           <div class="mt-5 pt-4 border-t border-emerald-100">
             <label class="text-xs font-semibold text-slate-700 block mb-1.5">Kisi doosre token / phone ka status dekhein</label>
             <div class="flex gap-2">
-              <input id="queue-lookup-input" type="text" placeholder="Token No (jaise 12) ya Mobile" class="h-11 px-3.5 text-sm flex-1 rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+              <input id="queue-lookup-input" type="text" aria-label="Token number or mobile number" placeholder="Token No (jaise 12) ya Mobile" class="h-11 px-3.5 text-sm flex-1 rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
               <button id="queue-lookup-btn" type="button" class="h-11 px-5 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700">Check</button>
             </div>
             <p id="queue-lookup-result" class="text-xs mt-2 font-medium text-tealbrand hidden"></p>
@@ -2137,7 +2137,7 @@
 
     openAICallModal(initialQuestion = "") {
       const modalHtml = `
-        <div class="p-5 sm:p-7 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white rounded-3xl relative overflow-hidden flex flex-col max-h-[88vh]" id="ai-voice-modal-content">
+        <div class="p-4 sm:p-6 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white rounded-3xl relative overflow-hidden flex flex-col max-h-[84vh]" id="ai-voice-modal-content">
           <!-- Modal Header -->
           <div class="flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
             <div class="flex items-center gap-3">
@@ -2189,7 +2189,7 @@
           </div>
 
           <!-- Scrollable Chat Messages Stream -->
-          <div id="ai-chat-messages" class="flex-1 overflow-y-auto space-y-3.5 pr-1 my-2 text-xs leading-relaxed min-h-[220px] max-h-[360px]">
+          <div id="ai-chat-messages" class="flex-1 overflow-y-auto space-y-3 pr-1 my-2 text-xs leading-relaxed min-h-[150px] max-h-[250px]">
             <!-- Initial Greeting from AI -->
             <div class="flex gap-2.5 items-start">
               <span class="w-7 h-7 rounded-full bg-tealbrand text-white flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold shadow-xs">
@@ -2244,7 +2244,7 @@
               </button>
 
               <div class="relative flex-1">
-                <input id="ai-custom-q-input" type="text" placeholder="Apna sawal likhein ya mic dabayein..." class="h-10 w-full pl-3.5 pr-10 text-xs rounded-xl bg-white/10 border border-white/20 text-white outline-none focus:border-emerald-400 placeholder:text-slate-400 font-medium">
+                <input id="ai-custom-q-input" type="text" aria-label="Ask AI Assistant" placeholder="Apna sawal likhein ya mic dabayein..." class="h-10 w-full pl-3.5 pr-10 text-xs rounded-xl bg-white/10 border border-white/20 text-white outline-none focus:border-emerald-400 placeholder:text-slate-400 font-medium">
                 <button id="btn-input-mic" type="button" class="absolute right-2 top-2 text-slate-400 hover:text-emerald-400 transition cursor-pointer" title="Speak via voice">
                   <span class="icon icon-mic icon-xs"></span>
                 </button>

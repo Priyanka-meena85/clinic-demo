@@ -200,12 +200,12 @@
         return `
           <form id="form-auth-patient-login" class="space-y-4 text-xs">
             <div>
-              <label class="font-semibold text-slate-700 block mb-1">Mobile Number (10 Digits)</label>
-              <input id="in-pat-phone" type="tel" maxlength="10" placeholder="Jaise 9811111111" value="9811111111" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+              <label for="in-pat-phone" class="font-semibold text-slate-700 block mb-1">Mobile Number (10 Digits)</label>
+              <input id="in-pat-phone" type="tel" autocomplete="tel" maxlength="10" placeholder="Jaise 9811111111" value="9811111111" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
             </div>
             <div>
-              <label class="font-semibold text-slate-700 block mb-1">OTP Code / Password (Demo: 1234)</label>
-              <input id="in-pat-otp" type="password" maxlength="6" value="1234" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+              <label for="in-pat-otp" class="font-semibold text-slate-700 block mb-1">OTP Code / Password (Demo: 1234)</label>
+              <input id="in-pat-otp" type="password" autocomplete="current-password" maxlength="6" value="1234" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
             </div>
             <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs flex items-center justify-center gap-1.5">
               <span>Patient Portal Login</span>
@@ -656,12 +656,12 @@
         }
 
         authSlot.innerHTML = `
-          <div class="flex items-center gap-1.5">
-            <a href="${portalUrl}" class="inline-flex items-center gap-1.5 h-10 px-3 rounded-full border border-emerald-200 bg-mint text-tealbrand text-xs font-bold hover:bg-emerald-100 transition shadow-2xs" title="Open Your ${roleBadge} Workspace">
+          <div class="flex items-center gap-1 shrink-0 whitespace-nowrap">
+            <a href="${portalUrl}" class="inline-flex items-center gap-1.5 h-10 px-3 rounded-full border border-emerald-200 bg-mint text-tealbrand text-xs font-bold hover:bg-emerald-100 transition shadow-2xs whitespace-nowrap" title="Open Your ${roleBadge} Workspace">
               <span class="icon ${iconClass} text-tealbrand"></span>
-              <span>${escapeHtml(user.name.split(" ")[0])} (${roleBadge})</span>
+              <span class="hidden sm:inline">${escapeHtml(user.name.split(" ")[0])} (${roleBadge})</span>
             </a>
-            <button type="button" onclick="window.CareWellAuth.logout()" class="h-10 px-2 rounded-full text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition" title="Logout">
+            <button type="button" onclick="window.CareWellAuth.logout()" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition shrink-0" title="Logout" aria-label="Logout">
               <span class="icon icon-close text-slate-500"></span>
             </button>
           </div>

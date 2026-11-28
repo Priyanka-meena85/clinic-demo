@@ -76,12 +76,12 @@
 
       <form id="form-admin-login" class="mt-6 space-y-4 text-left text-xs">
         <div>
-          <label class="font-semibold text-slate-700 block mb-1">Username / ID</label>
-          <input id="admin-username" type="text" value="admin@carewell" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <label for="admin-username" class="font-semibold text-slate-700 block mb-1">Username / ID</label>
+          <input id="admin-username" type="text" autocomplete="username" value="admin@carewell" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <div>
-          <label class="font-semibold text-slate-700 block mb-1">Password</label>
-          <input id="admin-password" type="password" value="carewell123" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <label for="admin-password" class="font-semibold text-slate-700 block mb-1">Password</label>
+          <input id="admin-password" type="password" autocomplete="current-password" value="carewell123" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
           Login to Admin Portal

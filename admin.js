@@ -59,12 +59,18 @@
   function bindAuth() {
     $("#form-admin-login")?.addEventListener("submit", (e) => {
       e.preventDefault();
+      if (window.CareWellSecurity && window.CareWellSecurity.isRateLimited("admin-login")) {
+        showToast("Security Lockout: Too many failed login attempts. Wait 15 min.");
+        return;
+      }
       const username = ($("#admin-username")?.value || "").trim();
       const password = ($("#admin-password")?.value || "").trim();
       if (username !== "admin@carewell" || password !== "carewell123") {
+        if (window.CareWellSecurity) window.CareWellSecurity.recordFailedAttempt("admin-login");
         showToast("Invalid Admin credentials! Demo: admin@carewell / carewell123");
         return;
       }
+      if (window.CareWellSecurity) window.CareWellSecurity.resetRateLimit("admin-login");
       isAdminLoggedIn = true;
       localStorage.setItem("carewell_admin_auth", "true");
       if (window.CareWellApi) {
@@ -243,7 +249,10 @@
               <p class="text-xs text-slate-500">Comprehensive appointments table with status controls and reminders</p>
             </div>
             <div class="flex items-center gap-2">
-              <input id="admin-search-input" type="text" placeholder="Search patient or phone..." class="h-9 px-3 text-xs rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+              <input id="admin-search-input" type="text" aria-label="Search patient or phone" placeholder="Search patient or phone..." class="h-9 px-3 text-xs rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+              <button type="button" onclick="window.CareWellAdmin.exportAppointmentsCsv()" class="h-9 px-3 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 whitespace-nowrap">
+                Export CSV
+              </button>
             </div>
           </div>
 
@@ -345,7 +354,7 @@
                 </div>
                 <div class="mt-3 flex items-center justify-between text-xs">
                   <span class="text-slate-600">Digital Vault: Active Rx & Lab History</span>
-                  <a href="index.html#portal" class="text-tealbrand font-semibold hover:underline">
+                  <a href="patient.html" class="text-tealbrand font-semibold hover:underline">
                     View in Patient Portal →
                   </a>
                 </div>
@@ -1020,6 +1029,39 @@
         showToast(`Walk-in Token #${tokenNo} (${bookingId}) issued for ${patientName}!`);
         renderTabContent();
       });
+    },
+
+    exportAppointmentsCsv() {
+      const appointments = readJson("carewell_appointments", []);
+      if (!appointments.length) {
+        showToast("No appointments to export.");
+        return;
+      }
+      const rows = [["BookingID", "Token", "Patient", "Phone", "Doctor", "Date", "Slot", "Payment", "Status"]];
+      appointments.forEach((a) => {
+        rows.push([
+          a.bookingId || a.token || "",
+          a.tokenNo || "",
+          a.patientName || "",
+          a.phone || "",
+          a.doctorId || "",
+          a.date || "",
+          a.slot || "",
+          a.paymentMode || "Pay at Clinic",
+          a.status || "confirmed"
+        ]);
+      });
+      const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `carewell-appointments-${new Date().toISOString().split("T")[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      showToast("Appointments CSV downloaded!");
     }
   };
 

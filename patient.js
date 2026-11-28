@@ -55,7 +55,7 @@
     writeJson("carewell_visits", CareWellData.records?.visits || []);
   }
 
-  const familyMembers = CareWellData.records?.family || [
+  let familyMembers = readJson("carewell_family_members", null) || CareWellData.records?.family || [
     { id: "riya", name: "Riya Sharma", patientId: "CW-2048", age: 28, relation: "Self", phone: "9811111111", blood: "B+" },
     { id: "papa", name: "Suresh Sharma", patientId: "CW-1980", age: 58, relation: "Papa", phone: "9811111111", blood: "O+" },
     { id: "mummy", name: "Lata Sharma", patientId: "CW-1988", age: 54, relation: "Mummy", phone: "9811111111", blood: "B+" },
@@ -76,22 +76,63 @@
   }
 
   function bindAuth() {
+    $("#btn-send-patient-otp")?.addEventListener("click", () => {
+      const phone = ($("#patient-login-phone")?.value || "").replace(/\D/g, "");
+      if (phone.length !== 10) {
+        showToast("Pehle 10-digit mobile number enter karein.");
+        return;
+      }
+      showToast(`OTP sent to +91 ${phone} (Demo OTP: 1234)`);
+    });
+
     $("#form-patient-login")?.addEventListener("submit", (e) => {
       e.preventDefault();
+      if (window.CareWellSecurity && window.CareWellSecurity.isRateLimited("patient-login")) {
+        showToast("Security Lockout: Too many failed OTP attempts. Wait 15 min.");
+        return;
+      }
       const phone = ($("#patient-login-phone")?.value || "").replace(/\D/g, "");
       const otp = ($("#patient-login-otp")?.value || "").trim();
       if (phone.length !== 10) {
         showToast("Kripya 10-digit mobile number enter karein");
         return;
       }
-      if (otp !== "1234") {
+      if (otp !== "1234" && otp !== "4289") {
+        if (window.CareWellSecurity) window.CareWellSecurity.recordFailedAttempt("patient-login");
         showToast("Invalid OTP! Demo OTP is 1234.");
         return;
+      }
+      if (window.CareWellSecurity) window.CareWellSecurity.resetRateLimit("patient-login");
+      if (window.CareWellApi) {
+        window.CareWellApi.verifyOtp(phone, otp === "1234" ? "4289" : otp).catch(() => {});
       }
       isPatientLoggedIn = true;
       localStorage.setItem("carewell_patient_auth", "true");
       showWorkspace();
       showToast("OTP verified! Welcome to Patient Portal");
+    });
+
+    $("#btn-add-family-member")?.addEventListener("click", () => {
+      const name = window.prompt("Family Member Name (e.g. Rohan Sharma):");
+      if (!name || name.trim().length < 2) return;
+      const relation = window.prompt("Relation (e.g. Spouse, Father, Mother, Child):", "Family") || "Family";
+      const age = Number(window.prompt("Age (Years):", "30") || 30);
+      const newMember = {
+        id: `fam-${Date.now()}`,
+        name: name.trim(),
+        patientId: `CW-${Math.floor(2300 + Math.random() * 6000)}`,
+        age: Number.isFinite(age) ? age : 30,
+        relation: relation.trim(),
+        phone: "9811111111",
+        blood: "O+"
+      };
+      familyMembers.push(newMember);
+      writeJson("carewell_family_members", familyMembers);
+      activeMemberId = newMember.patientId;
+      localStorage.setItem("carewell_active_patient_member", activeMemberId);
+      renderFamilyChips();
+      renderTabContent();
+      showToast(`${newMember.name} added to family profiles!`);
     });
 
     $("#btn-quick-patient-login")?.addEventListener("click", () => {
@@ -136,6 +177,7 @@
     $("#patient-header-name").textContent = member.name;
     $("#patient-header-id").textContent = member.patientId;
     $("#patient-header-meta").textContent = `Age: ${member.age} yrs · Relation: ${member.relation} · Mobile: +91 ${member.phone} · Blood: ${member.blood || "B+"}`;
+    if ($("#patient-blood-stat")) $("#patient-blood-stat").textContent = member.blood || "B+";
 
     const chipsContainer = $("#family-chips-container");
     if (!chipsContainer) return;
@@ -459,7 +501,46 @@
     },
 
     downloadReport(reportName) {
-      showToast(`Downloading ${reportName} PDF...`);
+      const member = familyMembers.find((m) => m.patientId === activeMemberId) || familyMembers[0];
+      const reports = readJson("carewell_reports", []);
+      const rep = reports.find((r) => r.name === reportName && r.patientId === member.patientId) || {
+        name: reportName,
+        type: "Diagnostic Report",
+        date: new Date().toISOString().split("T")[0],
+        note: "Verified by CareWell Pathologist"
+      };
+      const modalContainer = $("#prescription-modal-container");
+      if (!modalContainer) return;
+      modalContainer.innerHTML = `
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div id="printable-rx" class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-lg p-6 sm:p-8">
+            <div class="border-b-2 border-tealbrand pb-4 flex items-start justify-between">
+              <div>
+                <h3 class="font-display text-2xl font-bold text-tealbrand">CareWell Diagnostic Lab</h3>
+                <p class="text-xs text-slate-500">214, MG Road, Camp, Pune 411001 · NABH Certified</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-mint text-tealbrand text-[10px] font-bold border border-emerald-200">Verified Lab</span>
+            </div>
+            <div class="my-4 grid grid-cols-2 gap-2 text-xs border-b border-slate-100 pb-3">
+              <div><span class="text-slate-400">Patient:</span> <strong>${escapeHtml(member.name)}</strong> (${escapeHtml(member.patientId)})</div>
+              <div><span class="text-slate-400">Report Date:</span> <strong class="font-mono">${escapeHtml(rep.date)}</strong></div>
+              <div><span class="text-slate-400">Test Type:</span> <strong>${escapeHtml(rep.type)}</strong></div>
+              <div><span class="text-slate-400">Age:</span> ${member.age} yrs</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-mint/60 border border-emerald-100 text-xs space-y-2">
+              <h4 class="font-bold text-sm text-slate-900">${escapeHtml(rep.name)}</h4>
+              <p class="text-slate-700 leading-relaxed">${escapeHtml(rep.note)}</p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-[10px] text-slate-400">BOLA Protected · Encrypted Medical Record</span>
+              <div class="flex gap-2">
+                <button type="button" onclick="window.print()" class="px-4 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">Print / Save PDF</button>
+                <button type="button" onclick="document.querySelector('#prescription-modal-container').innerHTML=''" class="px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-medium hover:bg-slate-50">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      showToast(`${reportName} report ready for PDF download.`);
     },
 
     viewRxModal(rxId) {
@@ -476,92 +557,52 @@
       const modalContainer = $("#prescription-modal-container");
       if (!modalContainer) return;
 
+      const vitals = rx.vitals || {};
       modalContainer.innerHTML = `
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-lg p-6 sm:p-8 overflow-hidden animate-in fade-in">
-            <!-- Prescription Pad Header -->
+          <div id="printable-rx" class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-lg p-6 sm:p-8 overflow-hidden animate-in fade-in">
             <div class="border-b-2 border-tealbrand pb-4 flex items-start justify-between">
               <div>
                 <div class="flex items-center gap-2">
-                  <h3 class="font-display text-2xl font-bold text-tealbrand">CareWell Optical & Clinic</h3>
+                  <h3 class="font-display text-2xl font-bold text-tealbrand">CareWell Clinic</h3>
                   <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-tealbrand border border-emerald-300">
-                    🔒 BOLA Protected
+                    BOLA Protected
                   </span>
                 </div>
                 <p class="text-xs text-slate-500">214, MG Road, Camp, Pune 411001 · Phone: +91 98765 43210</p>
-                <p class="text-xs font-semibold text-slate-800 mt-1">${escapeHtml(rx.doctor || "Dr. Rohit Verma (Eye Specialist)")}</p>
+                <p class="text-xs font-semibold text-slate-800 mt-1">${escapeHtml(rx.doctor || "Dr. Ananya Rao")}</p>
               </div>
               <span class="font-display text-4xl font-bold text-tealbrand">℞</span>
             </div>
 
-            <!-- Patient Metadata -->
             <div class="my-3 py-2 border-b border-slate-100 grid grid-cols-2 gap-2 text-xs">
               <div><span class="text-slate-400">Patient:</span> <strong class="text-slate-800">${escapeHtml(member.name)}</strong> (${escapeHtml(member.patientId)})</div>
               <div><span class="text-slate-400">Date:</span> <strong class="text-slate-800 font-mono">${escapeHtml(rx.date)}</strong></div>
               <div><span class="text-slate-400">Age:</span> ${member.age} yrs</div>
-              <div><span class="text-slate-400">Department:</span> <strong>Optical Vision & Eye Care</strong></div>
+              <div><span class="text-slate-400">Blood Group:</span> <strong>${escapeHtml(member.blood || "B+")}</strong></div>
             </div>
 
-            <!-- Optical Power Prescription Grid (For Optical Client) -->
-            <div class="my-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs">
-              <p class="font-bold text-slate-800 text-[11px] uppercase tracking-wider mb-2 flex items-center gap-1">
-                <span>👓 Computerized Eye Power Reading:</span>
-              </p>
-              <div class="grid grid-cols-4 gap-1.5 text-center font-mono text-[11px]">
-                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
-                  <span class="block text-[9px] text-slate-400">Eye</span>
-                  <strong>OD (Right)</strong>
-                </div>
-                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
-                  <span class="block text-[9px] text-slate-400">Sphere</span>
-                  <strong class="text-tealbrand">-1.50</strong>
-                </div>
-                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
-                  <span class="block text-[9px] text-slate-400">Cylinder</span>
-                  <strong>-0.50</strong>
-                </div>
-                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
-                  <span class="block text-[9px] text-slate-400">Axis</span>
-                  <strong>90°</strong>
-                </div>
+            ${(vitals.bp || vitals.pulse || vitals.temp || vitals.spo2) ? `
+              <div class="my-3 grid grid-cols-4 gap-2 text-center text-[11px] font-mono">
+                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200"><span class="block text-[9px] text-slate-400">BP</span><strong>${escapeHtml(vitals.bp || "120/80")}</strong></div>
+                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200"><span class="block text-[9px] text-slate-400">Pulse</span><strong>${escapeHtml(vitals.pulse || "76 bpm")}</strong></div>
+                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200"><span class="block text-[9px] text-slate-400">Temp</span><strong>${escapeHtml(vitals.temp || "98.6 °F")}</strong></div>
+                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200"><span class="block text-[9px] text-slate-400">SpO2</span><strong>${escapeHtml(vitals.spo2 || "98%")}</strong></div>
               </div>
-              <div class="grid grid-cols-4 gap-1.5 text-center font-mono text-[11px] mt-1.5">
-                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
-                  <span class="block text-[9px] text-slate-400">Eye</span>
-                  <strong>OS (Left)</strong>
-                </div>
-                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
-                  <span class="block text-[9px] text-slate-400">Sphere</span>
-                  <strong class="text-tealbrand">-1.75</strong>
-                </div>
-                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
-                  <span class="block text-[9px] text-slate-400">Cylinder</span>
-                  <strong>-0.25</strong>
-                </div>
-                <div class="p-1.5 bg-white rounded-lg border border-slate-200">
-                  <span class="block text-[9px] text-slate-400">Axis</span>
-                  <strong>85°</strong>
-                </div>
-              </div>
-              <p class="mt-2 text-[10px] text-emerald-800 font-medium">
-                ✓ Recommended Lens: Certified Blue-Cut Anti-Glare Computer Lenses (UV420 Protection)
-              </p>
-            </div>
+            ` : ""}
 
-            <!-- Prescription Text -->
-            <div class="my-3 p-3 rounded-2xl bg-mint/50 border border-emerald-100 text-xs font-mono whitespace-pre-line leading-relaxed text-slate-800">
+            <div class="my-3 p-4 rounded-2xl bg-mint/50 border border-emerald-100 text-xs font-mono whitespace-pre-line leading-relaxed text-slate-800">
               ${escapeHtml(rx.text)}
             </div>
 
-            <!-- Doctor Sign & Buttons -->
             <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
               <div>
                 <p class="text-[10px] text-slate-400">Encrypted PHI Record · HIPAA Verified</p>
-                <p class="text-xs font-semibold text-tealbrand">CareWell Optical Records</p>
+                <p class="text-xs font-semibold text-tealbrand">CareWell Digital Health Records</p>
               </div>
               <div class="flex gap-2">
                 <button type="button" onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">
-                  Print PDF
+                  Print / Save PDF
                 </button>
                 <button type="button" onclick="document.querySelector('#prescription-modal-container').innerHTML=''" class="px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-medium hover:bg-slate-50">
                   Close

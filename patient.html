@@ -67,12 +67,15 @@
 
       <form id="form-patient-login" class="mt-6 space-y-4 text-left text-xs">
         <div>
-          <label class="font-semibold text-slate-700 block mb-1">Mobile Number (10 Digits)</label>
-          <input id="patient-login-phone" type="tel" value="9811111111" maxlength="10" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <label for="patient-login-phone" class="font-semibold text-slate-700 block mb-1">Mobile Number (10 Digits)</label>
+          <input id="patient-login-phone" type="tel" autocomplete="tel" value="9811111111" maxlength="10" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <div>
-          <label class="font-semibold text-slate-700 block mb-1">OTP Code (Demo: 1234)</label>
-          <input id="patient-login-otp" type="text" value="1234" maxlength="4" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <div class="flex items-center justify-between mb-1">
+            <label for="patient-login-otp" class="font-semibold text-slate-700">OTP Code (Demo: 1234)</label>
+            <button type="button" id="btn-send-patient-otp" class="text-[11px] font-bold text-tealbrand hover:underline">Send OTP</button>
+          </div>
+          <input id="patient-login-otp" type="password" autocomplete="one-time-code" value="1234" maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
           Verify OTP & Open Portal
@@ -118,13 +121,42 @@
 
         <!-- Family Profiles Switcher -->
         <div class="mt-5 pt-4 border-t border-emerald-200/60">
-          <p class="text-xs font-semibold text-tealbrand mb-2 flex items-center gap-1.5">
-            <span class="icon icon-check"></span>
-            Family Profile Switcher (Ek Login me 4 Family Members):
-          </p>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <p class="text-xs font-semibold text-tealbrand flex items-center gap-1.5">
+              <span class="icon icon-check"></span>
+              Family Profile Switcher (Ek Login me Family Members):
+            </p>
+            <button type="button" id="btn-add-family-member" class="px-3 py-1 rounded-xl bg-white border border-emerald-200 text-tealbrand text-xs font-bold hover:bg-emerald-50 transition">
+              + Add Family Member
+            </button>
+          </div>
           <div id="family-chips-container" class="flex flex-wrap gap-2">
             <!-- Rendered dynamically -->
           </div>
+        </div>
+      </div>
+
+      <!-- Patient Health Snapshot Strip -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div class="p-4 rounded-2xl bg-white border border-emerald-100 shadow-xs">
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">Last Blood Pressure</span>
+          <strong class="text-base font-display text-slate-900 mt-1 block">120 / 80 mmHg</strong>
+          <span class="text-[11px] text-emerald-700 font-medium">Normal Range</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-emerald-100 shadow-xs">
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">Blood Group</span>
+          <strong id="patient-blood-stat" class="text-base font-display text-tealbrand mt-1 block">B+</strong>
+          <span class="text-[11px] text-slate-500">Verified Record</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-emerald-100 shadow-xs">
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">Known Allergies</span>
+          <strong class="text-base font-display text-slate-900 mt-1 block">No Known Drug Allergy</strong>
+          <span class="text-[11px] text-slate-500">Updated by Physician</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-emerald-100 shadow-xs">
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">Security Status</span>
+          <strong class="text-base font-display text-tealbrand mt-1 block">BOLA / OTP Protected</strong>
+          <span class="text-[11px] text-emerald-700 font-medium">Encrypted PHI Session</span>
         </div>
       </div>
 

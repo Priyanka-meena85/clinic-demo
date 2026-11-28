@@ -69,11 +69,17 @@
   function bindAuth() {
     $("#form-doc-login")?.addEventListener("submit", (e) => {
       e.preventDefault();
+      if (window.CareWellSecurity && window.CareWellSecurity.isRateLimited("doctor-login")) {
+        showToast("Security Lockout: Too many failed PIN attempts. Wait 15 min.");
+        return;
+      }
       const pin = ($("#doc-pin-input")?.value || "").trim();
       if (pin !== "1234") {
+        if (window.CareWellSecurity) window.CareWellSecurity.recordFailedAttempt("doctor-login");
         showToast("Invalid Doctor PIN! Demo PIN is 1234.");
         return;
       }
+      if (window.CareWellSecurity) window.CareWellSecurity.resetRateLimit("doctor-login");
       const sel = $("#doc-select-profile");
       activeDoctorId = sel ? sel.value : "ananya-rao";
       localStorage.setItem("carewell_doctor_auth_id", activeDoctorId);
@@ -108,6 +114,40 @@
     $("#form-doc-rx")?.addEventListener("submit", (e) => {
       e.preventDefault();
       handleSaveRx();
+    });
+
+    const rxTemplates = {
+      fever: {
+        diagnosis: "Acute Viral Fever",
+        meds: "1. Tab Paracetamol 650mg SOS / TDS x 3 days\n2. Tab Pantocid 40mg OD before breakfast\n3. ORS Hydration 2L/day",
+        advice: "Rest, plenty of warm fluids. Review after 3 days if fever persists."
+      },
+      bp: {
+        diagnosis: "Essential Hypertension Follow-up",
+        meds: "1. Tab Telmisartan 40mg OD morning\n2. Low sodium diet (<5g salt/day)\n3. Daily 30-min brisk walk",
+        advice: "Monitor BP twice weekly. Repeat Lipid Profile in 3 months."
+      },
+      skin: {
+        diagnosis: "Allergic Contact Dermatitis",
+        meds: "1. Tab Levocetirizine 5mg HS x 5 days\n2. Mometasone Furoate 0.1% Cream BD thin layer\n3. Gentle fragrance-free moisturizer",
+        advice: "Avoid harsh soaps and direct sun exposure."
+      },
+      child: {
+        diagnosis: "Pediatric Upper Respiratory Infection",
+        meds: "1. Syp Paracetamol 250mg/5ml — 5ml SOS for fever\n2. Saline Nasal Drops 2 drops each nostril TDS\n3. Warm fluids & steam inhalation",
+        advice: "Bring vaccination card on next follow-up."
+      }
+    };
+
+    $$("[data-rx-tpl]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tpl = rxTemplates[btn.dataset.rxTpl];
+        if (!tpl) return;
+        if ($("#rx-doc-diagnosis")) $("#rx-doc-diagnosis").value = tpl.diagnosis;
+        if ($("#rx-doc-medicines")) $("#rx-doc-medicines").value = tpl.meds;
+        if ($("#rx-doc-advice")) $("#rx-doc-advice").value = tpl.advice;
+        showToast("Prescription template loaded.");
+      });
     });
   }
 
@@ -224,7 +264,13 @@
       return;
     }
 
-    const fullRxText = `${diagnosis ? `Diagnosis: ${diagnosis}\n\n` : ""}Medicines:\n${medicines}\n\nAdvice: ${advice}`;
+    const fullRxText = `${diagnosis ? `Diagnosis: ${diagnosis}\n\n` : ""}Medicines:\n${medicines}\n\nLab Tests: ${$("#rx-lab-tests")?.value || "None"}\nAdvice: ${advice}`;
+    const vitals = {
+      bp: $("#rx-vitals-bp")?.value.trim() || "120/80 mmHg",
+      pulse: $("#rx-vitals-pulse")?.value.trim() || "76 bpm",
+      temp: $("#rx-vitals-temp")?.value.trim() || "98.6 °F",
+      spo2: $("#rx-vitals-spo2")?.value.trim() || "98%"
+    };
 
     const rxList = readJson("carewell_prescriptions", []);
     rxList.unshift({
@@ -232,6 +278,7 @@
       patientId: "CW-2048",
       date: new Date().toISOString().split("T")[0],
       doctor: doctor.name,
+      vitals,
       text: fullRxText
     });
     writeJson("carewell_prescriptions", rxList);
@@ -269,7 +316,36 @@
     },
 
     viewCurrentPatientHistory() {
-      alert("Patient History (CW-2048):\n• 12 Nov: Fever Checkup (Dr. Ananya Rao)\n• 10 Nov: Chest X-Ray (Normal)\n• 05 Nov: Routine Checkup");
+      const modal = $("#doctor-modal-container");
+      if (!modal) return;
+      const visits = readJson("carewell_visits", []).filter((v) => v.patientId === "CW-2048");
+      const reports = readJson("carewell_reports", []).filter((r) => r.patientId === "CW-2048");
+      modal.innerHTML = `
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-lg p-6 sm:p-7">
+            <div class="flex items-center justify-between border-b border-emerald-100 pb-3">
+              <div>
+                <h3 class="font-display text-lg font-bold text-slate-900">Patient Clinical History (CW-2048)</h3>
+                <p class="text-xs text-slate-500">Previous OPD visits and lab diagnostics</p>
+              </div>
+              <button type="button" onclick="document.querySelector('#doctor-modal-container').innerHTML=''" class="h-9 w-9 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-100">×</button>
+            </div>
+            <div class="mt-4 space-y-4 text-xs max-h-[60vh] overflow-y-auto">
+              <div>
+                <h4 class="font-bold text-tealbrand uppercase tracking-wider text-[11px] mb-2">Recent Visits</h4>
+                <div class="space-y-1.5">
+                  ${visits.map((v) => `<div class="p-2.5 rounded-xl bg-mint/60 border border-emerald-100 flex justify-between"><span class="font-semibold text-slate-800">${escapeHtml(v.label)}</span><span class="font-mono text-slate-500">${escapeHtml(v.date)}</span></div>`).join("") || "<p class='text-slate-400'>No prior visits</p>"}
+                </div>
+              </div>
+              <div>
+                <h4 class="font-bold text-tealbrand uppercase tracking-wider text-[11px] mb-2">Lab &amp; Diagnostic Reports</h4>
+                <div class="space-y-1.5">
+                  ${reports.map((r) => `<div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200"><div class="flex justify-between font-semibold text-slate-900"><span>${escapeHtml(r.name)} (${escapeHtml(r.type)})</span><span class="font-mono text-slate-500">${escapeHtml(r.date)}</span></div><p class="text-slate-600 mt-0.5">${escapeHtml(r.note)}</p></div>`).join("") || "<p class='text-slate-400'>No lab reports</p>"}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
     },
 
     toggleLeave() {

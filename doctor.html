@@ -76,14 +76,14 @@
 
       <form id="form-doc-login" class="mt-6 space-y-4 text-left text-xs">
         <div>
-          <label class="font-semibold text-slate-700 block mb-1">Doctor Profile</label>
+          <label for="doc-select-profile" class="font-semibold text-slate-700 block mb-1">Doctor Profile</label>
           <select id="doc-select-profile" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 bg-white outline-none focus:border-tealbrand">
             <!-- Populated from data.js -->
           </select>
         </div>
         <div>
-          <label class="font-semibold text-slate-700 block mb-1">Doctor PIN (Demo: 1234)</label>
-          <input id="doc-pin-input" type="password" value="1234" maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <label for="doc-pin-input" class="font-semibold text-slate-700 block mb-1">Doctor PIN (Demo: 1234)</label>
+          <input id="doc-pin-input" type="password" autocomplete="current-password" value="1234" maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
           Open Doctor Workspace
@@ -198,7 +198,15 @@
               </div>
 
               <div>
-                <label class="font-semibold text-slate-700 block mb-1">Prescribed Medicines & Dosage Plan</label>
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                  <label for="rx-doc-medicines" class="font-semibold text-slate-700">Prescribed Medicines & Dosage Plan</label>
+                  <div class="flex flex-wrap gap-1">
+                    <button type="button" data-rx-tpl="fever" class="px-2 py-0.5 rounded-lg bg-mint border border-emerald-200 text-[10px] font-semibold text-tealbrand hover:bg-emerald-100">+ Fever</button>
+                    <button type="button" data-rx-tpl="bp" class="px-2 py-0.5 rounded-lg bg-mint border border-emerald-200 text-[10px] font-semibold text-tealbrand hover:bg-emerald-100">+ BP</button>
+                    <button type="button" data-rx-tpl="skin" class="px-2 py-0.5 rounded-lg bg-mint border border-emerald-200 text-[10px] font-semibold text-tealbrand hover:bg-emerald-100">+ Skin</button>
+                    <button type="button" data-rx-tpl="child" class="px-2 py-0.5 rounded-lg bg-mint border border-emerald-200 text-[10px] font-semibold text-tealbrand hover:bg-emerald-100">+ Child</button>
+                  </div>
+                </div>
                 <textarea id="rx-doc-medicines" rows="3" placeholder="1. Tab Paracetamol 650mg TDS x 3 days&#10;2. Tab Pantocid 40mg OD before breakfast&#10;3. ORS hydration" required class="w-full p-3 rounded-xl border border-emerald-200 outline-none focus:border-tealbrand font-mono text-xs"></textarea>
               </div>
 
@@ -293,6 +301,7 @@
   </footer>
 
   <div id="toast" class="fixed left-4 right-4 top-20 z-[60] hidden rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white shadow-lg sm:left-auto sm:right-6 sm:w-80" role="status"></div>
+  <div id="doctor-modal-container"></div>
 
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="data.js"></script>

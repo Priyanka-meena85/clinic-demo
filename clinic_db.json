@@ -307,6 +307,22 @@
   ],
   "prescriptions": [
     {
+      "id": "rx-1795864503342",
+      "patientId": "CW-2048",
+      "doctorId": "ananya-rao",
+      "doctorName": "Dr. Ananya Rao",
+      "date": "2026-11-28",
+      "diagnosis": "Viral",
+      "vitals": {
+        "bp": "120/80 mmHg",
+        "pulse": "72 bpm"
+      },
+      "medicines": [],
+      "labTests": [],
+      "notes": "Review in 3 days if symptoms persist",
+      "pdfUrl": "/api/prescriptions/rx-1795864503342/pdf"
+    },
+    {
       "id": "rx-1",
       "patientId": "CW-2048",
       "patientName": "Riya Sharma",

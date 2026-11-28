@@ -17,6 +17,24 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 
+// Zero-dependency .env loader
+(function loadEnvFile() {
+  try {
+    const envPath = path.join(__dirname, ".env");
+    if (!fs.existsSync(envPath)) return;
+    const lines = fs.readFileSync(envPath, "utf8").split(/\r?\n/);
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const idx = trimmed.indexOf("=");
+      if (idx <= 0) continue;
+      const key = trimmed.slice(0, idx).trim();
+      const val = trimmed.slice(idx + 1).trim();
+      if (!(key in process.env)) process.env[key] = val;
+    }
+  } catch (e) {}
+})();
+
 const PORT = process.env.PORT || 3000;
 const SEED_DB_FILE = path.join(__dirname, "clinic_db.json");
 const DB_FILE = process.env.VERCEL ? path.join("/tmp", "clinic_db.json") : SEED_DB_FILE;
@@ -1153,20 +1171,54 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  // UPI Advance Verification Endpoint
+  // UPI Advance Verification Endpoint (Supports Razorpay HMAC + Demo Fallback)
   if (pathname === "/api/payments/verify-upi" && req.method === "POST") {
     try {
-      const { bookingId, amount } = await parseJsonBody(req);
+      const { bookingId, amount, razorpay_order_id, razorpay_payment_id, razorpay_signature } = await parseJsonBody(req);
+      if (process.env.RAZORPAY_KEY_SECRET && razorpay_order_id && razorpay_payment_id && razorpay_signature) {
+        const expectedSig = crypto
+          .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+          .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+          .digest("hex");
+        if (expectedSig !== razorpay_signature) {
+          return sendJson(res, 400, { error: "Invalid Razorpay payment signature." });
+        }
+        return sendJson(res, 200, { success: true, bookingId, amount: Number(amount) || 100, upiRef: razorpay_payment_id, status: "paid", verified: true });
+      }
       const refId = `CW-UPI-${Date.now().toString().slice(-6)}`;
       return sendJson(res, 200, {
         success: true,
         bookingId: bookingId || "CW-NEW",
         amount: Number(amount) || 100,
         upiRef: refId,
-        status: "paid"
+        status: "paid",
+        mode: process.env.RAZORPAY_KEY_ID ? "live-ready" : "demo"
       });
     } catch (e) {
       return sendJson(res, 400, { error: e.message });
+    }
+  }
+
+  // Live AI Chat Bridge (Uses GEMINI_API_KEY / OPENAI_API_KEY if configured)
+  if (pathname === "/api/ai/chat" && req.method === "POST") {
+    try {
+      const { message } = await parseJsonBody(req);
+      if (!message) return sendJson(res, 400, { error: "message required" });
+      if (process.env.GEMINI_API_KEY && typeof fetch === "function") {
+        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: `You are CareWell Clinic's 24/7 Receptionist in Camp, Pune. Answer warmly in Hinglish/English. Patient says: ${message}` }] }]
+          })
+        });
+        const data = await resp.json();
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (reply) return sendJson(res, 200, { success: true, reply, provider: "gemini" });
+      }
+      return sendJson(res, 200, { success: true, provider: "local", reply: null });
+    } catch (e) {
+      return sendJson(res, 500, { error: e.message });
     }
   }
 

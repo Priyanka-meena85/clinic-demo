@@ -2968,11 +2968,15 @@
           `;
 
           if (actionBox) {
+            const waText = encodeURIComponent(`Namaste CareWell Clinic! Mera ${service} slot (${slot}) confirm hai. Name: ${name}, Phone: ${phone}.`);
+            const waNum = (CareWellData?.clinic?.whatsapp || "9876543210").replace(/\D/g, "");
             actionBox.innerHTML = `
-              <div class="flex gap-2 w-full">
-                <a href="patient.html" class="flex-1 py-2 rounded-xl bg-tealbrand text-white font-semibold text-xs text-center flex items-center justify-center gap-1 shadow-xs">
-                  <span>Open Patient Portal</span>
-                  <span class="icon icon-check"></span>
+              <div class="flex flex-wrap gap-2 w-full">
+                <a href="https://wa.me/91${waNum}?text=${waText}" target="_blank" rel="noopener" class="flex-1 py-2 px-3 rounded-xl bg-[#25D366] text-white font-semibold text-xs text-center flex items-center justify-center gap-1 shadow-xs hover:bg-[#1ebd5a]">
+                  <span>Open Real WhatsApp</span>
+                </a>
+                <a href="patient.html" class="flex-1 py-2 px-3 rounded-xl bg-tealbrand text-white font-semibold text-xs text-center flex items-center justify-center gap-1 shadow-xs">
+                  <span>Patient Portal</span>
                 </a>
                 <button type="button" onclick="window.CareWellSystem.closeAllModals()" class="px-4 py-2 rounded-xl bg-slate-200 text-slate-700 font-semibold text-xs">
                   Done

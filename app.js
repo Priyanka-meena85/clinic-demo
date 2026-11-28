@@ -765,9 +765,9 @@ function renderFooter() {
           20-Point Security Audit Report
         </button>
         <span>·</span>
-        <a href="#home" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="hover:text-white transition">Privacy Policy</a>
+        <a href="privacy.html" class="hover:text-white transition">Privacy Policy</a>
         <span>·</span>
-        <a href="#home" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="hover:text-white transition">Terms of Service</a>
+        <a href="terms.html" class="hover:text-white transition">Terms of Service</a>
         <span>·</span>
         <a href="login.html" class="hover:text-white transition">Staff Portals</a>
       </div>

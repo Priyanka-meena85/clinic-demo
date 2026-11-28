@@ -501,10 +501,7 @@ textarea:focus-visible {
 
 /* Floating AI Bot - Themed to CareWell Brand */
 .floating-ai-brand {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 45;
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.625rem;

@@ -2288,126 +2288,318 @@
         }
       });
 
-      // Clinical NLP Knowledge Base
-      const getClinicalAnswer = (rawQuery) => {
-        const q = String(rawQuery || "").toLowerCase();
+      // Conversational 24/7 Clinic Receptionist Brain
+      const aiSession = {
+        stage: "idle", // idle | awaiting_problem | awaiting_slot | awaiting_name | awaiting_phone
+        draft: {}
+      };
 
-        // 1. Fever / Bukhar / Cold / Viral / Dengue / Typhoid
-        if (q.includes("bukhar") || q.includes("fever") || q.includes("sardi") || q.includes("cough") || q.includes("khansi") || q.includes("viral") || q.includes("dengue") || q.includes("sugar") || q.includes("diabetes") || q.includes("kamzori") || q.includes("general")) {
-          return {
-            text: "General Medicine aur Bukhar ke liye hamare Senior Physician Dr. Ananya Rao (MBBS, MD) Monday se Saturday subah 9:00 AM se 1:00 PM tak OPD me baithti hain. Consultation fee ₹500 hai. Hydration rakhein aur OPD slot turant reserve karein.",
-            speech: "General Medicine aur Bukhar ke liye hamare Senior Physician Doctor Ananya Rao Monday se Saturday subah 9 se 1 baje tak available hain. Consultation fee 500 rupaye hai. Aap abhi slot book kar sakte hain."
-          };
+      const findDoctorFromQuery = (q) => {
+        const docs = CareWellData?.doctors || [];
+        // 1. Direct name match
+        for (const d of docs) {
+          const clean = d.name.replace(/^Dr\.\s*/i, "").toLowerCase();
+          const parts = clean.split(/\s+/);
+          if (parts.some((p) => p.length > 2 && q.includes(p))) return d;
         }
-
-        // 2. Pediatrics / Baccha / Baby / Child / Vaccines
-        if (q.includes("baccha") || q.includes("child") || q.includes("baby") || q.includes("pedia") || q.includes("vaccine") || q.includes("teething") || q.includes("teeka")) {
-          return {
-            text: "Bacchon ki health, fever aur vaccination ke liye Dr. Sameer Khan (MBBS, MD Pediatrics) Monday se Saturday shaam 4:00 PM se 7:00 PM tak clinic mein hote hain. Consultation fee ₹600 hai. Purana vaccination card zaroor saath laayein.",
-            speech: "Bacchon ki dekhbhaal aur vaccination ke liye Doctor Sameer Khan shaam 4 se 7 baje tak available hain. Fee 600 rupaye hai. Purana vaccine card saath laayein."
-          };
+        // 2. Symptom / specialty match
+        const rules = [
+          { id: "ananya-rao", keys: ["bukhar", "fever", "sardi", "cough", "khansi", "viral", "dengue", "sugar", "diabetes", "kamzori", "cold", "headache", "general", "physician", "body pain", "weakness"] },
+          { id: "sameer-khan", keys: ["baccha", "bacche", "child", "baby", "kid", "pedia", "vaccine", "teething", "teeka", "infant"] },
+          { id: "kabir-jain", keys: ["daant", "dent", "tooth", "teeth", "keeda", "cavity", "braces", "scaling", "gum", "masooda"] },
+          { id: "meera-iyer", keys: ["skin", "allergy", "rash", "acne", "pimple", "khujli", "baal", "hair", "derma", "chamdi"] },
+          { id: "leela-nair", keys: ["kaan", "naak", "gala", "throat", "ear", "sinus", "ent", "tonsil", "hearing", "nose"] },
+          { id: "arjun-patel", keys: ["haddi", "joint", "knee", "ghutne", "back pain", "kamar", "ortho", "fracture", "sprain", "shoulder", "neck"] },
+          { id: "vikram-shah", keys: ["heart", "dil", "chest", "bp", "blood pressure", "cardio", "ecg", "cholesterol", "palpitation"] },
+          { id: "neha-kulkarni", keys: ["gynec", "period", "pregnan", "women", "lady", "pcod", "pcos", "maternity", "stree"] }
+        ];
+        for (const r of rules) {
+          if (r.keys.some((k) => q.includes(k))) {
+            return docs.find((d) => d.id === r.id) || null;
+          }
         }
+        return null;
+      };
 
-        // 3. Dental / Daant / Toothache / Root Canal / Cavity
-        if (q.includes("daant") || q.includes("dent") || q.includes("tooth") || q.includes("teeth") || q.includes("keeda") || q.includes("cavity") || q.includes("braces") || q.includes("scaling")) {
-          return {
-            text: "Dental checkup, toothache aur root canal ke liye Dr. Kabir Jain (BDS, MDS) Monday se Saturday subah 10:00 AM se 2:00 PM tak available hain. Basic consultation fee sirf ₹350 hai. Clinic par digital dental X-ray ki suvidha bhi hai.",
-            speech: "Toothache aur dental checkup ke liye Doctor Kabir Jain subah 10 se dopahar 2 baje tak available hain. Consultation fee sirf 350 rupaye hai."
-          };
-        }
+      const finalizeChatBooking = (draft) => {
+        const todayIso = new Date().toISOString().split("T")[0];
+        const appts = sReadJson("carewell_appointments", []);
+        const usedTokens = appts.filter((a) => a.status !== "cancelled").map((a) => Number(a.tokenNo) || 0);
+        const tokenNo = Math.max(8, ...usedTokens, 0) + 1;
+        const bookingId = `CW-${String(2000 + (Date.now() % 7000)).padStart(4, "0")}`;
+        const doc = draft.doctor || (CareWellData?.doctors?.[0]);
 
-        // 4. Dermatology / Skin / Allergy / Rash / Acne / Pimples / Baal
-        if (q.includes("skin") || q.includes("allergy") || q.includes("rash") || q.includes("acne") || q.includes("pimple") || q.includes("khujli") || q.includes("baal") || q.includes("hair")) {
-          return {
-            text: "Skin allergy, acne aur rash ke liye Senior Dermatologist Dr. Meera Iyer (MBBS, MD Dermatology) Tuesday se Saturday subah 11:00 AM se 2:00 PM tak available hain. Consultation fee ₹700 hai.",
-            speech: "Skin allergy aur acne ke liye Doctor Meera Iyer Tuesday se Saturday subah 11 se 2 baje tak available hain. Consultation fee 700 rupaye hai."
-          };
-        }
+        appts.push({
+          id: `cw-ai-${Date.now()}`,
+          bookingId,
+          tokenNo,
+          token: bookingId,
+          patientName: draft.name,
+          phone: draft.phone,
+          age: "",
+          doctorId: doc ? doc.id : "ananya-rao",
+          date: todayIso,
+          slot: draft.slot || "9:00 AM (Priority)",
+          reason: draft.reason || "AI Receptionist Booking",
+          visitType: "New visit",
+          paymentMode: "Pay at Clinic",
+          status: "confirmed",
+          createdAt: new Date().toISOString()
+        });
+        sWriteJson("carewell_appointments", appts);
 
-        // 5. ENT / Kaan / Naak / Gala / Throat / Sinus / Hearing
-        if (q.includes("kaan") || q.includes("naak") || q.includes("gala") || q.includes("throat") || q.includes("ear") || q.includes("sinus") || q.includes("ent")) {
-          return {
-            text: "Kaan, naak aur gale ki bimari ke liye ENT Specialist Dr. Leela Nair (MBBS, MS ENT) Monday se Friday subah 9:00 AM se 12:30 PM tak clinic me hote hain. Consultation fee ₹650 hai.",
-            speech: "Kaan, naak aur gale ke liye ENT specialist Doctor Leela Nair subah 9 se 12:30 baje tak available hain. Fee 650 rupaye hai."
-          };
-        }
+        const outbox = sReadJson("carewell_outbox", []);
+        outbox.unshift({
+          id: `out-${Date.now()}`,
+          phone: draft.phone,
+          patient: draft.name,
+          kind: "AI Receptionist Booking",
+          text: `Namaste ${draft.name} ji! ${doc ? doc.name : "Doctor"} ke saath ${draft.slot || "9:00 AM"} slot confirm ho gaya hai. Token No: ${tokenNo} (${bookingId}).`,
+          status: "Delivered",
+          createdAt: new Date().toISOString()
+        });
+        sWriteJson("carewell_outbox", outbox.slice(0, 40));
+        renderWhatsAppPanel();
+        document.dispatchEvent(new Event("carewell:bookings-updated"));
 
-        // 6. Orthopedics / Haddi / Joint / Knee / Ghutne / Back pain / Kamar dard
-        if (q.includes("haddi") || q.includes("joint") || q.includes("knee") || q.includes("ghutne") || q.includes("back pain") || q.includes("kamar") || q.includes("ortho") || q.includes("fracture")) {
-          return {
-            text: "Joint pain, knee pain aur back pain ke liye Orthopedic Surgeon Dr. Arjun Patel (MBBS, MS Orthopedics) Monday se Friday subah 10:00 AM se 1:00 PM tak OPD me hote hain. Consultation fee ₹800 hai.",
-            speech: "Haddi aur joint pain ke liye Doctor Arjun Patel subah 10 se 1 baje tak available hain. Consultation fee 800 rupaye hai."
-          };
-        }
+        aiSession.stage = "idle";
+        aiSession.draft = {};
 
-        // 7. Cardiology / Heart / Chest Pain / BP / Dil
-        if (q.includes("heart") || q.includes("dil") || q.includes("chest") || q.includes("bp") || q.includes("blood pressure") || q.includes("cardio") || q.includes("ecg")) {
-          return {
-            text: "Preventive Cardiology aur Blood Pressure review ke liye Dr. Vikram Shah (MBBS, MD, DM Cardiology) Monday se Saturday shaam 4:00 PM se 7:00 PM tak available hain. Fee ₹900 hai. Note: Severe emergency chest pain ho to turant helpline dial karein.",
-            speech: "Heart aur BP consultation ke liye Doctor Vikram Shah shaam 4 se 7 baje tak available hain. Fee 900 rupaye hai."
-          };
-        }
-
-        // 8. Raat ko call / 24/7 AI Receptionist / Night
-        if (q.includes("raat") || q.includes("night") || q.includes("call uthayega") || q.includes("24/7") || q.includes("band hone ke baad") || q.includes("call")) {
-          return {
-            text: "Haan bilkul! Chahe raat ke 2 baje hon ya 3 baje, CareWell 24/7 AI Voice Assistant har call attend karta hai, patient ki complaint note karta hai aur subah 9:00 AM ka first priority token lock kar deta hai taaki aapka samay bache!",
-            speech: "Haan bilkul! Chahe raat ke do baje ho, CareWell 24/7 AI Voice Assistant har call attend karta hai aur subah ka first priority slot confirm kar deta hai."
-          };
-        }
-
-        // 9. Live Queue / Token Status
-        if (q.includes("token") || q.includes("queue") || q.includes("line") || q.includes("number") || q.includes("wait")) {
-          return {
-            text: "Live OPD Token System: Is samay OPD desk par Token No. 8 chal raha hai. Agar aap abhi book karte hain to aapko Token No. 12 milega (approx 30 min wait). Number aane se 15 minute pehle aapko WhatsApp reminder bhi bhej diya jayega!",
-            speech: "Live Queue Status: Abhi Token Number 8 chal raha hai. Aapka Token Number 12 lagbhag 30 minutes me aayega. Turn aane se 15 minute pehle WhatsApp alert aayega."
-          };
-        }
-
-        // 10. Clinic Timing & OPD Hours
-        if (q.includes("timing") || q.includes("time") || q.includes("open") || q.includes("khulta") || q.includes("sunday") || q.includes("hours")) {
-          return {
-            text: "CareWell Clinic OPD Timing: Monday se Saturday subah 9:00 AM se 1:00 PM aur shaam 4:00 PM se 7:00 PM tak open rehti hai. Sunday routine OPD closed rehti hai, emergency on-call doctor 24/7 available rehta hai.",
-            speech: "CareWell Clinic Monday se Saturday subah 9 se 1 aur shaam 4 se 7 baje tak open rehti hai. Sunday ko emergency doctor on-call rehta hai."
-          };
-        }
-
-        // 11. Fees / Charges / Kitna lagega / Price
-        if (q.includes("fee") || q.includes("fees") || q.includes("charge") || q.includes("price") || q.includes("kharcha") || q.includes("kitna") || q.includes("rate")) {
-          return {
-            text: "Transparent Clinic Fees: Dental OPD ₹350, General Physician ₹500, Pediatrician ₹600, ENT ₹650, Skin ₹700, Ortho ₹800, Cardiology ₹900. Online slot reservation bilkul free hai, payment consultation ke waqt desk par karni hoti hai.",
-            speech: "Hamari OPD consultation fees 350 rupaye se 800 rupaye ke beech hai. Online booking bilkul free hai."
-          };
-        }
-
-        // 12. Address & Location
-        if (q.includes("address") || q.includes("location") || q.includes("kahan") || q.includes("pune") || q.includes("camp") || q.includes("map")) {
-          return {
-            text: "Clinic Address: CareWell Multi-Speciality Clinic, 214, MG Road, Camp, Pune 411001 (Near Central Bank). Clinic landing page par interactive Google Maps link bhi uplabdh hai.",
-            speech: "CareWell Clinic ka address hai: 214 MG Road, Camp, Pune. Near Central Bank."
-          };
-        }
-
-        // 13. Emergency Helpline
-        if (q.includes("emergency") || q.includes("accident") || q.includes("serious") || q.includes("casualty") || q.includes("ambulance")) {
-          return {
-            text: "24/7 Clinic Emergency Helpline: +91 98765 43210. Screen ke bottom par diye red Emergency button se 1 click mein on-call doctor ko direct call lag jata hai.",
-            speech: "Emergency helpline number hai: 98765 43210. Screen ke Emergency button se direct doctor ko call karein."
-          };
-        }
-
-        // 14. Doctor Booking general
-        if (q.includes("doctor") || q.includes("appointment") || q.includes("book") || q.includes("slot") || q.includes("reschedule") || q.includes("cancel")) {
-          return {
-            text: "Aap kisi bhi doctor ke liye slot website ke Bookings section se 1 minute me book kar sakte hain. Bas apna 10-digit mobile number aur pasandida time select karein, Token turant mil jayega!",
-            speech: "Doctor appointment book karne ke liye bas apna 10-digit mobile number aur slot select karein. Token turant mil jayega."
-          };
-        }
-
-        // 15. Fallback Intelligent Greeting
         return {
-          text: `Namaste! CareWell Clinic 24/7 AI Desk par aapka swagat hai. "${sEscapeHtml(rawQuery)}" ke baare mein humare doctors available hain. Aap OPD slot book karne ke liye apna naam aur phone number de sakte hain ya timing/fees pooch sakte hain.`,
-          speech: `Namaste! CareWell Clinic me aapka swagat hai. Aap doctor appointment, clinic timing, fees ya OPD queue ke baare me pooch sakte hain.`
+          text: `Done ${sEscapeHtml(draft.name)} ji! Aapka appointment confirm ho gaya hai:<br>• <strong>Doctor:</strong> ${sEscapeHtml(doc ? doc.name : "Dr. Ananya Rao")} (${sEscapeHtml(doc ? doc.specialty : "")})<br>• <strong>Slot:</strong> ${sEscapeHtml(draft.slot || "Next Available")}<br>• <strong>Booking ID:</strong> ${bookingId} · <strong>Token No. ${tokenNo}</strong><br>WhatsApp par confirmation aur 15 min pehle alert mil jayega. Aur kisi madad ki zaroorat hai?`,
+          speech: `Done ${draft.name} ji! Aapka appointment ${doc ? doc.name : "Doctor"} ke saath confirm ho gaya hai. Aapka Token Number hai ${tokenNo}.`
+        };
+      };
+
+      const advanceBookingFlow = (rawQuery) => {
+        const q = rawQuery.toLowerCase();
+        const phoneMatch = rawQuery.match(/\b(\d{10})\b/);
+        if (phoneMatch) aiSession.draft.phone = phoneMatch[1];
+
+        const matchedDoc = findDoctorFromQuery(q);
+        if (matchedDoc && !aiSession.draft.doctor) {
+          aiSession.draft.doctor = matchedDoc;
+          aiSession.draft.reason = rawQuery.trim();
+        }
+
+        if (aiSession.stage === "awaiting_problem") {
+          if (!aiSession.draft.doctor) {
+            aiSession.draft.doctor = CareWellData?.doctors?.[0];
+            aiSession.draft.reason = rawQuery.trim();
+          }
+          aiSession.stage = "awaiting_slot";
+          return {
+            text: `Bilkul, <strong>${sEscapeHtml(aiSession.draft.doctor.name)}</strong> (${sEscapeHtml(aiSession.draft.doctor.specialty)}, Fee ₹${aiSession.draft.doctor.fee}) ke liye slot dekh rahi hoon. Unki timing <strong>${sEscapeHtml(aiSession.draft.doctor.timing || "Mon–Sat")}</strong> hai.<br>Aapko kab ka slot chahiye? (Jaise: <em>Aaj shaam 5 PM</em> ya <em>Kal subah 10 AM</em>)`,
+            speech: `Bilkul, ${aiSession.draft.doctor.name} ke liye slot dekh rahi hoon. Aapko kab ka slot chahiye?`
+          };
+        }
+
+        if (aiSession.stage === "awaiting_slot") {
+          aiSession.draft.slot = rawQuery.trim();
+          if (!aiSession.draft.name) {
+            aiSession.stage = "awaiting_name";
+            return {
+              text: `Theek hai, <strong>${sEscapeHtml(aiSession.draft.slot)}</strong> note kar liya hai. Kripya patient ka <strong>poora naam</strong> bataiye?`,
+              speech: `Theek hai, slot note kar liya hai. Kripya patient ka poora naam bataiye.`
+            };
+          }
+        }
+
+        if (aiSession.stage === "awaiting_name") {
+          const cleanedName = rawQuery.replace(/^(mera naam|my name is|naam|name is|i am|main)\s+/i, "").replace(/\s+hai$/i, "").trim();
+          if (cleanedName.length < 2) {
+            return {
+              text: "Kripya patient ka poora naam likhein (kam se kam 2 letters).",
+              speech: "Kripya patient ka poora naam bataiye."
+            };
+          }
+          aiSession.draft.name = cleanedName;
+          if (!aiSession.draft.phone) {
+            aiSession.stage = "awaiting_phone";
+            return {
+              text: `Dhanyavaad <strong>${sEscapeHtml(cleanedName)}</strong> ji! Ab apna <strong>10-digit mobile number</strong> bataiye taaki Token aur WhatsApp confirmation bhej sakoon.`,
+              speech: `Dhanyavaad ${cleanedName} ji. Ab apna 10 digit mobile number bataiye.`
+            };
+          }
+        }
+
+        if (aiSession.stage === "awaiting_phone") {
+          const digits = rawQuery.replace(/\D/g, "");
+          if (digits.length !== 10) {
+            return {
+              text: "Mobile number 10 digits ka hona chahiye (jaise 9876543210). Dobara enter karein.",
+              speech: "Kripya 10 digit ka sahi mobile number bataiye."
+            };
+          }
+          aiSession.draft.phone = digits;
+        }
+
+        if (aiSession.draft.name && aiSession.draft.phone) {
+          return finalizeChatBooking(aiSession.draft);
+        }
+        return null;
+      };
+
+      const getClinicalAnswer = (rawQuery) => {
+        const text = String(rawQuery || "").trim();
+        const q = text.toLowerCase();
+
+        // Allow cancelling multi-turn flow anytime
+        if (aiSession.stage !== "idle" && (q === "cancel" || q === "chhodo" || q === "stop" || q === "nahi" || q === "band karo")) {
+          aiSession.stage = "idle";
+          aiSession.draft = {};
+          return {
+            text: "Koi baat nahi! Maine booking process rok diya hai. Aap jab chahein dubara pooch sakte hain.",
+            speech: "Koi baat nahi, aap jab chahein dubara pooch sakte hain."
+          };
+        }
+
+        // Continue active multi-turn booking flow
+        if (aiSession.stage !== "idle") {
+          const flowReply = advanceBookingFlow(text);
+          if (flowReply) return flowReply;
+        }
+
+        // Direct phone / booking ID lookup in query
+        const cwMatch = text.match(/\b(CW-\d{3,5})\b/i);
+        if (cwMatch) {
+          const id = cwMatch[1].toUpperCase();
+          const found = sReadJson("carewell_appointments", []).find((a) => (a.bookingId || "").toUpperCase() === id);
+          if (found) {
+            const doc = (CareWellData?.doctors || []).find((d) => d.id === found.doctorId);
+            return {
+              text: `Booking <strong>${id}</strong> mil gayi! Patient: <strong>${sEscapeHtml(found.patientName)}</strong> · Doctor: <strong>${sEscapeHtml(doc ? doc.name : found.doctorId)}</strong> · Slot: <strong>${sEscapeHtml(found.slot)}</strong> · Token: <strong>#${sEscapeHtml(found.tokenNo || "12")}</strong> · Status: <strong>${sEscapeHtml(found.status)}</strong>.`,
+              speech: `Booking ${id} confirm hai. Token number ${found.tokenNo || 12}.`
+            };
+          }
+          return {
+            text: `Booking ID <strong>${id}</strong> abhi active list mein nahi mili. Kya aap naya appointment book karna chahenge?`,
+            speech: `Booking ID ${id} nahi mili. Kya aap naya appointment book karna chahenge?`
+          };
+        }
+
+        // 1. Midnight / Night Call / 24x7 Receptionist explanation
+        if (q.includes("raat") || q.includes("night") || q.includes("midnight") || q.includes("12 baje") || q.includes("2 baje") || q.includes("call uthayega") || q.includes("kaise karega") || q.includes("24/7") || q.includes("band hone ke baad")) {
+          const hr = new Date().getHours();
+          const isNight = hr >= 20 || hr < 8;
+          return {
+            text: `${isNight ? "Is waqt clinic OPD closed hai, lekin main (CareWell 24/7 AI Receptionist) abhi bhi active hoon!" : "Haan bilkul!"} Chahe raat ke 12 baje hon ya subah ke 3 baje, hamara 24/7 AI Receptionist har call aur message turant attend karta hai:<br>1. Aapki takleef aur doctor preference note karta hai.<br>2. Emergency ho to turant on-call doctor helpline (<strong>+91 98765 43210</strong>) se connect karta hai.<br>3. Normal OPD ke liye <strong>subah 9:00 AM ka first priority token</strong> lock kar deta hai.<br><br>Kya main abhi aapke liye morning priority slot book kar doon?`,
+            speech: `Chahe raat ke 12 baje hon ya 3 baje, CareWell 24/7 AI Receptionist har call aur chat attend karta hai, emergency me on-call doctor se jorta hai, aur subah 9 baje ka priority token lock kar deta hai.`
+          };
+        }
+
+        // 2. Emergency
+        if (q.includes("emergency") || q.includes("accident") || q.includes("serious") || q.includes("casualty") || q.includes("ambulance") || q.includes("urgent") || q.includes("behosh") || q.includes("saans")) {
+          return {
+            text: "<strong>Emergency Alert:</strong> Agar chest pain, saans ki takleef, heavy bleeding, ya serious condition hai to slot ka wait mat karein! Turant hamari 24/7 Emergency Helpline <strong>+91 98765 43210</strong> par call karein (neeche red <em>Emergency Call</em> button se 1-click call lag jayega).",
+            speech: "Emergency mein turant 98765 43210 par call karein ya neeche red Emergency Call button dabayein."
+          };
+        }
+
+        // 3. Explicit Booking Intent -> Start Multi-Turn Receptionist Booking!
+        if (q.includes("book") || q.includes("appointment") || q.includes("slot lena") || q.includes("milna hai") || q.includes("dikhana hai") || q.includes("checkup") || q.includes("slot chahiye")) {
+          const doc = findDoctorFromQuery(q);
+          aiSession.draft = {};
+          const phoneMatch = text.match(/\b(\d{10})\b/);
+          if (phoneMatch) aiSession.draft.phone = phoneMatch[1];
+
+          if (doc) {
+            aiSession.draft.doctor = doc;
+            aiSession.draft.reason = text;
+            aiSession.stage = "awaiting_slot";
+            return {
+              text: `Zaroor! Main aapka appointment <strong>${sEscapeHtml(doc.name)}</strong> (${sEscapeHtml(doc.specialty)}, Fee ₹${doc.fee}) ke saath book kar deti hoon. Unki OPD timing <strong>${sEscapeHtml(doc.timing || "Mon–Sat")}</strong> hai.<br>Aapko kaunsa time slot chahiye? (Jaise: <em>Aaj 5:00 PM</em> ya <em>Kal 10:00 AM</em>)`,
+              speech: `Zaroor! ${doc.name} ke liye aapko kaunsa time slot chahiye?`
+            };
+          }
+          aiSession.stage = "awaiting_problem";
+          return {
+            text: "Zaroor! Main abhi aapka slot book kar deti hoon. Pehle yeh bataiye ki <strong>kis doctor se milna hai</strong> ya patient ko <strong>kya takleef hai</strong>? (Jaise: bukhar, bacche ka checkup, skin, daant, BP, ya ortho)",
+            speech: "Zaroor! Bataiye kis doctor se milna hai ya kya takleef hai?"
+          };
+        }
+
+        // 4. Specific Doctor or Symptom Match (reads live CareWellData.doctors!)
+        const matchedDoc = findDoctorFromQuery(q);
+        if (matchedDoc) {
+          return {
+            text: `<strong>${sEscapeHtml(matchedDoc.name)}</strong> (${sEscapeHtml(matchedDoc.qualifications)} · ${sEscapeHtml(matchedDoc.specialty)}) <strong>${sEscapeHtml(matchedDoc.location || "Pune")}</strong> branch mein baithte hain.<br>• <strong>Timing:</strong> ${sEscapeHtml(matchedDoc.timing || "Mon–Sat")}<br>• <strong>Consultation Fee:</strong> ₹${matchedDoc.fee}<br>• <strong>Details:</strong> ${sEscapeHtml(matchedDoc.bio)}<br><br>Kya main inka appointment book kar doon? Bas <em>"Book karo"</em> likhein!`,
+            speech: `${matchedDoc.name}, ${matchedDoc.specialty}, ${matchedDoc.timing} par available hain. Inki fee ${matchedDoc.fee} rupaye hai. Kya main appointment book kar doon?`
+          };
+        }
+
+        // 5. Live Queue / Token Status (reads live carewell_queue_state)
+        if (q.includes("token") || q.includes("queue") || q.includes("line") || q.includes("number") || q.includes("wait") || q.includes("kitni der")) {
+          const qs = sReadJson("carewell_queue_state", { doctorId: "ananya-rao", current: 8, yourToken: 12, avgMinsPerPatient: 7.5 });
+          const doc = (CareWellData?.doctors || []).find((d) => d.id === qs.doctorId) || CareWellData?.doctors?.[0];
+          const diff = Math.max(0, qs.yourToken - qs.current);
+          const mins = Math.round(diff * (qs.avgMinsPerPatient || 7.5));
+          return {
+            text: `<strong>Live OPD Queue (${sEscapeHtml(doc ? doc.name : "OPD Room 1")}):</strong><br>• Abhi <strong>Token No. ${qs.current}</strong> andar hai.<br>• Agla naya token ~<strong>${mins} minutes</strong> mein aayega.<br>• Number aane se <strong>15 minute pehle WhatsApp alert</strong> auto bhej diya jata hai.<br>Apna Token No. ya Booking ID (jaise <code>CW-2048</code>) likhein to main exact status check kar doon.`,
+            speech: `Live Queue mein abhi Token Number ${qs.current} chal raha hai. Turn aane se 15 minute pehle WhatsApp alert aayega.`
+          };
+        }
+
+        // 6. Fees / Charges / UPI / Payment
+        if (q.includes("fee") || q.includes("fees") || q.includes("charge") || q.includes("price") || q.includes("kharcha") || q.includes("kitna") || q.includes("rate") || q.includes("sasta") || q.includes("upi") || q.includes("pay")) {
+          const list = (CareWellData?.doctors || []).map((d) => `• ${sEscapeHtml(d.name)} (${sEscapeHtml(d.specialty)}): <strong>₹${d.fee}</strong>`).join("<br>");
+          return {
+            text: `<strong>Clinic Consultation Fees:</strong><br>${list}<br><br>Aap <strong>Pay at Clinic (Free Hold)</strong> kar sakte hain ya <strong>₹100 UPI Advance</strong> se priority check-in le sakte hain.`,
+            speech: "Hamari OPD fees 350 rupaye se 900 rupaye ke beech hai. Aap Pay at Clinic ya 100 rupaye UPI Advance select kar sakte hain."
+          };
+        }
+
+        // 7. Clinic Timing & Sunday
+        if (q.includes("timing") || q.includes("time") || q.includes("open") || q.includes("khulta") || q.includes("khuli") || q.includes("sunday") || q.includes("hours") || q.includes("band")) {
+          return {
+            text: "<strong>CareWell Clinic OPD Timings:</strong><br>• <strong>Monday – Saturday:</strong> 9:00 AM – 1:00 PM &amp; 4:00 PM – 7:00 PM<br>• <strong>Sunday:</strong> Routine OPD closed rehti hai, par 24/7 emergency on-call doctor aur AI Receptionist active rehta hai.",
+            speech: "Clinic Monday se Saturday subah 9 se 1 aur shaam 4 se 7 baje tak open rehti hai. Sunday routine OPD band rehti hai."
+          };
+        }
+
+        // 8. Address / Branches / Map
+        if (q.includes("address") || q.includes("location") || q.includes("kahan") || q.includes("pune") || q.includes("camp") || q.includes("bhiwadi") || q.includes("jaipur") || q.includes("branch") || q.includes("map")) {
+          const branches = (CareWellData?.clinic?.branches || []).map((b) => `• <strong>${sEscapeHtml(b.label)}:</strong> ${sEscapeHtml(b.address)}`).join("<br>");
+          return {
+            text: `<strong>CareWell Clinic Branches:</strong><br>${branches || "214, MG Road, Camp, Pune 411001"}<br>Main page ke <em>Timings &amp; Map</em> section par direct Google Maps directions available hain.`,
+            speech: "CareWell Clinic Camp Pune, Bhiwadi, aur Jaipur mein available hai. Main branch 214 MG Road, Camp, Pune mein hai."
+          };
+        }
+
+        // 9. Reports / Prescriptions / Portal
+        if (q.includes("report") || q.includes("prescription") || q.includes("rx") || q.includes("dawai") || q.includes("pdf") || q.includes("portal") || q.includes("family")) {
+          return {
+            text: "Aap apni saari <strong>Digital Prescriptions (Rx)</strong> aur <strong>Lab Reports (Blood, Sugar, X-Ray)</strong> <a href='patient.html' class='underline text-emerald-300 font-semibold'>Patient Portal</a> se apne mobile number + OTP se download kar sakte hain. Ek login mein 4 family members ke records milte hain.",
+            speech: "Aap apni digital prescriptions aur lab reports Patient Portal se download kar sakte hain."
+          };
+        }
+
+        // 10. Cancel / Reschedule
+        if (q.includes("cancel") || q.includes("reschedule") || q.includes("change")) {
+          return {
+            text: "Booking cancel ya reschedule karne ke liye:<br>• WhatsApp confirmation par <strong>\"2\"</strong> reply karein, ya<br>• Website ke <em>Your bookings</em> section mein <strong>Reschedule / Cancel</strong> dabayein, ya apna Booking ID (jaise <code>CW-2048</code>) yahan likhein.",
+            speech: "Booking cancel ya reschedule karne ke liye WhatsApp par 2 reply karein ya Your bookings section use karein."
+          };
+        }
+
+        // 11. Conversational Greetings & Thanks
+        if (/^(hi|hello|hey|namaste|namaskar|hii|hola|good morning|good afternoon|good evening|good night)\b/i.test(q)) {
+          return {
+            text: "Namaste! Main CareWell Clinic ki 24/7 Receptionist bol rahi hoon. Batayein aaj main aapki kya madad kar sakti hoon? Aap doctor ki timing/fee pooch sakte hain, live token dekh sakte hain, ya yahin seedha appointment book kar sakte hain.",
+            speech: "Namaste! Main CareWell Clinic ki receptionist bol rahi hoon. Batayein aaj main aapki kya madad kar sakti hoon?"
+          };
+        }
+        if (q.includes("thank") || q.includes("shukriya") || q.includes("dhanyavaad") || q === "ok" || q === "okay" || q === "bye") {
+          return {
+            text: "Aapka swagat hai! CareWell Clinic par aapka din shubh rahe. Jab bhi zaroorat ho, 24/7 message ya call kar sakte hain.",
+            speech: "Aapka swagat hai! Jab bhi zaroorat ho, aap humein message ya call kar sakte hain."
+          };
+        }
+
+        // 12. Natural Human-Like Receptionist Fallback
+        return {
+          text: `Ji, maine aapki baat samajh li ("${sEscapeHtml(text)}"). Main CareWell Clinic ki 24/7 AI Receptionist hoon — batayein kya aapko:<br>1. <strong>Doctor appointment book</strong> karna hai? (Bas problem ya doctor ka naam batayein)<br>2. <strong>Fees, Timings ya Branch address</strong> jaanna hai?<br>3. <strong>Live OPD Token</strong> ya purani booking check karni hai?`,
+          speech: `Ji, batayein kya aapko doctor appointment book karna hai, fees ya timing jaanni hai, ya live token status check karna hai?`
         };
       };
 

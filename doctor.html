@@ -47,8 +47,15 @@
       </div>
 
       <div class="flex items-center gap-2 text-xs font-semibold">
-        <a href="receptionist.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">Reception</a>
-        <a href="patient.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">Patient Portal</a>
+        <a href="#doc-waiting-list" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          <span class="icon icon-clock"></span> Waiting Queue
+        </a>
+        <a href="#form-doc-rx" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          <span class="icon icon-file-text"></span> Rx Pad
+        </a>
+        <button type="button" onclick="window.CareWellDoctor.toggleLeave()" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          Leave Toggle
+        </button>
         <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 transition shadow-xs">Website</a>
         <button id="btn-doc-logout" type="button" class="hidden text-xs bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-500/30 px-3 py-1.5 rounded-xl transition">Logout</button>
       </div>
@@ -113,9 +120,11 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <label for="doc-leave-date" class="sr-only">Select Leave Date</label>
+          <input id="doc-leave-date" type="date" class="h-9 px-2.5 rounded-xl bg-white/15 border border-white/25 text-white text-xs outline-none">
           <button type="button" onclick="window.CareWellDoctor.toggleLeave()" id="btn-doc-leave-status" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-semibold transition">
-             "Kal Main Nahi Hu" (Toggle Leave)
+             Smart Leave (Notify Patients)
           </button>
         </div>
       </div>
@@ -194,6 +203,7 @@
                   <label for="rx-doc-medicines" class="font-semibold text-slate-700">Prescribed Medicines & Dosage Plan</label>
                   <div class="flex flex-wrap gap-1">
                     <button type="button" data-rx-tpl="fever" class="px-2 py-0.5 rounded-lg bg-mint border border-emerald-200 text-[10px] font-semibold text-tealbrand hover:bg-emerald-100">+ Fever</button>
+                    <button type="button" data-rx-tpl="acidity" class="px-2 py-0.5 rounded-lg bg-mint border border-emerald-200 text-[10px] font-semibold text-tealbrand hover:bg-emerald-100">+ Acidity</button>
                     <button type="button" data-rx-tpl="bp" class="px-2 py-0.5 rounded-lg bg-mint border border-emerald-200 text-[10px] font-semibold text-tealbrand hover:bg-emerald-100">+ BP</button>
                     <button type="button" data-rx-tpl="skin" class="px-2 py-0.5 rounded-lg bg-mint border border-emerald-200 text-[10px] font-semibold text-tealbrand hover:bg-emerald-100">+ Skin</button>
                     <button type="button" data-rx-tpl="child" class="px-2 py-0.5 rounded-lg bg-mint border border-emerald-200 text-[10px] font-semibold text-tealbrand hover:bg-emerald-100">+ Child</button>

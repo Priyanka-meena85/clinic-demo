@@ -60,14 +60,22 @@
       }
       if (window.CareWellSecurity) window.CareWellSecurity.resetRateLimit("rec-login");
       isRecLoggedIn = true;
+      localStorage.removeItem("carewell_admin_auth");
+      localStorage.removeItem("carewell_doctor_auth_id");
+      localStorage.removeItem("carewell_patient_auth");
       localStorage.setItem("carewell_receptionist_auth", "true");
+      localStorage.setItem("carewell_session_exp", String(Date.now() + 8 * 3600 * 1000));
       showWorkspace();
       showToast("Welcome to CareWell Front Desk!");
     });
 
     $("#btn-quick-rec-login")?.addEventListener("click", () => {
       isRecLoggedIn = true;
+      localStorage.removeItem("carewell_admin_auth");
+      localStorage.removeItem("carewell_doctor_auth_id");
+      localStorage.removeItem("carewell_patient_auth");
       localStorage.setItem("carewell_receptionist_auth", "true");
+      localStorage.setItem("carewell_session_exp", String(Date.now() + 8 * 3600 * 1000));
       showWorkspace();
       showToast("Logged in as Front Desk Receptionist!");
     });
@@ -83,11 +91,47 @@
 
     $("#btn-rec-walkin")?.addEventListener("click", openWalkinModal);
 
+    $("#btn-rec-emergency")?.addEventListener("click", () => {
+      const name = window.prompt("Priority Patient Name (Emergency / Senior Citizen / Pregnant):");
+      if (!name || name.trim().length < 2) return;
+      const category = window.prompt("Priority Type (Emergency / Senior Citizen / Pregnant):", "Emergency") || "Emergency";
+      const appts = readJson("carewell_appointments", []);
+      const today = new Date().toISOString().split("T")[0];
+      const bookingId = `CW-EMG-${String(100 + (Date.now() % 899))}`;
+      appts.unshift({
+        id: `cw-emg-${Date.now()}`,
+        bookingId,
+        tokenNo: "P1",
+        token: bookingId,
+        patientName: name.trim(),
+        phone: "9876543210",
+        doctorId: "ananya-rao",
+        date: today,
+        slot: "IMMEDIATE",
+        visitType: category.trim(),
+        isPriority: true,
+        priorityLabel: category.trim().toUpperCase(),
+        paymentMode: "Pay at Clinic",
+        status: "checked-in",
+        createdAt: new Date().toISOString()
+      });
+      writeJson("carewell_appointments", appts);
+      renderWorkspaceData();
+      showToast(`RED Priority Token (${category}) issued for ${name.trim()} — moved to top of queue!`);
+    });
+
     $("#btn-rec-next-queue")?.addEventListener("click", () => {
       const qs = readJson("carewell_queue_state", { doctorId: "ananya-rao", current: 8, yourToken: 12, avgMinsPerPatient: 7.5 });
       qs.current += 1;
       writeJson("carewell_queue_state", qs);
-      showToast(`Live Queue advanced to Token #${qs.current}`);
+      if ("speechSynthesis" in window) {
+        try {
+          const u = new SpeechSynthesisUtterance(`Token number ${qs.current}, Doctor ke room mein aaiye.`);
+          u.lang = "hi-IN";
+          window.speechSynthesis.speak(u);
+        } catch (e) {}
+      }
+      showToast(`Live Queue advanced to Token #${qs.current} (Hindi Voice Announced)`);
       renderWorkspaceData();
     });
   }
@@ -128,7 +172,7 @@
     const appts = readJson("carewell_appointments", []).filter((a) => {
       if (!query) return true;
       return `${a.patientName} ${a.phone} ${a.bookingId} ${a.tokenNo}`.toLowerCase().includes(query);
-    });
+    }).sort((a, b) => (b.isPriority ? 1 : 0) - (a.isPriority ? 1 : 0));
 
     if (!appts.length) {
       wrap.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center">No matching appointments found.</p>`;
@@ -152,8 +196,8 @@
             const doc = (CareWellData?.doctors || []).find((d) => d.id === a.doctorId);
             return `
               <tr class="hover:bg-mint/30 transition">
-                <td class="p-3 font-mono font-bold text-tealbrand">
-                  #${escapeHtml(a.tokenNo || "—")}<br>
+                <td class="p-3 font-mono font-bold ${a.isPriority ? "text-red-600" : "text-tealbrand"}">
+                  #${escapeHtml(a.tokenNo || "—")} ${a.isPriority ? `<span class="ml-1 px-1.5 py-0.5 rounded bg-red-600 text-white text-[9px]">${escapeHtml(a.priorityLabel || "PRIORITY")}</span>` : ""}<br>
                   <span class="text-[10px] font-normal text-slate-500">${escapeHtml(a.bookingId || a.token)}</span>
                 </td>
                 <td class="p-3">
@@ -177,7 +221,7 @@
                 </td>
                 <td class="p-3 text-right space-x-1 whitespace-nowrap">
                   <button type="button" onclick="window.CareWellReception.checkIn('${escapeHtml(a.id)}')" class="px-2.5 py-1 rounded-lg bg-tealbrand text-white text-[11px] font-semibold hover:bg-teal-700">Check-in</button>
-                  <button type="button" onclick="window.CareWellReception.openReceipt('${escapeHtml(a.id)}')" class="px-2.5 py-1 rounded-lg border border-emerald-200 bg-mint text-tealbrand text-[11px] font-semibold hover:bg-emerald-100">Receipt</button>
+                  <button type="button" onclick="window.CareWellReception.openReceipt('${escapeHtml(a.id)}')" class="px-2.5 py-1 rounded-lg border border-emerald-200 bg-mint text-tealbrand text-[11px] font-semibold hover:bg-emerald-100">Token Slip / Receipt</button>
                   <button type="button" onclick="window.CareWellReception.markNoShow('${escapeHtml(a.id)}')" class="px-2 py-1 rounded-lg bg-amber-50 text-amber-800 text-[11px] font-medium hover:bg-amber-100">No-Show</button>
                 </td>
               </tr>`;

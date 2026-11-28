@@ -40,8 +40,12 @@
       </div>
 
       <div class="flex items-center gap-2 text-xs font-semibold">
-        <a href="doctor.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">Doctor Desk</a>
-        <a href="admin.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">Admin</a>
+        <button type="button" onclick="document.querySelector('#btn-rec-walkin')?.click()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          <span class="icon icon-calendar"></span> Walk-in Token
+        </button>
+        <button type="button" onclick="document.querySelector('#btn-rec-next-queue')?.click()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          <span class="icon icon-clock"></span> Advance Queue
+        </button>
         <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 transition shadow-xs">Website</a>
         <button id="btn-rec-logout" type="button" class="hidden text-xs bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-500/30 px-3 py-1.5 rounded-xl transition">Logout</button>
       </div>
@@ -82,6 +86,9 @@
           <p class="text-xs text-slate-500 mt-0.5">Verify arrivals, record triage vitals, issue walk-in tokens, and print OPD receipts.</p>
         </div>
         <div class="flex flex-wrap gap-2">
+          <button type="button" id="btn-rec-emergency" class="h-10 px-4 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700 shadow-xs">
+            + Emergency / Senior / Pregnant Token
+          </button>
           <button type="button" id="btn-rec-walkin" class="h-10 px-4 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 shadow-xs">
             + Issue Walk-in Token
           </button>

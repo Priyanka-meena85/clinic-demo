@@ -44,7 +44,12 @@
       </div>
 
       <div class="flex items-center gap-2 text-xs font-semibold">
-        <a href="login.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">All Portals</a>
+        <a href="index.html#doctors" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          <span class="icon icon-calendar"></span> Book New Slot
+        </a>
+        <a href="index.html#queue" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          <span class="icon icon-clock"></span> Live Queue
+        </a>
         <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 transition shadow-xs">Website</a>
         <button id="btn-patient-logout" type="button" class="hidden text-xs bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-500/30 px-3 py-1.5 rounded-xl transition">Logout</button>
       </div>
@@ -89,6 +94,23 @@
 
     <!-- Authenticated Patient Portal Workspace -->
     <div id="patient-workspace-view" class="hidden space-y-6">
+      <!-- Aaj Ka Status Live Banner -->
+      <div id="patient-aaj-status-banner" class="rounded-2xl bg-gradient-to-r from-tealbrand to-emerald-700 text-white p-4 sm:p-5 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
+            <span class="icon icon-clock text-white"></span>
+          </span>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-200">Aaj Ka Live Status</span>
+            <p id="patient-aaj-status-text" class="text-sm sm:text-base font-bold">Token #12 · Dr. Ananya Rao · ~30 min baaki hai · Aap ghar par hi rukiye</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <label for="patient-family-dropdown" class="sr-only">Switch Family Member</label>
+          <select id="patient-family-dropdown" class="h-9 px-3 rounded-xl bg-white text-slate-900 text-xs font-semibold outline-none"></select>
+        </div>
+      </div>
+
       <!-- Profile Header & Family Switcher -->
       <div class="p-6 rounded-3xl bg-mint border border-emerald-200/80 shadow-xs">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -156,6 +178,31 @@
         </div>
       </div>
 
+      <!-- Package Wallet, Referral & Doctor Health Tips Strip -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="p-4 rounded-2xl bg-white border border-emerald-200 shadow-xs flex items-center justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-tealbrand">CareWell Package Wallet</span>
+            <p id="patient-wallet-bal" class="font-display text-xl font-bold text-slate-900 mt-0.5">₹2,000</p>
+            <span class="text-[11px] text-emerald-700 font-medium">5 Visits · 10% Off Active</span>
+          </div>
+          <button type="button" onclick="window.CareWellPatient.rechargeWallet()" class="px-3 py-2 rounded-xl bg-tealbrand text-white font-semibold hover:bg-teal-700 shrink-0">+ ₹2,000</button>
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-emerald-200 shadow-xs flex items-center justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-tealbrand">Refer &amp; Earn ₹100 Off</span>
+            <p class="font-mono text-sm font-bold text-slate-900 mt-1">CAREWELL-100</p>
+            <span class="text-[11px] text-slate-500">Dost ko bhejo, dono ko ₹100 off</span>
+          </div>
+          <button type="button" onclick="window.CareWellPatient.copyReferral()" class="px-3 py-2 rounded-xl bg-mint border border-emerald-200 text-tealbrand font-semibold hover:bg-emerald-100 shrink-0">Share</button>
+        </div>
+        <div class="p-4 rounded-2xl bg-mint/70 border border-emerald-200 shadow-xs">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-tealbrand">Doctor Health Tip (30s)</span>
+          <p class="font-semibold text-slate-900 mt-1">Dr. Ananya Rao: Monsoon &amp; Dengue</p>
+          <p class="text-[11px] text-slate-600 mt-0.5">Paani jamne na dein, bukhar 2 din se zyada rahe to CBC zaroor karwayein.</p>
+        </div>
+      </div>
+
       <!-- Navigation Tabs -->
       <div class="bg-white rounded-2xl border border-emerald-100 p-1.5 shadow-xs flex items-center gap-1 overflow-x-auto">
         <button type="button" data-patient-tab="appointments" class="px-4 py-2.5 text-xs font-semibold rounded-xl bg-tealbrand text-white transition shadow-xs">
@@ -167,8 +214,8 @@
         <button type="button" data-patient-tab="reports" class="px-4 py-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
            Medical Reports (<span id="count-pat-reports">1</span>)
         </button>
-        <button type="button" data-patient-tab="history" class="px-4 py-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
-          ⏳ Visit History (<span id="count-pat-history">3</span>)
+        <button type="button" data-patient-tab="history" class="px-4 py-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition inline-flex items-center gap-1.5">
+          <span class="icon icon-clock"></span> Visit History (<span id="count-pat-history">3</span>)
         </button>
         <button type="button" data-patient-tab="healthcard" class="px-4 py-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 transition">
            Digital Health Card

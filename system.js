@@ -93,7 +93,7 @@
         {
           sender: "bot",
           time: "10:30 AM",
-          text: "Namaste Riya ji! Kal 11:30 AM Dr. Ananya Rao ke paas aapka appointment schedule hai.\nToken No: 12 (Booking ID: CW-2048).\n\nReply karein:\n1️⃣ Confirm karne ke liye\n2️⃣ Cancel karne ke liye"
+          text: "Namaste Riya ji! Kal 11:30 AM Dr. Ananya Rao ke paas aapka appointment schedule hai.\nToken No: 12 (Booking ID: CW-2048).\n\nReply karein:\n1. Confirm karne ke liye\n2. Cancel karne ke liye"
         }
       ]);
     }
@@ -464,10 +464,10 @@
         <!-- Quick Action Suggestion Pills -->
         <div class="bg-[#f0f2f5] px-3 py-2 border-t border-slate-200 flex flex-wrap gap-1.5 text-xs">
           <button type="button" data-wa-quick="1" class="shrink-0 px-3 py-1 rounded-full bg-white border border-emerald-300 text-emerald-800 font-medium hover:bg-emerald-50">
-            1️⃣ Confirm Appointment
+            1. Confirm Appointment
           </button>
           <button type="button" data-wa-quick="2" class="shrink-0 px-3 py-1 rounded-full bg-white border border-red-300 text-red-700 font-medium hover:bg-red-50">
-            2️⃣ Cancel Appointment
+            2. Cancel Appointment
           </button>
           <button type="button" data-wa-quick="book" class="shrink-0 px-3 py-1 rounded-full bg-tealbrand text-white font-medium hover:bg-teal-700">
              Quick Auto-Book via WhatsApp
@@ -962,10 +962,10 @@
         <div class="space-y-2">
           <p class="text-[11px] text-slate-300 text-center font-medium">Patient ka response select karein:</p>
           <button id="ai-resp-1" type="button" class="w-full py-2 px-3 rounded-xl bg-tealbrand text-white text-xs font-medium hover:bg-teal-700 text-left">
-            ️ "Haan, kal subah 11:30 AM ka slot book kar do."
+             "Haan, kal subah 11:30 AM ka slot book kar do."
           </button>
           <button id="ai-resp-2" type="button" class="w-full py-2 px-3 rounded-xl bg-white/10 text-slate-200 text-xs font-medium hover:bg-white/20 text-left">
-            ️ "Nahi, sirf clinic timing aur fee poochhni thi."
+             "Nahi, sirf clinic timing aur fee poochhni thi."
           </button>
         </div>
       `;
@@ -1497,7 +1497,7 @@
             <button type="button" data-admin-subtab="doctors" class="px-3 py-1.5 text-xs font-semibold rounded-xl ${
               currentAdminTab === "doctors" ? "bg-tealbrand text-white" : "bg-white text-slate-700 hover:bg-emerald-50"
             }">
-              ‍️ Doctors (${CareWellData.doctors.length})
+              ‍ Doctors (${CareWellData.doctors.length})
             </button>
             <button type="button" data-admin-subtab="followups" class="px-3 py-1.5 text-xs font-semibold rounded-xl ${
               currentAdminTab === "followups" ? "bg-tealbrand text-white" : "bg-white text-slate-700 hover:bg-emerald-50"
@@ -2492,7 +2492,17 @@
           };
         }
 
-        // 2. Emergency
+        // 2. Pediatric / Night Fever Triage (102°F Bukhar)
+        if (q.includes("102") || q.includes("103") || q.includes("104") || (q.includes("bukhar") && (q.includes("bachch") || q.includes("bacch") || q.includes("raat")))) {
+          aiSession.draft = { doctor: findDoctorFromQuery("baccha"), reason: text, slot: "Tomorrow 9:00 AM (Priority)" };
+          aiSession.stage = "awaiting_name";
+          return {
+            text: "<strong>AI Night Triage (High Fever):</strong><br>• Agar saans tez chal rahi hai, daure aa rahe hain, ya baccha behosh/sust lag raha hai to <strong>ye emergency hai — turant +91 98765 43210 par call karein ya clinic aayein.</strong><br>• Agar baccha active hai to thande paani ki patti (sponge) aur doctor ki batayi Paracetamol dose dein.<br>Kya main kal subah <strong>9:00 AM Dr. Sameer Khan</strong> ka priority slot book kar doon? Patient ka naam likhein.",
+            speech: "High fever mein agar susti ya saans ki takleef ho to turant emergency aayein. Warna sponge bath dein. Kya main kal subah 9 baje Doctor Sameer Khan ka slot book kar doon? Naam bataiye."
+          };
+        }
+
+        // 2b. Emergency
         if (q.includes("emergency") || q.includes("accident") || q.includes("serious") || q.includes("casualty") || q.includes("ambulance") || q.includes("urgent") || q.includes("behosh") || q.includes("saans")) {
           return {
             text: "<strong>Emergency Alert:</strong> Agar chest pain, saans ki takleef, heavy bleeding, ya serious condition hai to slot ka wait mat karein! Turant hamari 24/7 Emergency Helpline <strong>+91 98765 43210</strong> par call karein (neeche red <em>Emergency Call</em> button se 1-click call lag jayega).",
@@ -2510,6 +2520,15 @@
           if (doc) {
             aiSession.draft.doctor = doc;
             aiSession.draft.reason = text;
+            const timeMatch = text.match(/\b(kal|today|aaj|tomorrow|subah|shaam|morning|evening|\d{1,2}(?::\d{2})?\s*(?:am|pm|baje))\b/i);
+            if (timeMatch) {
+              aiSession.draft.slot = text;
+              aiSession.stage = "awaiting_name";
+              return {
+                text: `Samajh gayi! <strong>${sEscapeHtml(doc.name)}</strong> (${sEscapeHtml(doc.specialty)}) ke liye slot note kar liya hai. Bas confirm karne ke liye patient ka <strong>poora naam</strong> bataiye?`,
+                speech: `Samajh gayi! ${doc.name} ke liye slot note kar liya hai. Patient ka poora naam bataiye.`
+              };
+            }
             aiSession.stage = "awaiting_slot";
             return {
               text: `Zaroor! Main aapka appointment <strong>${sEscapeHtml(doc.name)}</strong> (${sEscapeHtml(doc.specialty)}, Fee ₹${doc.fee}) ke saath book kar deti hoon. Unki OPD timing <strong>${sEscapeHtml(doc.timing || "Mon–Sat")}</strong> hai.<br>Aapko kaunsa time slot chahiye? (Jaise: <em>Aaj 5:00 PM</em> ya <em>Kal 10:00 AM</em>)`,

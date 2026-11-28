@@ -134,6 +134,23 @@
   let currentAuthTab = "login";    // 'login' | 'signup'
 
   function getAuthFormHtml(role = currentAuthRole, tab = currentAuthTab) {
+    const activeRole = AuthState.getActiveRole();
+    const activeUser = AuthState.getActiveUser();
+    if (activeRole && activeUser) {
+      const targetUrl = activeRole === "admin" ? "admin.html" : activeRole === "doctor" ? "doctor.html" : activeRole === "receptionist" ? "receptionist.html" : "patient.html";
+      return `
+        <div class="auth-box bg-white rounded-3xl border border-emerald-100 shadow-2xl overflow-hidden max-w-lg w-full mx-auto p-6 sm:p-8 text-center space-y-4">
+          <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-tealbrand mx-auto">
+            <span class="icon icon-shield"></span>
+          </span>
+          <h3 class="font-display text-xl font-bold text-slate-900">Active Session: ${escapeHtml(activeUser.name)}</h3>
+          <p class="text-xs text-slate-600">You are currently signed in as <strong>${escapeHtml(activeRole.toUpperCase())}</strong>. Other portals are locked until you log out.</p>
+          <div class="flex flex-col sm:flex-row gap-2 pt-2">
+            <a href="${targetUrl}" class="flex-1 h-11 rounded-xl bg-tealbrand text-white text-xs font-semibold flex items-center justify-center hover:bg-teal-700 transition">Open My ${escapeHtml(activeRole.toUpperCase())} Portal</a>
+            <button type="button" onclick="window.CareWellAuth.logout()" class="flex-1 h-11 rounded-xl border border-red-200 bg-red-50 text-red-700 text-xs font-semibold hover:bg-red-100 transition">Logout to Switch Role</button>
+          </div>
+        </div>`;
+    }
     const doctors = readJson("carewell_doctors_db", CareWellData?.doctors || []);
 
     return `

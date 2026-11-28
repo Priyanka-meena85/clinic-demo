@@ -354,6 +354,34 @@ textarea:focus-visible {
   box-shadow: 0 12px 24px -8px rgba(15, 118, 110, 0.16);
 }
 
+/* Big Font Mode (50+ Accessibility) & Dark Mode */
+html.big-font-mode {
+  font-size: 18px;
+}
+html.big-font-mode body {
+  line-height: 1.7;
+}
+html.dark-mode body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+html.dark-mode .bg-white {
+  background-color: #1e293b !important;
+  color: #f1f5f9;
+}
+html.dark-mode .bg-mint {
+  background-color: #132a27 !important;
+}
+html.dark-mode .text-slate-950,
+html.dark-mode .text-slate-900,
+html.dark-mode .text-slate-800 {
+  color: #f8fafc !important;
+}
+html.dark-mode .text-slate-600,
+html.dark-mode .text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
 /* Animations & system UI styling */
 @keyframes pulse-ring {
   0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }

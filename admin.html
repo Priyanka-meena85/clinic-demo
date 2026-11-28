@@ -47,15 +47,16 @@
       </div>
 
       <div class="flex items-center gap-2 text-xs font-semibold">
-        <a href="doctor.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
-          Doctor Desk
-        </a>
-        <a href="receptionist.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
-          Reception
-        </a>
-        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 transition shadow-xs">
-          Website
-        </a>
+        <button type="button" onclick="document.querySelector('[data-admin-tab=appointments]')?.click()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          <span class="icon icon-calendar"></span> Bookings
+        </button>
+        <button type="button" onclick="document.querySelector('[data-admin-tab=reports]')?.click()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          <span class="icon icon-file-text"></span> Analytics
+        </button>
+        <button type="button" onclick="document.querySelector('[data-admin-tab=security]')?.click()" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 transition">
+          <span class="icon icon-shield"></span> Security Audit
+        </button>
+        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-tealbrand hover:bg-emerald-50 transition shadow-xs">Website</a>
         <button id="btn-admin-logout" type="button" class="hidden text-xs bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-500/30 px-3 py-1.5 rounded-xl transition">Logout</button>
       </div>
     </div>

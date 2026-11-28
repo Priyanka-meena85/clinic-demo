@@ -73,7 +73,10 @@ function initials(name) {
 
 function doctorPortraitSvg(doctor) {
   const isFemale = doctor.gender === "Female";
-  const coatColor = isFemale ? "#0F766E" : "#065F46";
+  if (isFemale) {
+    return `<img src="assets/doctor-female.jpg" alt="Portrait of ${escapeHtml(doctor.name)}" class="h-14 w-14 rounded-2xl border border-emerald-200 object-cover shadow-xs shrink-0" loading="lazy">`;
+  }
+  const coatColor = "#065F46";
   const hairColor = isFemale ? "#1E293B" : "#0F172A";
   const badge = initials(doctor.name);
   return `
@@ -456,7 +459,7 @@ function renderDoctors() {
       </div>
 
       <div class="mt-2.5 flex items-center justify-between text-[11px] text-slate-500">
-        <span class="truncate">️ ${(doctor.languages || []).join(", ")}</span>
+        <span class="truncate"> ${(doctor.languages || []).join(", ")}</span>
         <button type="button" data-reviews="${escapeHtml(doctor.id)}" class="shrink-0 text-tealbrand font-semibold hover:underline">
           ${state.openReviews === doctor.id ? "Reviews Hide" : `${doctor.reviewCount || 0} Reviews`}
         </button>
@@ -519,7 +522,8 @@ function bookingShareText(row) {
     `Doctor: ${doctor ? doctor.name : row.doctorId}`,
     `Visit: ${row.visitType}`,
     `Date: ${formatDate(row.date)}`,
-    `Time: ${formatSlot(row.slot)}`
+    `Time: ${formatSlot(row.slot)}`,
+    ...(row.paymentMode && row.paymentMode.includes("UPI") ? [`UPI Pay Link: upi://pay?pa=carewell@upi&pn=CareWellClinic&am=100&tn=${row.bookingId || row.token}`] : [])
   ].join("\n");
 }
 
@@ -638,7 +642,7 @@ function renderFooter() {
     <div class="mb-12 pb-8 border-b border-emerald-800/80 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
       <div class="flex items-start sm:items-center gap-3.5">
         <span class="w-12 h-12 rounded-2xl bg-white/10 text-emerald-300 border border-emerald-400/30 flex items-center justify-center font-bold text-xl shrink-0">
-          ️
+          
         </span>
         <div>
           <div class="flex flex-wrap items-center gap-2">
@@ -1271,6 +1275,18 @@ function bindEvents() {
     updateDoctorMeta();
     renderSlots();
   });
+  ["#sym-fever", "#sym-area", "#sym-chronic"].forEach((sel) => {
+    $(sel)?.addEventListener("change", (e) => {
+      const docId = e.target.value;
+      if (!docId) return;
+      $("#patient-doctor").value = docId;
+      state.selectedSlot = "";
+      updateDoctorMeta();
+      renderSlots();
+      const doc = doctorById(docId);
+      if (doc) showToast(`Suggested: ${doc.name} (${doc.specialty})`);
+    });
+  });
   $("#patient-date").addEventListener("change", () => {
     state.selectedSlot = "";
     renderSlots();
@@ -1341,6 +1357,17 @@ function bindEvents() {
   // Sync booking count & lists when WhatsApp Hold or Admin updates appointments
   document.addEventListener("carewell:bookings-updated", () => {
     updateBookingCountAndLists();
+  });
+
+  // Big Font (Bada Akshar) & Dark Mode Toggles
+  $("#big-font-toggle")?.addEventListener("click", () => {
+    const on = document.documentElement.classList.toggle("big-font-mode");
+    showToast(on ? "Bada Akshar Mode ON (Easy Reading)" : "Normal Font Size");
+  });
+  $("#dark-mode-toggle")?.addEventListener("click", () => {
+    const on = document.documentElement.classList.toggle("dark-mode");
+    $("#dark-mode-toggle").textContent = on ? "Light" : "Dark";
+    showToast(on ? "Dark Mode ON" : "Light Mode ON");
   });
 
   // Language Toggle (Hinglish / English)

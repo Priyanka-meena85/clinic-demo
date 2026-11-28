@@ -82,7 +82,11 @@
       if (window.CareWellSecurity) window.CareWellSecurity.resetRateLimit("doctor-login");
       const sel = $("#doc-select-profile");
       activeDoctorId = sel ? sel.value : "ananya-rao";
+      localStorage.removeItem("carewell_admin_auth");
+      localStorage.removeItem("carewell_receptionist_auth");
+      localStorage.removeItem("carewell_patient_auth");
       localStorage.setItem("carewell_doctor_auth_id", activeDoctorId);
+      localStorage.setItem("carewell_session_exp", String(Date.now() + 8 * 3600 * 1000));
       if (window.CareWellApi) {
         window.CareWellApi.loginDoctor(activeDoctorId, pin).catch(() => {});
       }
@@ -121,6 +125,11 @@
         diagnosis: "Acute Viral Fever",
         meds: "1. Tab Paracetamol 650mg SOS / TDS x 3 days\n2. Tab Pantocid 40mg OD before breakfast\n3. ORS Hydration 2L/day",
         advice: "Rest, plenty of warm fluids. Review after 3 days if fever persists."
+      },
+      acidity: {
+        diagnosis: "Acute Gastritis / Acidity",
+        meds: "1. Cap Pantoprazole + Domperidone OD empty stomach x 5 days\n2. Syp Sucralfate 10ml before meals\n3. Avoid spicy/oily food",
+        advice: "Eat small light meals on time. Drink lukewarm water."
       },
       bp: {
         diagnosis: "Essential Hypertension Follow-up",
@@ -249,7 +258,7 @@
     const isBlocked = blocks.some((b) => b.doctorId === activeDoctorId && b.date === tomorrow);
     const leaveBtn = $("#btn-doc-leave-status");
     if (leaveBtn) {
-      leaveBtn.textContent = isBlocked ? "✅ Leave Active (Mark Available)" : "⛔ Kal Main Nahi Hu (Mark Leave)";
+      leaveBtn.textContent = isBlocked ? "Leave Active (Mark Available)" : "Kal Main Nahi Hu (Mark Leave)";
     }
   }
 
@@ -306,12 +315,31 @@
       const qState = readJson("carewell_queue_state", { doctorId: activeDoctorId, current: 8, yourToken: 12 });
       qState.current += 1;
       writeJson("carewell_queue_state", qState);
+      const doc = CareWellData.doctors.find((d) => d.id === activeDoctorId) || CareWellData.doctors[0];
+      if ("speechSynthesis" in window) {
+        try {
+          const u = new SpeechSynthesisUtterance(`Token number ${qState.current}, ${doc.name} ke paas aaiye.`);
+          u.lang = "hi-IN";
+          window.speechSynthesis.speak(u);
+        } catch (e) {}
+      }
       showToast(`Token ${qState.current} called into OPD Room!`);
       renderDoctorData();
     },
 
     markConsultDone() {
-      showToast("Consultation marked completed.");
+      const outbox = readJson("carewell_outbox", []);
+      outbox.unshift({
+        id: `out-${Date.now()}`,
+        phone: "9811111111",
+        patient: $("#curr-pat-name")?.textContent || "Patient",
+        kind: "Google Review Auto-Ask",
+        text: "CareWell Clinic visit kaisa raha? 5-star review dein: https://g.page/r/carewell-pune/review",
+        status: "Queued (1 hr post-visit)",
+        createdAt: new Date().toISOString()
+      });
+      writeJson("carewell_outbox", outbox);
+      showToast("Consultation done! 1-hr Google Review auto-ask queued.");
       window.CareWellDoctor.callNextPatient();
     },
 
@@ -349,15 +377,31 @@
     },
 
     toggleLeave() {
-      const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+      const dateInput = $("#doc-leave-date");
+      const targetDate = (dateInput && dateInput.value) || new Date(Date.now() + 86400000).toISOString().split("T")[0];
+      if (dateInput && !dateInput.value) dateInput.value = targetDate;
       const blocks = readJson("carewell_blocks", []);
-      const idx = blocks.findIndex((b) => b.doctorId === activeDoctorId && b.date === tomorrow);
+      const idx = blocks.findIndex((b) => b.doctorId === activeDoctorId && b.date === targetDate);
       if (idx >= 0) {
         blocks.splice(idx, 1);
-        showToast("Leave cancelled. Tomorrow slots are now open!");
+        showToast(`Leave cancelled for ${targetDate}. Slots open!`);
       } else {
-        blocks.push({ doctorId: activeDoctorId, date: tomorrow, slot: "" });
-        showToast("Leave marked: 'Kal main nahi hu' activated for tomorrow!");
+        blocks.push({ doctorId: activeDoctorId, date: targetDate, slot: "" });
+        const affected = readJson("carewell_appointments", []).filter((a) => a.doctorId === activeDoctorId && a.date === targetDate && a.status !== "cancelled");
+        const outbox = readJson("carewell_outbox", []);
+        affected.forEach((a) => {
+          outbox.unshift({
+            id: `out-${Date.now()}-${a.id}`,
+            phone: a.phone,
+            patient: a.patientName,
+            kind: "Smart Leave Alert",
+            text: `Doctor ${targetDate} ko unavailable hain. Kripya apna slot reschedule karein.`,
+            status: "Delivered",
+            createdAt: new Date().toISOString()
+          });
+        });
+        writeJson("carewell_outbox", outbox);
+        showToast(`Leave set for ${targetDate}! ${affected.length} patient(s) notified on WhatsApp.`);
       }
       writeJson("carewell_blocks", blocks);
       renderDoctorData();

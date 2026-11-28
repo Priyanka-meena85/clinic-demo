@@ -72,7 +72,11 @@
       }
       if (window.CareWellSecurity) window.CareWellSecurity.resetRateLimit("admin-login");
       isAdminLoggedIn = true;
+      localStorage.removeItem("carewell_receptionist_auth");
+      localStorage.removeItem("carewell_doctor_auth_id");
+      localStorage.removeItem("carewell_patient_auth");
       localStorage.setItem("carewell_admin_auth", "true");
+      localStorage.setItem("carewell_session_exp", String(Date.now() + 8 * 3600 * 1000));
       if (window.CareWellApi) {
         window.CareWellApi.loginAdmin(username, password).catch(() => {});
       }
@@ -82,7 +86,11 @@
 
     $("#btn-quick-admin-login")?.addEventListener("click", () => {
       isAdminLoggedIn = true;
+      localStorage.removeItem("carewell_receptionist_auth");
+      localStorage.removeItem("carewell_doctor_auth_id");
+      localStorage.removeItem("carewell_patient_auth");
       localStorage.setItem("carewell_admin_auth", "true");
+      localStorage.setItem("carewell_session_exp", String(Date.now() + 8 * 3600 * 1000));
       if (window.CareWellApi) {
         window.CareWellApi.loginAdmin(username, password).catch(() => {});
       }
@@ -165,8 +173,16 @@
               <button type="button" onclick="window.CareWellAdmin.openAddDoctorModal()" class="px-3.5 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 shadow-xs">
                 + Add Doctor
               </button>
-              <button type="button" onclick="window.CareWellAdmin.triggerBroadcast('All Tomorrow Patients')" class="px-3.5 py-2 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100">
-                📲 Send Tomorrow Reminders
+              <select id="admin-broadcast-filter" aria-label="Broadcast audience filter" class="h-9 px-2.5 rounded-xl border border-emerald-200 bg-white text-xs font-semibold text-slate-700 outline-none">
+                <option value="Tomorrow Appointments">Kal ke Appointments</option>
+                <option value="Sugar & BP Follow-up">Sugar / BP Patients</option>
+                <option value="Health Checkup Camp">₹999 Package Camp</option>
+              </select>
+              <button type="button" onclick="window.CareWellAdmin.createHealthCamp()" class="px-3.5 py-2 rounded-xl border border-emerald-200 bg-white text-tealbrand text-xs font-semibold hover:bg-mint">
+                + Health Camp
+              </button>
+              <button type="button" onclick="window.CareWellAdmin.triggerBroadcast(document.querySelector('#admin-broadcast-filter')?.value || 'All Tomorrow Patients')" class="px-3.5 py-2 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100">
+                Send Filtered Broadcast
               </button>
             </div>
           </div>
@@ -184,7 +200,7 @@
                 <span class="text-3xl font-display font-bold text-emerald-600">${noShowPct}%</span>
                 <span class="text-xs line-through text-slate-400">Industry 15%</span>
               </div>
-              <span class="text-xs text-emerald-600 font-medium">WhatsApp 1/2 Confirm Active</span>
+              <span class="text-xs text-emerald-600 font-medium">Peak No-Show: Mon 9-10 AM (Overbook +1)</span>
             </div>
 
             <div class="portal-kpi-card p-5">
@@ -307,10 +323,10 @@
                       </td>
                       <td class="p-3 text-right space-x-1">
                         <button type="button" onclick="window.CareWellAdmin.sendReminder('${a.id}')" title="Send WhatsApp Reminder" class="px-2 py-1 rounded bg-mint text-tealbrand hover:bg-emerald-100 text-[11px] font-medium">
-                          📲 Remind
+                          Remind
                         </button>
                         <button type="button" onclick="window.CareWellAdmin.markStatus('${a.id}', 'done')" class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[11px] font-medium">
-                          ✓ Done
+                          Done
                         </button>
                         <button type="button" onclick="window.CareWellAdmin.markStatus('${a.id}', 'noshow')" class="px-2 py-1 rounded bg-amber-50 text-amber-700 hover:bg-amber-100 text-[11px] font-medium">
                           No-Show
@@ -405,7 +421,7 @@
                     </div>
                     <p class="text-xs text-slate-500 mt-2">${escapeHtml(d.qualifications)} · ${d.experienceYears} yrs exp</p>
                     <p class="text-xs text-slate-700 mt-1 font-semibold">Consultation Fee: ₹${d.fee}</p>
-                    <p class="text-[11px] text-slate-500 mt-1">🕒 ${escapeHtml(d.timing || "Mon–Sat 9AM–1PM")}</p>
+                    <p class="text-[11px] text-slate-500 mt-1">${escapeHtml(d.timing || "Mon–Sat 9AM–1PM")}</p>
                   </div>
                   <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span class="text-slate-500">Rating: ★ ${d.rating || 4.8}</span>
@@ -460,7 +476,7 @@
                 </div>
               </div>
               <p class="text-xs text-tealbrand font-medium mt-4">
-                ✓ Auto WhatsApp alert triggers when patient is 2 tokens away!
+                Auto WhatsApp alert triggers when patient is 2 tokens away!
               </p>
             </div>
           </div>
@@ -479,7 +495,7 @@
               <p class="text-xs text-slate-500">Automated BP, Diabetes & Vaccination reminders to bring patients back</p>
             </div>
             <button type="button" onclick="window.CareWellAdmin.sendAllFollowups()" class="px-3.5 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 shadow-xs">
-              📲 Send All Reminders via WhatsApp
+              Send All Reminders via WhatsApp
             </button>
           </div>
 
@@ -647,7 +663,7 @@
               <p class="text-xs text-slate-500 mb-3">Pre-automation (12%) vs post-automation (3%)</p>
               
               <div class="p-4 rounded-xl bg-mint border border-emerald-200 mb-3 text-xs text-tealbrand leading-relaxed font-medium">
-                ✓ Automated 1-day reminders on WhatsApp reduced clinic no-shows from <strong>12% to 3%</strong>, saving an estimated <strong>₹28,500/month</strong> in recovered patient slots.
+                Automated 1-day reminders on WhatsApp reduced clinic no-shows from <strong>12% to 3%</strong>, saving an estimated <strong>₹28,500/month</strong> in recovered patient slots.
               </div>
 
               <div class="space-y-2 text-xs">
@@ -692,10 +708,10 @@
             </div>
             <div class="pt-2 flex gap-3">
               <button type="button" onclick="window.CareWellAdmin.blockDoctorDay(true)" class="flex-1 h-11 rounded-xl bg-red-600 text-white text-xs font-semibold hover:bg-red-700">
-                🚫 "Kal Main Nahi Hu" (Full Day Band)
+                "Kal Main Nahi Hu" (Full Day Band)
               </button>
               <button type="button" onclick="window.CareWellAdmin.blockDoctorDay(false)" class="flex-1 h-11 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">
-                ✅ Khol Do (Open Slots)
+                Khol Do (Open Slots)
               </button>
             </div>
           </div>
@@ -827,7 +843,7 @@
         phone: "9811111111",
         patient: "Riya Sharma",
         kind: "Queue Alert",
-        text: `🚨 Reminder: Token No. ${qState.yourToken} - Agle 15 minutes mein aapka number aane wala hai!`,
+        text: `Reminder: Token No. ${qState.yourToken} - Agle 15 minutes mein aapka number aane wala hai!`,
         status: "Delivered",
         createdAt: new Date().toISOString()
       });
@@ -1091,6 +1107,26 @@
         showToast(`Walk-in Token #${tokenNo} (${bookingId}) issued for ${patientName}!`);
         renderTabContent();
       });
+    },
+
+    createHealthCamp() {
+      const title = window.prompt("Health Camp Title:", "Free Sugar Checkup Camp - Sunday");
+      if (!title) return;
+      const camps = readJson("carewell_health_camps", []);
+      camps.unshift({ id: `camp-${Date.now()}`, title: title.trim(), registrations: 42, createdAt: new Date().toISOString() });
+      writeJson("carewell_health_camps", camps);
+      const outbox = readJson("carewell_outbox", []);
+      outbox.unshift({
+        id: `out-${Date.now()}`,
+        phone: "All Camp Leads",
+        patient: "Camp Invite",
+        kind: "Health Camp",
+        text: `${title.trim()} — Register karein CareWell Clinic Camp, Pune par! Limited 100 slots.`,
+        status: "Broadcast Sent",
+        createdAt: new Date().toISOString()
+      });
+      writeJson("carewell_outbox", outbox);
+      showToast(`Health Camp "${title.trim()}" launched & WhatsApp invite sent!`);
     },
 
     exportAppointmentsCsv() {

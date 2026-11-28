@@ -107,7 +107,11 @@
         window.CareWellApi.verifyOtp(phone, otp === "1234" ? "4289" : otp).catch(() => {});
       }
       isPatientLoggedIn = true;
+      localStorage.removeItem("carewell_admin_auth");
+      localStorage.removeItem("carewell_receptionist_auth");
+      localStorage.removeItem("carewell_doctor_auth_id");
       localStorage.setItem("carewell_patient_auth", "true");
+      localStorage.setItem("carewell_session_exp", String(Date.now() + 8 * 3600 * 1000));
       showWorkspace();
       showToast("OTP verified! Welcome to Patient Portal");
     });
@@ -137,7 +141,11 @@
 
     $("#btn-quick-patient-login")?.addEventListener("click", () => {
       isPatientLoggedIn = true;
+      localStorage.removeItem("carewell_admin_auth");
+      localStorage.removeItem("carewell_receptionist_auth");
+      localStorage.removeItem("carewell_doctor_auth_id");
       localStorage.setItem("carewell_patient_auth", "true");
+      localStorage.setItem("carewell_session_exp", String(Date.now() + 8 * 3600 * 1000));
       activeMemberId = "CW-2048";
       localStorage.setItem("carewell_active_patient_member", "CW-2048");
       showWorkspace();
@@ -180,15 +188,34 @@
     if ($("#patient-blood-stat")) $("#patient-blood-stat").textContent = member.blood || "B+";
 
     const chipsContainer = $("#family-chips-container");
+    const dropdown = $("#patient-family-dropdown");
+    if (dropdown) {
+      dropdown.innerHTML = familyMembers.map((mem) => `<option value="${mem.patientId}" ${mem.patientId === member.patientId ? "selected" : ""}>${escapeHtml(mem.name)} (${escapeHtml(mem.relation)})</option>`).join("");
+      dropdown.onchange = () => {
+        activeMemberId = dropdown.value;
+        localStorage.setItem("carewell_active_patient_member", activeMemberId);
+        renderFamilyChips();
+        renderTabContent();
+      };
+    }
+    const qState = readJson("carewell_queue_state", { doctorId: "ananya-rao", current: 8, yourToken: 12, avgMinsPerPatient: 7.5 });
+    const qDoc = (CareWellData?.doctors || []).find((d) => d.id === qState.doctorId) || CareWellData?.doctors?.[0];
+    const diff = Math.max(0, qState.yourToken - qState.current);
+    const estMins = Math.round(diff * (qState.avgMinsPerPatient || 7.5));
+    if ($("#patient-aaj-status-text")) {
+      $("#patient-aaj-status-text").textContent = diff === 0
+        ? `Token #${qState.yourToken} · ${qDoc ? qDoc.name : "Doctor"} · Aapka number abhi hai! Room mein aaiye.`
+        : `Token #${qState.yourToken} · ${qDoc ? qDoc.name : "Doctor"} · ~${estMins} min baaki hai · Aap ghar par hi rukiye`;
+    }
     if (!chipsContainer) return;
 
     chipsContainer.innerHTML = familyMembers.map((mem) => `
-      <button type="button" data-member-id="${mem.patientId}" class="px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
+      <button type="button" data-member-id="${mem.patientId}" class="px-3.5 py-2 rounded-xl text-xs font-semibold transition inline-flex items-center gap-1.5 ${
         mem.patientId === member.patientId
           ? "bg-tealbrand text-white shadow-xs"
           : "bg-white text-slate-700 border border-emerald-200 hover:bg-emerald-50"
       }">
-        👤 ${escapeHtml(mem.name)} (${escapeHtml(mem.relation)})
+        <span class="icon icon-user"></span> ${escapeHtml(mem.name)} (${escapeHtml(mem.relation)})
       </button>
     `).join("");
 
@@ -286,7 +313,7 @@
                         ${escapeHtml(app.doctorName || "Dr. Ananya Rao")}
                       </h4>
                       <p class="text-xs text-slate-500 mt-0.5">
-                        📅 ${escapeHtml(app.date)} · ⏰ ${escapeHtml(app.slot)} · Reason: ${escapeHtml(app.reason || "General Checkup")}
+                        ${escapeHtml(app.date)} · ⏰ ${escapeHtml(app.slot)} · Reason: ${escapeHtml(app.reason || "General Checkup")}
                       </p>
                     </div>
 
@@ -297,7 +324,13 @@
                       <button type="button" onclick="window.CareWellPatient.viewReceiptModal('${escapeHtml(app.id)}')" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-white text-tealbrand text-xs font-semibold hover:bg-mint transition">
                         Receipt
                       </button>
+                      <button type="button" onclick="window.CareWellPatient.rateDoctorVisit('${escapeHtml(app.id)}')" class="px-3 py-1.5 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-xs font-semibold hover:bg-amber-100 transition">
+                        Rate Visit
+                      </button>
                       ${app.status !== "cancelled" ? `
+                        <button type="button" onclick="window.CareWellPatient.rescheduleWithReason('${escapeHtml(app.id)}')" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-white text-slate-700 text-xs font-semibold hover:bg-emerald-50 transition">
+                          Slot Change
+                        </button>
                         <button type="button" onclick="window.CareWellPatient.cancelAppointment('${escapeHtml(app.id)}')" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-medium hover:bg-red-50 hover:text-red-700 transition">
                           Cancel
                         </button>
@@ -354,6 +387,9 @@
                     </div>
 
                     <div class="shrink-0 flex sm:flex-col gap-2">
+                      <button type="button" onclick="window.CareWellPatient.setMedicineReminder('${escapeHtml(rx.id)}')" class="px-3.5 py-2 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 transition">
+                        9 AM Reminder
+                      </button>
                       <button type="button" onclick="window.CareWellPatient.viewRxModal('${escapeHtml(rx.id)}')" class="px-3.5 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 transition flex items-center gap-1.5 shadow-2xs">
                         <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print / View Rx PDF
                       </button>
@@ -382,15 +418,18 @@
       } else {
         container.innerHTML = `
           <div class="space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-emerald-100">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-emerald-100">
               <div>
-                <h3 class="font-display text-lg font-bold text-slate-900">Diagnostic Reports & Lab Results</h3>
-                <p class="text-xs text-slate-500">Blood Test, Sugar, X-Ray — Digital View & Download</p>
+                <h3 class="font-display text-lg font-bold text-slate-900">Diagnostic Reports &amp; Lab Vault</h3>
+                <p class="text-xs text-slate-500">Blood Test, Sugar, X-Ray — Filter by category</p>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                ${["All", "Blood Test", "X-Ray"].map((cat) => `<button type="button" onclick="window.CareWellPatient.filterReports('${cat}')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${ (window._patReportFilter || "All") === cat ? "bg-tealbrand text-white border-tealbrand" : "bg-white text-slate-700 border-emerald-200" }">${cat}</button>`).join("")}
               </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${reports.map((rep) => `
+              ${reports.filter((rep) => !window._patReportFilter || window._patReportFilter === "All" || rep.type === window._patReportFilter).map((rep) => `
                 <div class="p-5 rounded-2xl border border-emerald-100 bg-white shadow-2xs flex flex-col justify-between">
                   <div>
                     <div class="flex items-center justify-between">
@@ -403,11 +442,16 @@
                     <p class="text-xs text-slate-600 mt-1">${escapeHtml(rep.note || "Report normal. Verified by Pathologist.")}</p>
                   </div>
 
-                  <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span class="text-[11px] text-emerald-700 font-medium">✓ Doctor Reviewed</span>
-                    <button type="button" onclick="window.CareWellPatient.downloadReport('${escapeHtml(rep.name)}')" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 flex items-center gap-1.5">
-                      <i data-lucide="download" class="w-3.5 h-3.5"></i> Download PDF
-                    </button>
+                  <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <span class="text-[11px] text-emerald-700 font-medium">Doctor Reviewed</span>
+                    <div class="flex gap-1.5">
+                      <button type="button" onclick="window.CareWellPatient.explainReportAI('${escapeHtml(rep.name)}', '${escapeHtml(rep.note || "")}')" class="px-2.5 py-1.5 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">
+                        Explain in Hindi (AI)
+                      </button>
+                      <button type="button" onclick="window.CareWellPatient.downloadReport('${escapeHtml(rep.name)}')" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 flex items-center gap-1.5">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> PDF
+                      </button>
+                    </div>
                   </div>
                 </div>
               `).join("")}
@@ -492,6 +536,90 @@
 
   // Public Actions
   window.CareWellPatient = {
+    rescheduleWithReason(id) {
+      const reason = window.prompt("Slot change reason (e.g. Traffic / Running Late):", "Traffic / Running Late");
+      if (!reason) return;
+      const newSlot = window.prompt("Preferred new slot (e.g. Tomorrow 10:00 AM):", "Tomorrow 10:00 AM");
+      if (!newSlot) return;
+      const appointments = readJson("carewell_appointments", []);
+      const a = appointments.find((x) => x.id === id);
+      if (a) {
+        a.slot = newSlot.trim();
+        a.rescheduleReason = reason.trim();
+        writeJson("carewell_appointments", appointments);
+        showToast(`Slot rescheduled to ${newSlot} (${reason})`);
+        renderTabContent();
+      }
+    },
+
+    setMedicineReminder(rxId) {
+      const member = familyMembers.find((m) => m.patientId === activeMemberId) || familyMembers[0];
+      const outbox = readJson("carewell_outbox", []);
+      outbox.unshift({
+        id: `out-${Date.now()}`,
+        phone: member.phone || "9811111111",
+        patient: member.name,
+        kind: "Medicine Reminder",
+        text: `Subah 9:00 AM Medicine Reminder (${rxId}): Apni prescribed dose lena na bhulein.`,
+        status: "Scheduled",
+        createdAt: new Date().toISOString()
+      });
+      writeJson("carewell_outbox", outbox);
+      showToast("9:00 AM Daily Medicine Reminder scheduled on WhatsApp!");
+    },
+
+    filterReports(category) {
+      window._patReportFilter = category;
+      renderTabContent();
+    },
+
+    rechargeWallet() {
+      const bal = Number(localStorage.getItem("carewell_wallet_bal") || 2000) + 2000;
+      localStorage.setItem("carewell_wallet_bal", String(bal));
+      if ($("#patient-wallet-bal")) $("#patient-wallet-bal").textContent = `₹${bal.toLocaleString("en-IN")}`;
+      showToast(`Wallet recharged! Balance: ₹${bal.toLocaleString("en-IN")} (10% Off Active)`);
+    },
+
+    copyReferral() {
+      const msg = "CareWell Clinic Camp Pune pe slot book karo aur ₹100 off paao! Code: CAREWELL-100";
+      if (navigator.clipboard) navigator.clipboard.writeText(msg).catch(() => {});
+      showToast("Referral code CAREWELL-100 copied! Share on WhatsApp.");
+    },
+
+    rateDoctorVisit(id) {
+      const rating = window.prompt("Doctor ne acche se suna? Rating dein (1 to 5):", "5");
+      if (!rating) return;
+      const ratings = readJson("carewell_doctor_ratings", []);
+      ratings.unshift({ id, rating: Number(rating) || 5, date: new Date().toISOString() });
+      writeJson("carewell_doctor_ratings", ratings);
+      showToast(`Thank you! ${rating}/5 rating saved for clinic quality review.`);
+    },
+
+    explainReportAI(name, note) {
+      const modalContainer = $("#prescription-modal-container");
+      if (!modalContainer) return;
+      const q = `${name} ${note}`.toLowerCase();
+      let hindiExplain = "Aapki report general parameters ke andar hai. Doctor ke review ke hisaab se regular paani aur balanced diet rakhein.";
+      if (q.includes("sugar") || q.includes("118")) {
+        hindiExplain = "Aapka fasting sugar (118 mg/dL) thoda borderline high hai — ghabrane ki baat nahi. Meetha, cold drinks aur maida band karein, aur roz 30 min walk karein.";
+      } else if (q.includes("x-ray") || q.includes("chest")) {
+        hindiExplain = "Chest X-Ray normal hai — koi acute infection ya fluid nahi dikh raha. Agar khansi rahe to steam aur warm water continue rakhein.";
+      } else if (q.includes("cbc") || q.includes("hemoglobin")) {
+        hindiExplain = "CBC report mein Hemoglobin 11.8 g/dL hai jo mild low/borderline hai. Hari sabziyan, chana, aur iron-rich diet badhayein.";
+      }
+      modalContainer.innerHTML = `
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-md p-6">
+            <h3 class="font-display text-lg font-bold text-tealbrand">AI Report Explainer (Simple Hindi)</h3>
+            <p class="text-xs font-semibold text-slate-800 mt-2">${escapeHtml(name)}</p>
+            <div class="mt-3 p-4 rounded-2xl bg-mint border border-emerald-200 text-xs leading-relaxed text-slate-800">${escapeHtml(hindiExplain)}</div>
+            <div class="mt-4 flex justify-end">
+              <button type="button" onclick="document.querySelector('#prescription-modal-container').innerHTML=''" class="px-4 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold">Samajh Aa Gaya</button>
+            </div>
+          </div>
+        </div>`;
+    },
+
     cancelAppointment(id) {
       const appointments = readJson("carewell_appointments", []);
       const a = appointments.find((x) => x.id === id);

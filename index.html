@@ -88,7 +88,7 @@
 
   <main id="main">
     <section id="home" class="bg-mint">
-      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+      <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:px-8">
         <div>
           <p id="hero-kicker" class="text-sm font-semibold text-tealbrand"></p>
           <h1 class="mt-3 font-display text-4xl leading-[1.05] text-slate-950 sm:text-6xl">
@@ -97,9 +97,9 @@
           </h1>
           <p id="hero-body" class="mt-5 max-w-xl text-base leading-7 text-slate-600"></p>
           <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <button type="button" data-open-booking id="hero-primary" class="inline-flex h-12 items-center justify-center rounded-full bg-tealbrand px-5 text-sm font-semibold text-white"></button>
-            <a href="#doctors" id="hero-secondary" class="inline-flex h-12 items-center justify-center rounded-full border border-emerald-200 bg-white px-5 text-sm font-semibold text-tealbrand"></a>
-            <a id="hero-call" class="inline-flex h-12 items-center justify-center gap-2 rounded-full px-2 text-sm font-semibold text-slate-700">
+            <button type="button" data-open-booking id="hero-primary" class="inline-flex min-h-[48px] w-full sm:w-auto items-center justify-center rounded-full bg-tealbrand px-6 text-sm font-semibold text-white shadow-sm hover:bg-teal-700 active:scale-[0.99] transition"></button>
+            <a href="#doctors" id="hero-secondary" class="inline-flex min-h-[48px] w-full sm:w-auto items-center justify-center rounded-full border border-emerald-200 bg-white px-6 text-sm font-semibold text-tealbrand shadow-xs hover:bg-emerald-50 transition"></a>
+            <a id="hero-call" class="inline-flex min-h-[48px] w-full sm:w-auto items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold text-slate-700 hover:bg-white/70 transition">
               <span class="icon icon-phone"></span>
               <span id="hero-call-label"></span>
             </a>
@@ -107,7 +107,7 @@
           <dl id="trust-row" class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3"></dl>
         </div>
 
-        <aside class="rounded-[28px] border border-emerald-100 bg-white p-5 sm:p-7">
+        <aside class="rounded-2xl border border-emerald-100 bg-white p-6 sm:p-7 shadow-sm">
           <div class="flex items-start justify-between gap-3">
             <div>
               <p class="text-sm font-semibold text-tealbrand">Aaj ki OPD</p>
@@ -124,16 +124,16 @@
       </div>
     </section>
 
-    <section id="services" class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+    <section id="services" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       <div class="max-w-2xl">
         <p class="text-sm font-semibold text-tealbrand">Services</p>
-        <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Kaunsi madad chahiye?</h2>
-        <p class="mt-3 text-sm leading-6 text-slate-600">Department select karein aur us specialty ke available doctors aur OPD slots dekhein.</p>
+        <h2 class="mt-2 font-display text-3xl font-semibold text-slate-950 sm:text-4xl">Kaunsi madad chahiye?</h2>
+        <p class="mt-3 text-sm sm:text-base leading-relaxed text-slate-600">Department select karein aur us specialty ke available doctors aur OPD slots dekhein.</p>
       </div>
-      <div id="service-grid" class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+      <div id="service-grid" class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3"></div>
 
       <!-- Priority OPD Slot (Instant WhatsApp Auto-Booking) -->
-      <div id="hold-free-slot-box" class="mt-10 rounded-3xl border-2 border-emerald-300 bg-gradient-to-br from-mint via-white to-emerald-50 p-6 sm:p-8 shadow-sm">
+      <div id="hold-free-slot-box" class="mt-10 rounded-2xl border-2 border-emerald-300 bg-gradient-to-br from-mint via-white to-emerald-50 p-6 sm:p-8 shadow-sm">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div class="lg:col-span-7">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#25D366]/10 text-emerald-800 border border-[#25D366]/30">
@@ -200,7 +200,7 @@
     </section>
 
     <section id="doctors" class="border-y border-emerald-100 bg-mint">
-      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div class="max-w-2xl">
           <p class="text-sm font-semibold text-tealbrand">Doctors</p>
           <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Kis doctor se milna hai?</h2>
@@ -231,45 +231,47 @@
       </div>
     </section>
 
-    <section id="steps" class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+    <section id="steps" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       <div class="max-w-2xl">
         <p class="text-sm font-semibold text-tealbrand">Booking</p>
-        <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Teeno steps, phir clinic.</h2>
+        <h2 class="mt-2 font-display text-3xl font-semibold text-slate-950 sm:text-4xl">Teeno steps, phir clinic.</h2>
       </div>
-      <ol id="step-list" class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3"></ol>
+      <ol id="step-list" class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3"></ol>
     </section>
 
     <section id="stories" class="bg-mint">
-      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div class="max-w-2xl">
           <p class="text-sm font-semibold text-tealbrand">Patient stories</p>
-          <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Jo log aake gaye, unki baat.</h2>
+          <h2 class="mt-2 font-display text-3xl font-semibold text-slate-950 sm:text-4xl">Jo log aake gaye, unki baat.</h2>
         </div>
-        <div id="story-grid" class="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3"></div>
+        <div id="story-grid" class="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-3"></div>
       </div>
     </section>
 
-    <section id="faq" class="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
-      <p class="text-sm font-semibold text-tealbrand">FAQ</p>
-      <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Pehle se pucha jaata hai</h2>
-      <div id="faq-list" class="mt-6 border-t border-emerald-100"></div>
+    <section id="faq" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <div class="max-w-3xl">
+        <p class="text-sm font-semibold text-tealbrand">FAQ</p>
+        <h2 class="mt-2 font-display text-3xl font-semibold text-slate-950 sm:text-4xl">Pehle se pucha jaata hai</h2>
+        <div id="faq-list" class="mt-6 border-t border-emerald-100"></div>
+      </div>
     </section>
 
     <section id="bookings" class="border-y border-emerald-100 bg-mint">
-      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div class="max-w-2xl">
             <p class="text-sm font-semibold text-tealbrand">Your bookings</p>
-            <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Aapki appointments</h2>
-            <p class="mt-3 text-sm leading-6 text-slate-600">Apni active appointments yahan dekhein, reschedule karein, ya zaroorat padne par cancel karein.</p>
+            <h2 class="mt-2 font-display text-3xl font-semibold text-slate-950 sm:text-4xl">Aapki appointments</h2>
+            <p class="mt-3 text-sm sm:text-base leading-relaxed text-slate-600">Apni active appointments yahan dekhein, reschedule karein, ya zaroorat padne par cancel karein.</p>
           </div>
-          <button type="button" data-open-booking class="inline-flex h-12 items-center justify-center rounded-full bg-tealbrand px-5 text-sm font-semibold text-white">Naya slot book karo</button>
+          <button type="button" data-open-booking class="inline-flex min-h-[48px] w-full sm:w-auto items-center justify-center rounded-full bg-tealbrand px-6 text-sm font-semibold text-white shadow-sm hover:bg-teal-700 transition">Naya slot book karo</button>
         </div>
-        <div id="booking-list" class="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2"></div>
+        <div id="booking-list" class="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2"></div>
       </div>
     </section>
 
-    <section id="visit" class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+    <section id="visit" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
           <p class="text-sm font-semibold text-tealbrand">Visit</p>
@@ -314,33 +316,33 @@
       </div>
     </section>
     <section id="queue" class="border-t border-emerald-100 bg-mint">
-      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <p class="text-sm font-semibold text-tealbrand">Live token</p>
-        <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Queue abhi kahan hai?</h2>
-        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">Ghar se nikalna tab, jab number nazdeek ho. Do ghante waiting room mein nahi.</p>
+        <h2 class="mt-2 font-display text-3xl font-semibold text-slate-950 sm:text-4xl">Queue abhi kahan hai?</h2>
+        <p class="mt-3 max-w-2xl text-sm sm:text-base leading-relaxed text-slate-600">Ghar se nikalna tab, jab number nazdeek ho. Do ghante waiting room mein nahi.</p>
         <div id="queue-panel" class="mt-6"></div>
       </div>
     </section>
 
-    <section id="whatsapp" class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+    <section id="whatsapp" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       <p class="text-sm font-semibold text-tealbrand">WhatsApp automation</p>
-      <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Booking ka message auto jayega</h2>
-      <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">WhatsApp par "1" bhejkar confirm karein ya "2" bhejkar cancel karein — instant confirmation aur reminder updates.</p>
-      <div id="wa-panel" class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2"></div>
+      <h2 class="mt-2 font-display text-3xl font-semibold text-slate-950 sm:text-4xl">Booking ka message auto jayega</h2>
+      <p class="mt-3 max-w-2xl text-sm sm:text-base leading-relaxed text-slate-600">WhatsApp par "1" bhejkar confirm karein ya "2" bhejkar cancel karein — instant confirmation aur reminder updates.</p>
+      <div id="wa-panel" class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2"></div>
     </section>
 
     <section id="calls" class="bg-mint">
-      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <p class="text-sm font-semibold text-tealbrand">AI calling</p>
-        <h2 class="mt-2 font-display text-3xl text-slate-950 sm:text-4xl">Missed call wapas cover hogi</h2>
-        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">Agar clinic desk par call miss ho jaye to hamara 24/7 AI callback turant patient ko call karke slot confirm karta hai.</p>
+        <h2 class="mt-2 font-display text-3xl font-semibold text-slate-950 sm:text-4xl">Missed call wapas cover hogi</h2>
+        <p class="mt-3 max-w-2xl text-sm sm:text-base leading-relaxed text-slate-600">Agar clinic desk par call miss ho jaye to hamara 24/7 AI callback turant patient ko call karke slot confirm karta hai.</p>
         <div id="call-panel" class="mt-6"></div>
       </div>
     </section>
 
     <!-- Dedicated Role Portals Gateway (Clean, Non-cluttered) -->
     <section id="portals" class="border-t border-emerald-100 bg-slate-50">
-      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-tealbrand border border-emerald-200">
@@ -433,7 +435,7 @@
     </section>
   </main>
 
-  <div class="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2.5">
+  <div id="floating-cta-dock" class="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2.5">
     <!-- Reel Feature 2: Floating Bot Button (Raat Ko AI Call Uthayega - Themed to CareWell) -->
     <button id="floating-ai-bot" type="button" onclick="window.CareWellSystem.openAICallModal()" class="floating-ai-brand" title="Raat Ko AI Call Uthayega (24/7 AI Receptionist)">
       <span class="relative flex h-3 w-3">

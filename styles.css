@@ -6,14 +6,89 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   color: var(--ink);
+  overflow-x: hidden;
 }
 
 main section[id] {
   scroll-margin-top: 4.5rem;
+}
+
+main section h2 {
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+/* Consistent tap targets for filter chips */
+.finder-chip {
+  min-height: 44px;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.finder-chip:hover {
+  border-color: #0f766e;
+}
+.finder-chip:active {
+  transform: scale(0.98);
+}
+
+/* Smooth FAQ accordion */
+[data-faq-button] .icon-chevron-down {
+  transition: transform 220ms ease;
+  flex-shrink: 0;
+}
+[data-faq-button][aria-expanded="true"] .icon-chevron-down {
+  transform: rotate(180deg);
+}
+[data-faq-panel] {
+  transition: opacity 200ms ease;
+}
+
+/* Sticky mobile bottom CTA bar from existing CTAs */
+@media (max-width: 767px) {
+  #floating-cta-dock {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.625rem 0.75rem calc(0.625rem + env(safe-area-inset-bottom));
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid #d1fae5;
+    box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  #floating-cta-dock > #floating-ai-bot {
+    padding: 0.5rem 0.75rem;
+    min-height: 48px;
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  #floating-cta-dock > div {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 0.5rem;
+  }
+
+  #floating-cta-dock #emergency-float,
+  #floating-cta-dock #wa-float {
+    min-height: 48px;
+    flex: 1 1 0%;
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
+    white-space: nowrap;
+  }
+
+  footer {
+    padding-bottom: 5.5rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

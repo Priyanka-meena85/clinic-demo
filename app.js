@@ -287,13 +287,13 @@ function renderClinicStatus() {
 
 function renderServices() {
   $("#service-grid").innerHTML = CareWellData.services.map((service) => `
-    <article class="flex h-full flex-col rounded-3xl border border-emerald-100 bg-white p-5">
+    <article class="ux-card-hover flex h-full flex-col rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm">
       <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-mint text-tealbrand">
         <span class="icon icon-stethoscope text-tealbrand"></span>
       </span>
       <h3 class="mt-4 font-display text-2xl text-slate-950">${escapeHtml(service.title)}</h3>
       <p class="mt-2 flex-1 text-sm leading-6 text-slate-600">${escapeHtml(service.text)}</p>
-      <button type="button" data-jump-specialty="${escapeHtml(service.specialty)}" class="mt-5 inline-flex h-11 items-center gap-2 text-sm font-semibold text-tealbrand">
+      <button type="button" data-jump-specialty="${escapeHtml(service.specialty)}" class="mt-5 inline-flex min-h-[48px] items-center gap-2 text-sm font-semibold text-tealbrand hover:text-teal-700 transition">
         Doctors dekho <span class="icon icon-arrow-right"></span>
       </button>
     </article>`).join("");
@@ -425,7 +425,7 @@ function renderDoctors() {
 
 function renderSteps() {
   $("#step-list").innerHTML = CareWellData.steps.map((step, index) => `
-    <li class="rounded-3xl border border-emerald-100 p-5">
+    <li class="ux-card-hover h-full rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm">
       <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-mint text-tealbrand">
         <span class="icon icon-check text-tealbrand"></span>
       </span>
@@ -437,7 +437,7 @@ function renderSteps() {
 
 function renderStories() {
   $("#story-grid").innerHTML = CareWellData.testimonials.map((story) => `
-    <figure class="flex h-full flex-col rounded-3xl border border-emerald-100 bg-white p-5">
+    <figure class="ux-card-hover flex h-full flex-col rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm">
       <span class="icon icon-quote text-tealbrand"></span>
       <blockquote class="mt-3 flex-1 text-base leading-7 text-slate-800">“${escapeHtml(story.quote)}”</blockquote>
       <figcaption class="mt-5 text-sm">
@@ -451,7 +451,7 @@ function renderStories() {
 function renderFaqs() {
   $("#faq-list").innerHTML = CareWellData.faqs.map((item, index) => `
     <div class="border-b border-emerald-100">
-      <button type="button" class="flex w-full items-center justify-between gap-4 py-4 text-left" data-faq-button aria-expanded="false" aria-controls="faq-panel-${index}">
+      <button type="button" class="flex min-h-[48px] w-full items-center justify-between gap-4 py-4 text-left hover:text-tealbrand transition" data-faq-button aria-expanded="false" aria-controls="faq-panel-${index}">
         <span class="font-semibold text-slate-900">${escapeHtml(item.q)}</span>
         <span class="icon icon-chevron-down text-tealbrand"></span>
       </button>
@@ -530,7 +530,7 @@ function renderAppointments() {
   $("#booking-list").innerHTML = rows.map((row) => {
     const doctor = doctorById(row.doctorId);
     return `
-      <article class="rounded-3xl border border-emerald-100 bg-white p-5">
+      <article class="ux-card-hover flex h-full flex-col rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm">
         <div class="flex items-start justify-between gap-3">
           <div>
             <p class="text-xs font-semibold uppercase tracking-wide text-tealbrand">${escapeHtml(row.bookingId || row.token)} · Token No. ${escapeHtml(row.tokenNo || "—")}</p>

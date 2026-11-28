@@ -68,8 +68,8 @@
 
       <form id="form-patient-login" class="mt-6 space-y-4 text-left text-xs">
         <div>
-          <label for="patient-login-phone" class="font-semibold text-slate-700 block mb-1">Mobile Number (10 Digits)</label>
-          <input id="patient-login-phone" type="tel" autocomplete="tel" value="9811111111" maxlength="10" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          <label for="patient-login-phone" class="font-semibold text-slate-700 block mb-1">Mobile Number (10 Digits) or ABHA ID</label>
+          <input id="patient-login-phone" type="tel" autocomplete="tel" value="9811111111" maxlength="14" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
         </div>
         <div>
           <div class="flex items-center justify-between mb-1">
@@ -132,8 +132,11 @@
           <div class="flex items-center gap-2">
             <span class="text-xs text-emerald-800 bg-white border border-emerald-200 px-3 py-1.5 rounded-xl font-medium flex items-center gap-1.5 shadow-2xs">
               <span class="icon icon-check"></span>
-              No Paper Files: Sab Digital
+              ABDM / ABHA Ready
             </span>
+            <button type="button" onclick="window.CareWellPatient.deleteMyData()" class="px-3 py-1.5 rounded-xl border border-red-200 bg-red-50 text-red-700 text-xs font-semibold hover:bg-red-100 transition">
+              Delete My Data
+            </button>
           </div>
         </div>
 

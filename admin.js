@@ -206,7 +206,7 @@
             <div class="portal-kpi-card p-5">
               <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Today's Live OPD Revenue</span>
               <p class="text-3xl font-display font-bold text-slate-900 mt-1">₹${liveTodayRevenue.toLocaleString("en-IN")}</p>
-              <span class="text-xs text-slate-500">${confirmedCount + doneCount} active/done consultations</span>
+              <span class="text-xs text-slate-500">UPI: ₹${appointments.filter(a => (a.paymentMode || "").includes("UPI") && a.status !== "cancelled").length * 100} · Clinic Cash: ₹${Math.max(0, liveTodayRevenue - appointments.filter(a => (a.paymentMode || "").includes("UPI") && a.status !== "cancelled").length * 100).toLocaleString("en-IN")}</span>
             </div>
 
             <div class="portal-kpi-card p-5">
@@ -766,6 +766,16 @@
                 <tr><td class="p-3 font-bold text-tealbrand">Doctor</td><td class="p-3">Own OPD Queue, Write Rx, Own Fees, Leave</td><td class="p-3 text-red-600">Total Clinic Revenue, Other Doctors' Earnings</td></tr>
                 <tr><td class="p-3 font-bold text-tealbrand">Receptionist</td><td class="p-3">Check-in, Triage Vitals, Walk-ins, Receipts</td><td class="p-3 text-red-600">Monthly Clinic Revenue, Security Config</td></tr>
                 <tr><td class="p-3 font-bold text-slate-900">Admin</td><td class="p-3">Full Clinic Analytics, Staff, Slots, Audit</td><td class="p-3 text-emerald-700 font-medium">Protected by Rate Limit + HMAC JWT</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="rounded-2xl border border-emerald-100 overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-emerald-100">
+                <tr><th class="p-3">Who</th><th class="p-3">Role</th><th class="p-3">Action</th><th class="p-3">Patient ID</th><th class="p-3">Time</th></tr>
+              </thead>
+              <tbody class="divide-y divide-emerald-50">
+                ${(readJson("carewell_audit_log", []).slice(0, 6).map((l) => `<tr><td class="p-3 font-semibold">${escapeHtml(l.who)}</td><td class="p-3">${escapeHtml(l.role)}</td><td class="p-3">${escapeHtml(l.action)}</td><td class="p-3 font-mono">${escapeHtml(l.patientId)}</td><td class="p-3 text-slate-500">${escapeHtml(l.at)}</td></tr>`).join("")) || `<tr><td colspan="5" class="p-3 text-slate-400 text-center">No PHI access events logged yet in this browser.</td></tr>`}
               </tbody>
             </table>
           </div>

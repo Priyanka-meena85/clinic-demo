@@ -362,5 +362,20 @@
     }
   };
 
-  document.addEventListener("DOMContentLoaded", initReceptionist);
+  document.addEventListener("DOMContentLoaded", () => {
+    initReceptionist();
+    let idleTimer;
+    const resetIdle = () => {
+      clearTimeout(idleTimer);
+      if (isRecLoggedIn) {
+        idleTimer = setTimeout(() => {
+          localStorage.removeItem("carewell_receptionist_auth");
+          showToast("Front Desk auto-logged out after 5 min inactivity.");
+          showLogin();
+        }, 5 * 60 * 1000);
+      }
+    };
+    ["mousemove", "keydown", "click"].forEach((ev) => document.addEventListener(ev, resetIdle));
+    resetIdle();
+  });
 })();

@@ -599,6 +599,7 @@ function renderAppointments() {
         <div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
           ${row.videoRoomUrl ? `<a class="inline-flex h-11 items-center justify-center rounded-full bg-tealbrand text-sm font-semibold text-white sm:col-span-2 hover:bg-teal-700 transition" target="_blank" rel="noopener" href="${escapeHtml(row.videoRoomUrl)}">Join Video Consult</a>` : ""}
           <a class="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand" target="_blank" rel="noopener" href="${whatsappUrl(bookingShareText(row))}">WhatsApp</a>
+          <a class="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-slate-700" href="sms:+91${escapeHtml(row.phone)}?body=${encodeURIComponent(bookingShareText(row))}">SMS Fallback</a>
           <button type="button" data-calendar="${escapeHtml(row.id)}" class="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand">Calendar</button>
           <button type="button" data-reschedule="${escapeHtml(row.id)}" data-doctor="${escapeHtml(row.doctorId)}" class="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand">Reschedule</button>
           <button type="button" data-cancel="${escapeHtml(row.id)}" class="inline-flex h-11 items-center justify-center rounded-full border border-red-200 text-sm font-semibold text-red-700">${CareWellData.messages.cancelCta}</button>
@@ -772,6 +773,10 @@ function renderFooter() {
         <a href="privacy.html" class="hover:text-white transition">Privacy Policy</a>
         <span>·</span>
         <a href="terms.html" class="hover:text-white transition">Terms of Service</a>
+        <span>·</span>
+        <a href="refund.html" class="hover:text-white transition">Refund Policy</a>
+        <span>·</span>
+        <a href="${whatsappUrl("Namaste Support, CareWell Clinic website mein help chahiye (Kuch Gadbad Hai).")}" target="_blank" rel="noopener" class="text-amber-300 hover:text-white transition font-semibold">Kuch Gadbad Hai? Support</a>
         <span>·</span>
         <a href="login.html" class="hover:text-white transition">Staff Portals</a>
       </div>
@@ -1038,6 +1043,9 @@ function submitBooking(event) {
   const age = Number($("#patient-age").value);
   const visitType = document.querySelector('input[name="visit-type"]:checked')?.value || "New visit";
   const paymentMode = document.querySelector('input[name="payment-mode"]:checked')?.value || "Pay at Clinic";
+  const consentChecked = $("#patient-consent") ? $("#patient-consent").checked : true;
+
+  if (!consentChecked) return setBookingError("Kripya Data Privacy Consent checkbox tick karein.");
 
   if (patientName.length < 2) return setBookingError(messages.name);
   if (!validPhone(phone)) return setBookingError(messages.phone);
@@ -1468,7 +1476,15 @@ function initMotionAnd3D() {
     document.querySelectorAll(".reveal-up").forEach((el) => el.classList.add("is-visible"));
   }
 
-  // Interactive 3D tilt on Hero OPD card for fine pointer devices
+  // Global Crash Alert Monitor
+  window.addEventListener("error", (ev) => {
+    fetch("/api/monitoring/crash", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: ev.message, file: ev.filename, line: ev.lineno })
+    }).catch(() => {});
+  });
+
   const heroCard = $("#hero-opd-card");
   if (heroCard && !reduced && window.matchMedia("(pointer: fine)").matches) {
     heroCard.addEventListener("mousemove", (e) => {

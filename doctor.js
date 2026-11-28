@@ -408,5 +408,20 @@
     }
   };
 
-  document.addEventListener("DOMContentLoaded", initDoctorApp);
+  document.addEventListener("DOMContentLoaded", () => {
+    initDoctorApp();
+    let idleTimer;
+    const resetIdle = () => {
+      clearTimeout(idleTimer);
+      if (activeDoctorId) {
+        idleTimer = setTimeout(() => {
+          localStorage.removeItem("carewell_doctor_auth_id");
+          showToast("Auto-logged out after 5 min inactivity for patient privacy.");
+          showLogin();
+        }, 5 * 60 * 1000);
+      }
+    };
+    ["mousemove", "keydown", "click"].forEach((ev) => document.addEventListener(ev, resetIdle));
+    resetIdle();
+  });
 })();

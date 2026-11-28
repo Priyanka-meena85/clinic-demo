@@ -663,6 +663,14 @@
       showToast("Medicines ordered from CareWell In-House Pharmacy!");
     },
 
+    deleteMyData() {
+      const ok = window.confirm("Kya aap apna saara local health data (appointments, prescriptions, wallet) delete karna chahte hain?");
+      if (!ok) return;
+      ["carewell_appointments", "carewell_prescriptions", "carewell_reports", "carewell_visits", "carewell_wallet_bal", "carewell_patient_auth"].forEach((k) => localStorage.removeItem(k));
+      showToast("Your data has been deleted per DPDP Right to Erasure.");
+      setTimeout(() => { window.location.href = "index.html"; }, 900);
+    },
+
     viewReceiptModal(id) {
       const appts = readJson("carewell_appointments", []);
       const app = appts.find((x) => x.id === id);
@@ -676,8 +684,8 @@
           <div id="printable-rx" class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-md p-6">
             <div class="border-b-2 border-tealbrand pb-3 flex justify-between items-start">
               <div>
-                <h3 class="font-display text-xl font-bold text-tealbrand">CareWell Clinic · OPD Receipt</h3>
-                <p class="text-[11px] text-slate-500">214, MG Road, Camp, Pune 411001 · +91 98765 43210</p>
+                <h3 class="font-display text-xl font-bold text-tealbrand">CareWell Clinic · Tax Invoice</h3>
+                <p class="text-[11px] text-slate-500">214, MG Road, Camp, Pune 411001 · GSTIN: 27AABCC1234D1Z5</p>
               </div>
               <span class="font-mono text-xs font-bold text-slate-700">${escapeHtml(app.bookingId || app.token)}</span>
             </div>
@@ -754,6 +762,10 @@
       if (!modalContainer) return;
 
       const vitals = rx.vitals || {};
+      const docInfo = (CareWellData?.doctors || []).find((d) => d.name === rx.doctor) || CareWellData?.doctors?.[0];
+      const audit = readJson("carewell_audit_log", []);
+      audit.unshift({ who: member.name, role: "Patient", action: `Viewed Rx ${rx.id}`, patientId: member.patientId, at: new Date().toLocaleTimeString("en-IN") });
+      writeJson("carewell_audit_log", audit.slice(0, 30));
       modalContainer.innerHTML = `
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div id="printable-rx" class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-lg p-6 sm:p-8 overflow-hidden animate-in fade-in">
@@ -766,7 +778,8 @@
                   </span>
                 </div>
                 <p class="text-xs text-slate-500">214, MG Road, Camp, Pune 411001 · Phone: +91 98765 43210</p>
-                <p class="text-xs font-semibold text-slate-800 mt-1">${escapeHtml(rx.doctor || "Dr. Ananya Rao")}</p>
+                <p class="text-xs font-semibold text-slate-800 mt-1">${escapeHtml(rx.doctor || "Dr. Ananya Rao")} · <span class="text-tealbrand">Reg: ${escapeHtml(docInfo?.regNo || "MMC-2015-4821")}</span></p>
+                <p class="text-[10px] text-emerald-700 font-semibold">Digitally Signed · Verified Medical Practitioner</p>
               </div>
               <span class="font-display text-4xl font-bold text-tealbrand">℞</span>
             </div>

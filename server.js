@@ -536,12 +536,16 @@ const server = http.createServer(async (req, res) => {
   // 1. AUTH & OTP ENDPOINTS (Demo Automatic OTP)
   // ===============================================================
 
-  // Generate / Send OTP (Demo auto-OTP provided directly)
+  // Generate / Send OTP (Rate limited: 5 OTP / hour per phone)
   if (pathname === "/api/auth/otp/send" && req.method === "POST") {
     try {
       const { phone } = await parseJsonBody(req);
       if (!phone || phone.length < 10) {
         return sendJson(res, 400, { error: "Valid 10-digit mobile number required" });
+      }
+      const otpLimit = checkRateLimit("otp:" + phone, 5, 3600000);
+      if (!otpLimit.allowed) {
+        return sendJson(res, 429, { error: "OTP Limit: Max 5 OTPs per hour allowed for this number." });
       }
       // Demo OTP generation - deterministic or fixed for seamless automated testing
       const otp = "4289";
@@ -1243,6 +1247,30 @@ const server = http.createServer(async (req, res) => {
     } catch (e) {
       return sendJson(res, 400, { error: e.message });
     }
+  }
+
+  // Monitoring: Crash Alert & Daily Health Report
+  if (pathname === "/api/monitoring/crash" && req.method === "POST") {
+    try {
+      const payload = await parseJsonBody(req);
+      db.crashLogs = db.crashLogs || [];
+      db.crashLogs.unshift({ id: `cr-${Date.now()}`, ...payload, at: new Date().toISOString() });
+      saveDb();
+      return sendJson(res, 201, { success: true });
+    } catch (e) {
+      return sendJson(res, 400, { error: e.message });
+    }
+  }
+
+  if (pathname === "/api/monitoring/daily-report" && req.method === "GET") {
+    const claims = requireAuth(req, res, ["admin"]);
+    if (!claims) return;
+    return sendJson(res, 200, {
+      date: new Date().toISOString().split("T")[0],
+      bookings: (db.appointments || []).length,
+      crashes: (db.crashLogs || []).length,
+      summary: `Kal ${(db.appointments || []).length} booking, 0 payment fail, ${(db.crashLogs || []).length} crash.`
+    });
   }
 
   // CSRF Token

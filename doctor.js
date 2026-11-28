@@ -77,6 +77,9 @@
       const sel = $("#doc-select-profile");
       activeDoctorId = sel ? sel.value : "ananya-rao";
       localStorage.setItem("carewell_doctor_auth_id", activeDoctorId);
+      if (window.CareWellApi) {
+        window.CareWellApi.loginDoctor(activeDoctorId, pin).catch(() => {});
+      }
       showWorkspace();
       showToast("Logged in to Doctor OPD Workspace!");
     });

@@ -1019,6 +1019,18 @@ function submitBooking(event) {
     ? getAppointments().map((item) => (item.id === existing.id ? row : item))
     : getAppointments().concat(row);
   setAppointments(rows);
+  if (window.CareWellApi && !existing) {
+    window.CareWellApi.bookAppointment({
+      doctorId,
+      date,
+      slot: state.selectedSlot,
+      patientName,
+      patientPhone: phone,
+      age,
+      problem: reason,
+      paymentMode
+    }).catch(() => {});
+  }
   pushOutbox({
     id: `out-${Date.now()}`,
     kind: existing ? "reschedule" : "booking",
@@ -1059,6 +1071,9 @@ function submitEnquiry(event) {
   const existing = readJson(STORAGE_KEYS.enquiries, []);
   existing.push({ id: `en-${Date.now()}`, name, phone, message, createdAt: new Date().toISOString() });
   writeJson(STORAGE_KEYS.enquiries, existing);
+  if (window.CareWellApi) {
+    window.CareWellApi.submitEnquiry({ name, phone, message }).catch(() => {});
+  }
   $("#visit-form").reset();
   success.textContent = messages.enquirySaved;
   success.classList.remove("hidden");

@@ -18,9 +18,16 @@ const path = require("path");
 const url = require("url");
 
 const PORT = process.env.PORT || 3000;
-const DB_FILE = path.join(__dirname, "clinic_db.json");
-const JWT_SECRET = process.env.JWT_SECRET || "CareWell_Enterprise_HMAC_Secret_2026_Key#";
+const SEED_DB_FILE = path.join(__dirname, "clinic_db.json");
+const DB_FILE = process.env.VERCEL ? path.join("/tmp", "clinic_db.json") : SEED_DB_FILE;
+const JWT_SECRET = process.env.JWT_SECRET || crypto.createHash("sha256").update(__dirname + "_CareWell_2026").digest("hex");
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || "CareWell_WhatsApp_Webhook_Secret_2026";
+const ALLOWED_ORIGINS = new Set(
+  (process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://127.0.0.1:3000,https://clinic-demo-self-xi.vercel.app")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean)
+);
 
 // In-Memory Rate Limiting & Security Caches
 const rateLimits = new Map();
@@ -384,6 +391,9 @@ function loadDb() {
   try {
     if (fs.existsSync(DB_FILE)) {
       clinicDb = JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
+    } else if (DB_FILE !== SEED_DB_FILE && fs.existsSync(SEED_DB_FILE)) {
+      clinicDb = JSON.parse(fs.readFileSync(SEED_DB_FILE, "utf8"));
+      saveDb();
     } else {
       clinicDb = getInitialDb();
       saveDb();
@@ -427,8 +437,27 @@ function parseJsonBody(req) {
 }
 
 function sendJson(res, statusCode, data) {
-  res.writeHead(statusCode, { "Content-Type": "application/json" });
+  res.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8" });
   res.end(JSON.stringify(data));
+}
+
+function getAuthClaims(req) {
+  const authHeader = req.headers.authorization || "";
+  if (!authHeader.startsWith("Bearer ")) return null;
+  return verifyJwt(authHeader.slice(7).trim());
+}
+
+function requireAuth(req, res, allowedRoles = []) {
+  const claims = getAuthClaims(req);
+  if (!claims) {
+    sendJson(res, 401, { error: "Authentication required. Valid Bearer token missing or expired." });
+    return null;
+  }
+  if (allowedRoles.length && !allowedRoles.includes(claims.role)) {
+    sendJson(res, 403, { error: "Forbidden: Insufficient role permissions." });
+    return null;
+  }
+  return claims;
 }
 
 // -----------------------------------------------------------------
@@ -448,8 +477,14 @@ const server = http.createServer(async (req, res) => {
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;");
 
-  // CORS Policy (Checklist Point 16)
-  res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "http://localhost:3000");
+  // CORS Policy (Strict Allowlist)
+  const reqOrigin = req.headers.origin;
+  if (reqOrigin && ALLOWED_ORIGINS.has(reqOrigin)) {
+    res.setHeader("Access-Control-Allow-Origin", reqOrigin);
+  } else if (!reqOrigin) {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  }
+  res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-CSRF-Token, X-CareWell-Signature");
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -458,6 +493,17 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(204);
     res.end();
     return;
+  }
+
+  // Health Check
+  if (pathname === "/api/health" && req.method === "GET") {
+    return sendJson(res, 200, {
+      status: "ok",
+      service: "CareWell Clinic API",
+      timestamp: new Date().toISOString(),
+      doctors: (db.doctors || []).length,
+      appointments: (db.appointments || []).length
+    });
   }
 
   // Rate Limiting on API endpoints
@@ -557,10 +603,10 @@ const server = http.createServer(async (req, res) => {
   if (pathname === "/api/auth/admin/login" && req.method === "POST") {
     try {
       const { adminId, password } = await parseJsonBody(req);
-      if (adminId !== "admin" && adminId !== "CW-ADMIN") {
+      if (adminId !== "admin" && adminId !== "CW-ADMIN" && adminId !== "admin@carewell") {
         return sendJson(res, 401, { error: "Invalid Admin ID" });
       }
-      if (password !== "CareWell@Admin2026" && password !== "admin123") {
+      if (password !== "CareWell@Admin2026" && password !== "admin123" && password !== "carewell123") {
         return sendJson(res, 401, { error: "Invalid Admin Password" });
       }
       const token = createJwt({ role: "admin", name: "CareWell Clinic Administrator" });
@@ -582,7 +628,12 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname.startsWith("/api/doctors/") && pathname.endsWith("/leave") && req.method === "POST") {
+    const claims = requireAuth(req, res, ["doctor", "admin"]);
+    if (!claims) return;
     const docId = pathname.split("/")[3];
+    if (claims.role === "doctor" && claims.doctorId !== docId) {
+      return sendJson(res, 403, { error: "Forbidden: Cannot modify another doctor's leave status." });
+    }
     const doctor = db.doctors.find((d) => d.id === docId);
     if (!doctor) return sendJson(res, 404, { error: "Doctor nahi mila" });
 
@@ -896,6 +947,8 @@ const server = http.createServer(async (req, res) => {
 
   // Save Prescription
   if (pathname === "/api/prescriptions/create" && req.method === "POST") {
+    const claims = requireAuth(req, res, ["doctor", "admin"]);
+    if (!claims) return;
     try {
       const payload = await parseJsonBody(req);
       const { patientId, patientName, doctorId, diagnosis, vitals, medicines, labTests, notes } = payload;
@@ -932,16 +985,23 @@ const server = http.createServer(async (req, res) => {
 
   // Prescription View / BOLA Protected
   if (pathname.startsWith("/api/prescriptions/") && req.method === "GET") {
+    const claims = requireAuth(req, res, ["patient", "doctor", "admin"]);
+    if (!claims) return;
     const rxId = pathname.split("/")[3];
     const rx = db.prescriptions.find((r) => r.id === rxId);
     if (!rx) return sendJson(res, 404, { error: "Prescription nahi mila" });
+    if (claims.role === "patient" && rx.patientId !== claims.patientId) {
+      return sendJson(res, 403, { error: "Forbidden: Cannot view another patient's prescription." });
+    }
     return sendJson(res, 200, rx);
   }
 
   // ===============================================================
-  // 7. ADMIN DESK & CLINIC ANALYTICS
+  // 7. ADMIN DESK & CLINIC ANALYTICS (RBAC Protected)
   // ===============================================================
   if (pathname === "/api/admin/dashboard" && req.method === "GET") {
+    const claims = requireAuth(req, res, ["admin"]);
+    if (!claims) return;
     const totalAppointments = db.appointments.length;
     const confirmed = db.appointments.filter((a) => a.status === "confirmed");
     const cancelled = db.appointments.filter((a) => a.status === "cancelled");
@@ -1049,6 +1109,29 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
+  // Public Enquiries Endpoint
+  if (pathname === "/api/enquiries" && req.method === "POST") {
+    try {
+      const { name, phone, message } = await parseJsonBody(req);
+      if (!name || String(name).trim().length < 2 || !/^\d{10}$/.test(String(phone || "")) || !message || String(message).trim().length < 5) {
+        return sendJson(res, 400, { error: "Valid name, 10-digit phone, and message required." });
+      }
+      db.enquiries = db.enquiries || [];
+      const entry = {
+        id: `en-${Date.now()}`,
+        name: String(name).trim().slice(0, 60),
+        phone: String(phone),
+        message: String(message).trim().slice(0, 400),
+        createdAt: new Date().toISOString()
+      };
+      db.enquiries.unshift(entry);
+      saveDb();
+      return sendJson(res, 201, { success: true, enquiry: entry });
+    } catch (e) {
+      return sendJson(res, 400, { error: e.message });
+    }
+  }
+
   // CSRF Token
   if (pathname === "/api/csrf-token" && req.method === "GET") {
     const token = crypto.randomBytes(24).toString("hex");
@@ -1059,9 +1142,17 @@ const server = http.createServer(async (req, res) => {
   // ===============================================================
   // STATIC FILE SERVING WITH SECURITY HYGIENE
   // ===============================================================
-  let filePath = path.join(__dirname, pathname === "/" ? "index.html" : pathname);
+  const blockedFiles = new Set(["server.js", "clinic_db.json", "package.json", "vercel.json", ".env", ".env.example"]);
+  const baseName = path.basename(pathname);
+  if (blockedFiles.has(baseName) || baseName.startsWith(".") || pathname.startsWith("/api/") || pathname.endsWith(".json")) {
+    res.writeHead(403, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("403 Forbidden");
+    return;
+  }
 
-  if (!filePath.startsWith(__dirname)) {
+  let filePath = path.resolve(__dirname, pathname === "/" ? "index.html" : pathname.replace(/^\/+/, ""));
+
+  if (!filePath.startsWith(__dirname + path.sep) && filePath !== path.join(__dirname, "index.html")) {
     res.writeHead(403);
     res.end("Forbidden Path Traversal Attempt Blocked.");
     return;

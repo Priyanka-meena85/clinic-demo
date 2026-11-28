@@ -67,6 +67,9 @@
       }
       isAdminLoggedIn = true;
       localStorage.setItem("carewell_admin_auth", "true");
+      if (window.CareWellApi) {
+        window.CareWellApi.loginAdmin(username, password).catch(() => {});
+      }
       showWorkspace();
       showToast("Welcome to CareWell Reception & Admin Portal!");
     });
@@ -74,6 +77,9 @@
     $("#btn-quick-admin-login")?.addEventListener("click", () => {
       isAdminLoggedIn = true;
       localStorage.setItem("carewell_admin_auth", "true");
+      if (window.CareWellApi) {
+        window.CareWellApi.loginAdmin(username, password).catch(() => {});
+      }
       showWorkspace();
       showToast("Logged in as Clinic Reception Admin!");
     });

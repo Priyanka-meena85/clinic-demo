@@ -413,7 +413,7 @@
           </a>
         </div>
 
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- 1. Patient Portal Card -->
           <div class="p-6 rounded-3xl bg-white border border-emerald-100 shadow-sm flex flex-col justify-between hover:shadow-md transition">
             <div>
@@ -464,7 +464,32 @@
             </div>
           </div>
 
-          <!-- 3. Admin Desk Gateway Card -->
+          <!-- 3. Receptionist Front Desk Card -->
+          <div class="p-6 rounded-2xl bg-white border border-emerald-100 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+            <div>
+              <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-tealbrand mb-4 shadow-2xs">
+                <span class="icon icon-calendar"></span>
+              </span>
+              <div class="flex items-center justify-between">
+                <h3 class="font-display text-xl font-bold text-slate-900">Receptionist Desk</h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-tealbrand">Front Desk</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Patient arrival check-in, triage vitals, quick walk-in tokens, OPD receipt printing, and live queue movement.
+              </p>
+              <div class="mt-4 p-2.5 rounded-xl bg-slate-50 text-[11px] text-slate-500 flex items-center">
+                <span class="icon icon-shield text-tealbrand mr-1.5 shrink-0"></span>
+                <em>Front desk operations only — clinic revenue hidden.</em>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100">
+              <a href="receptionist.html" class="w-full h-10 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 shadow-xs flex items-center justify-center gap-1.5 transition">
+                Receptionist Login →
+              </a>
+            </div>
+          </div>
+
+          <!-- 4. Admin Desk Gateway Card -->
           <div class="p-6 rounded-3xl bg-white border border-emerald-100 shadow-sm flex flex-col justify-between hover:shadow-md transition">
             <div>
               <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-tealbrand mb-4 shadow-2xs">
@@ -552,14 +577,18 @@
             </div>
             <fieldset>
               <legend class="text-sm font-semibold text-slate-800">Visit type</legend>
-              <div class="mt-2 grid grid-cols-2 gap-2">
-                <label class="flex min-h-11 items-center gap-2 rounded-2xl border border-emerald-200 px-3 text-sm">
+              <div class="mt-2 grid grid-cols-3 gap-2">
+                <label class="flex min-h-11 items-center gap-1.5 rounded-2xl border border-emerald-200 px-2.5 text-xs sm:text-sm cursor-pointer">
                   <input type="radio" name="visit-type" value="New visit" checked>
                   New visit
                 </label>
-                <label class="flex min-h-11 items-center gap-2 rounded-2xl border border-emerald-200 px-3 text-sm">
+                <label class="flex min-h-11 items-center gap-1.5 rounded-2xl border border-emerald-200 px-2.5 text-xs sm:text-sm cursor-pointer">
                   <input type="radio" name="visit-type" value="Follow-up">
                   Follow-up
+                </label>
+                <label class="flex min-h-11 items-center gap-1.5 rounded-2xl border border-emerald-200 bg-mint/50 px-2.5 text-xs sm:text-sm font-medium text-tealbrand cursor-pointer">
+                  <input type="radio" name="visit-type" value="Video Consult">
+                  Video Consult
                 </label>
               </div>
             </fieldset>

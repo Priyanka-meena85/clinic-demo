@@ -74,6 +74,7 @@
   const AuthState = {
     getActiveRole() {
       if (localStorage.getItem("carewell_admin_auth") === "true") return "admin";
+      if (localStorage.getItem("carewell_receptionist_auth") === "true") return "receptionist";
       if (localStorage.getItem("carewell_doctor_auth_id")) return "doctor";
       if (localStorage.getItem("carewell_patient_auth") === "true") return "patient";
       return null;
@@ -83,6 +84,9 @@
       const role = this.getActiveRole();
       if (role === "admin") {
         return { role: "admin", name: "Clinic Admin", id: "admin@carewell" };
+      }
+      if (role === "receptionist") {
+        return { role: "receptionist", name: "Front Desk", id: "reception@carewell" };
       }
       if (role === "doctor") {
         const docId = localStorage.getItem("carewell_doctor_auth_id");
@@ -100,13 +104,15 @@
 
     logout() {
       localStorage.removeItem("carewell_admin_auth");
+      localStorage.removeItem("carewell_receptionist_auth");
       localStorage.removeItem("carewell_doctor_auth_id");
       localStorage.removeItem("carewell_patient_auth");
       localStorage.removeItem("carewell_active_patient_user");
       showToast("Aap successfully logout ho chuke hain.");
       window.CareWellAuth.renderHeaderAuth();
-      if (window.location.pathname.includes("patient.html") || 
-          window.location.pathname.includes("doctor.html") || 
+      if (window.location.pathname.includes("patient.html") ||
+          window.location.pathname.includes("doctor.html") ||
+          window.location.pathname.includes("receptionist.html") ||
           window.location.pathname.includes("admin.html")) {
         window.location.href = "index.html";
       }
@@ -142,8 +148,8 @@
           <!-- 1. Role Selection Pills -->
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wider">Aapka Role Choose Karein:</label>
-            <div class="grid grid-cols-3 gap-2">
-              <button type="button" data-role-btn="patient" class="py-2.5 px-3 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button type="button" data-role-btn="patient" class="py-2.5 px-2 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
                 role === "patient"
                   ? "bg-tealbrand text-white border-tealbrand shadow-xs"
                   : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50"
@@ -151,7 +157,7 @@
                 <span class="icon icon-user ${role === "patient" ? "text-white" : "text-slate-700"}"></span>
                 <span>Patient</span>
               </button>
-              <button type="button" data-role-btn="doctor" class="py-2.5 px-3 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
+              <button type="button" data-role-btn="doctor" class="py-2.5 px-2 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
                 role === "doctor"
                   ? "bg-tealbrand text-white border-tealbrand shadow-xs"
                   : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50"
@@ -159,13 +165,21 @@
                 <span class="icon icon-stethoscope ${role === "doctor" ? "text-white" : "text-slate-700"}"></span>
                 <span>Doctor</span>
               </button>
-              <button type="button" data-role-btn="admin" class="py-2.5 px-3 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
+              <button type="button" data-role-btn="receptionist" class="py-2.5 px-2 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
+                role === "receptionist"
+                  ? "bg-tealbrand text-white border-tealbrand shadow-xs"
+                  : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50"
+              }">
+                <span class="icon icon-calendar ${role === "receptionist" ? "text-white" : "text-slate-700"}"></span>
+                <span>Reception</span>
+              </button>
+              <button type="button" data-role-btn="admin" class="py-2.5 px-2 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
                 role === "admin"
                   ? "bg-tealbrand text-white border-tealbrand shadow-xs"
                   : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50"
               }">
                 <span class="icon icon-shield ${role === "admin" ? "text-white" : "text-slate-700"}"></span>
-                <span>Admin / Staff</span>
+                <span>Admin</span>
               </button>
             </div>
           </div>
@@ -331,7 +345,32 @@
     }
 
     // ---------------------------------------------
-    // C. ADMIN ROLE
+    // C. RECEPTIONIST ROLE
+    // ---------------------------------------------
+    else if (role === "receptionist") {
+      return `
+        <form id="form-auth-rec-login" class="space-y-4 text-xs">
+          <div>
+            <label for="in-rec-user" class="font-semibold text-slate-700 block mb-1">Receptionist ID</label>
+            <input id="in-rec-user" type="text" autocomplete="username" value="reception@carewell" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          </div>
+          <div>
+            <label for="in-rec-pin" class="font-semibold text-slate-700 block mb-1">Front Desk PIN (Demo: 1234)</label>
+            <input id="in-rec-pin" type="password" autocomplete="current-password" value="1234" required class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+          </div>
+          <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs flex items-center justify-center gap-1.5">
+            <span>Open Receptionist Desk</span>
+            <span class="icon icon-arrow-right"></span>
+          </button>
+          <button id="btn-quick-demo-rec" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5">
+            <span class="icon icon-calendar"></span> 1-Click Demo Login as Front Desk Receptionist
+          </button>
+        </form>
+      `;
+    }
+
+    // ---------------------------------------------
+    // D. ADMIN ROLE
     // ---------------------------------------------
     else {
       if (tab === "login") {
@@ -575,6 +614,26 @@
       showToast("Clinic Staff verified & registered!");
       setTimeout(() => (window.location.href = "admin.html"), 600);
     });
+
+    // 7. Receptionist Login
+    $("#form-auth-rec-login", container)?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const user = ($("#in-rec-user", container)?.value || "").trim();
+      const pin = ($("#in-rec-pin", container)?.value || "").trim();
+      if (user !== "reception@carewell" || pin !== "1234") {
+        showToast("Invalid Receptionist ID or PIN (Demo: reception@carewell / 1234)");
+        return;
+      }
+      localStorage.setItem("carewell_receptionist_auth", "true");
+      showToast("Receptionist Desk Login Successful!");
+      setTimeout(() => (window.location.href = "receptionist.html"), 500);
+    });
+
+    $("#btn-quick-demo-rec", container)?.addEventListener("click", () => {
+      localStorage.setItem("carewell_receptionist_auth", "true");
+      showToast("1-Click Front Desk Login Success!");
+      setTimeout(() => (window.location.href = "receptionist.html"), 500);
+    });
   }
 
   function reRenderContainer(container) {
@@ -649,6 +708,10 @@
           portalUrl = "doctor.html";
           iconClass = "icon-stethoscope";
           roleBadge = "Doctor";
+        } else if (user.role === "receptionist") {
+          portalUrl = "receptionist.html";
+          iconClass = "icon-calendar";
+          roleBadge = "Reception";
         } else if (user.role === "admin") {
           portalUrl = "admin.html";
           iconClass = "icon-shield";

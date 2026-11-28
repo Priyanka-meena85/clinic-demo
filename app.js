@@ -71,6 +71,28 @@ function initials(name) {
   return ((parts[0]?.[0] || "") + (parts[1]?.[0] || "")).toUpperCase();
 }
 
+function doctorPortraitSvg(doctor) {
+  const isFemale = doctor.gender === "Female";
+  const coatColor = isFemale ? "#0F766E" : "#065F46";
+  const hairColor = isFemale ? "#1E293B" : "#0F172A";
+  const badge = initials(doctor.name);
+  return `
+    <svg viewBox="0 0 64 64" class="h-14 w-14 rounded-2xl border border-emerald-200 shadow-xs shrink-0" role="img" aria-label="Portrait of ${escapeHtml(doctor.name)}">
+      <defs>
+        <linearGradient id="bg-${escapeHtml(doctor.id)}" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ECFDF5"/>
+          <stop offset="100%" stop-color="#A7F3D0"/>
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="16" fill="url(#bg-${escapeHtml(doctor.id)})"/>
+      <path d="M12 64c2-13 10-19 20-19s18 6 20 19z" fill="${coatColor}"/>
+      <path d="M25 45l7 11 7-11z" fill="#FFFFFF"/>
+      <circle cx="32" cy="27" r="11" fill="#FDE68A"/>
+      <path d="${isFemale ? "M20 27c0-9 5-14 12-14s12 5 12 14c-2-5-6-7-12-7s-10 2-12 7z" : "M21 25c0-8 5-12 11-12s11 4 11 12c-3-4-7-5-11-5s-8 1-11 5z"}" fill="${hairColor}"/>
+      <text x="54" y="14" text-anchor="end" font-size="8" font-weight="700" fill="#0F766E" font-family="Inter, sans-serif">${badge}</text>
+    </svg>`;
+}
+
 function doctorById(id) {
   return CareWellData.doctors.find((doctor) => doctor.id === id) || null;
 }
@@ -394,7 +416,7 @@ function renderDoctors() {
       <div class="flex items-start justify-between gap-3">
         <div class="flex items-start gap-3">
           <div class="relative">
-            <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-tealbrand to-emerald-700 font-display text-lg text-white font-bold shadow-xs" role="img" aria-label="Photo of ${escapeHtml(doctor.name)}">${initials(doctor.name)}</span>
+            ${doctorPortraitSvg(doctor)}
             <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white" title="Verified & Available"></span>
           </div>
           <div class="min-w-0">
@@ -571,6 +593,7 @@ function renderAppointments() {
         <p class="mt-4 text-sm font-medium text-slate-800">${formatDate(row.date)} · ${formatSlot(row.slot)}</p>
         <p class="mt-1 text-sm text-slate-500">${escapeHtml(row.phone)}${row.reason ? ` · ${escapeHtml(row.reason)}` : ""}${row.paymentMode ? ` · ${escapeHtml(row.paymentMode)}` : ""}</p>
         <div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          ${row.videoRoomUrl ? `<a class="inline-flex h-11 items-center justify-center rounded-full bg-tealbrand text-sm font-semibold text-white sm:col-span-2 hover:bg-teal-700 transition" target="_blank" rel="noopener" href="${escapeHtml(row.videoRoomUrl)}">Join Video Consult</a>` : ""}
           <a class="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand" target="_blank" rel="noopener" href="${whatsappUrl(bookingShareText(row))}">WhatsApp</a>
           <button type="button" data-calendar="${escapeHtml(row.id)}" class="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand">Calendar</button>
           <button type="button" data-reschedule="${escapeHtml(row.id)}" data-doctor="${escapeHtml(row.doctorId)}" class="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 text-sm font-semibold text-tealbrand">Reschedule</button>
@@ -881,7 +904,8 @@ function showBookingSuccess(row) {
     ["Phone", row.phone],
     ["Age", row.age || "—"],
     ["Visit", row.visitType],
-    ["Payment", row.paymentMode || "Pay at Clinic"],
+    ["Payment", row.upiRef ? `${row.paymentMode} (Ref: ${row.upiRef})` : (row.paymentMode || "Pay at Clinic")],
+    ...(row.videoRoomUrl ? [["Video Link", "Ready in Your Bookings"]] : []),
     ["When", `${formatDate(row.date)} · ${formatSlot(row.slot)}`]
   ].map(([label, value]) => `
     <div class="flex justify-between gap-4">
@@ -1028,6 +1052,8 @@ function submitBooking(event) {
   const existing = state.rescheduleId ? getAppointments().find((item) => item.id === state.rescheduleId) : null;
   const bookingId = existing?.bookingId || `CW-${String(2000 + (Date.now() % 7000)).padStart(4, "0")}`;
   const tokenNo = existing?.tokenNo || nextTokenNo(doctorId, date);
+  const videoRoomUrl = visitType === "Video Consult" ? `https://meet.jit.si/CareWell-${bookingId}` : (existing?.videoRoomUrl || "");
+  const upiRef = paymentMode.includes("UPI") ? (existing?.upiRef || `CW-UPI-${String(Date.now()).slice(-6)}`) : "";
   const row = {
     id: existing?.id || `cw-${Date.now()}`,
     bookingId,
@@ -1042,6 +1068,8 @@ function submitBooking(event) {
     reason,
     visitType,
     paymentMode,
+    upiRef,
+    videoRoomUrl,
     status: "confirmed",
     createdAt: existing?.createdAt || new Date().toISOString()
   };

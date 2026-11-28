@@ -599,6 +599,27 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // Receptionist Login
+  if (pathname === "/api/auth/receptionist/login" && req.method === "POST") {
+    try {
+      const { username, pin } = await parseJsonBody(req);
+      if (username !== "reception@carewell" && username !== "reception") {
+        return sendJson(res, 401, { error: "Invalid Receptionist ID" });
+      }
+      if (pin !== "1234" && pin !== "reception2026") {
+        return sendJson(res, 401, { error: "Invalid Receptionist PIN. Demo PIN: 1234" });
+      }
+      const token = createJwt({ role: "receptionist", name: "CareWell Front Desk Receptionist" });
+      return sendJson(res, 200, {
+        success: true,
+        token,
+        receptionist: { name: "Front Desk Receptionist", role: "receptionist" }
+      });
+    } catch (e) {
+      return sendJson(res, 400, { error: e.message });
+    }
+  }
+
   // Admin Login
   if (pathname === "/api/auth/admin/login" && req.method === "POST") {
     try {
@@ -1107,6 +1128,46 @@ const server = http.createServer(async (req, res) => {
         { name: "04. Config & Hygiene", points: 5, passed: 5 }
       ]
     });
+  }
+
+  // Pharmacy Medicine Order Endpoint
+  if (pathname === "/api/pharmacy/order" && req.method === "POST") {
+    try {
+      const { patientId, patientName, rxId, doctor } = await parseJsonBody(req);
+      if (!patientId || !rxId) return sendJson(res, 400, { error: "patientId and rxId required." });
+      db.pharmacyOrders = db.pharmacyOrders || [];
+      const order = {
+        id: `PH-${Date.now().toString().slice(-6)}`,
+        patientId,
+        patientName: patientName || "Patient",
+        rxId,
+        doctor: doctor || "CareWell Physician",
+        status: "Preparing at In-House Pharmacy",
+        createdAt: new Date().toISOString()
+      };
+      db.pharmacyOrders.unshift(order);
+      saveDb();
+      return sendJson(res, 201, { success: true, order });
+    } catch (e) {
+      return sendJson(res, 400, { error: e.message });
+    }
+  }
+
+  // UPI Advance Verification Endpoint
+  if (pathname === "/api/payments/verify-upi" && req.method === "POST") {
+    try {
+      const { bookingId, amount } = await parseJsonBody(req);
+      const refId = `CW-UPI-${Date.now().toString().slice(-6)}`;
+      return sendJson(res, 200, {
+        success: true,
+        bookingId: bookingId || "CW-NEW",
+        amount: Number(amount) || 100,
+        upiRef: refId,
+        status: "paid"
+      });
+    } catch (e) {
+      return sendJson(res, 400, { error: e.message });
+    }
   }
 
   // Public Enquiries Endpoint

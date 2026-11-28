@@ -501,5 +501,16 @@
       "due": "Today",
       "doctor": "Dr. Ananya Rao"
     }
+  ],
+  "pharmacyOrders": [
+    {
+      "id": "PH-915138",
+      "patientId": "CW-2048",
+      "patientName": "Patient",
+      "rxId": "rx-1",
+      "doctor": "Dr. Ananya Rao",
+      "status": "Preparing at In-House Pharmacy",
+      "createdAt": "2026-11-28T11:21:55.138Z"
+    }
   ]
 }

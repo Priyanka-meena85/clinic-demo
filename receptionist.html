@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230F766E'/><path d='M16 9v14M9 16h14' stroke='white' stroke-width='3.5' stroke-linecap='round'/></svg>">
+  <title>CareWell Clinic · Receptionist Front Desk Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { tealbrand: "#0F766E", mint: "#ECFDF5" },
+          fontFamily: { sans: ["Inter", "system-ui", "sans-serif"], display: ["Fraunces", "Georgia", "serif"] }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+  <header class="sticky top-0 z-40 bg-white border-b border-emerald-100 shadow-xs">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tealbrand text-white shadow-xs">
+            <span class="icon icon-calendar"></span>
+          </span>
+          <div>
+            <span class="block font-display text-lg leading-none text-slate-900 font-bold">CareWell Front Desk</span>
+            <span class="block text-[11px] text-tealbrand font-medium">Receptionist Check-in, Walk-in &amp; Billing</span>
+          </div>
+        </a>
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-tealbrand border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Desk Active
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2 text-xs font-semibold">
+        <a href="doctor.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition">Doctor Desk</a>
+        <a href="admin.html" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand hover:bg-emerald-100 transition">Admin</a>
+        <a href="index.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">Website</a>
+        <button id="btn-rec-logout" type="button" class="hidden text-xs text-red-600 hover:underline px-2">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8">
+    <!-- Receptionist Login -->
+    <div id="rec-login-view" class="max-w-md mx-auto my-12 bg-white rounded-3xl border border-emerald-100 p-8 shadow-sm text-center">
+      <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mint text-tealbrand mb-4 shadow-xs">
+        <span class="icon icon-calendar"></span>
+      </span>
+      <h2 class="font-display text-2xl font-bold text-slate-900">Receptionist Desk Login</h2>
+      <p class="text-xs text-slate-500 mt-1">Front Desk Check-in, Walk-in Tokens &amp; OPD Billing (No Admin Financials)</p>
+
+      <form id="form-rec-login" class="mt-6 space-y-4 text-left text-xs">
+        <div>
+          <label for="rec-username" class="font-semibold text-slate-700 block mb-1">Receptionist ID</label>
+          <input id="rec-username" type="text" autocomplete="username" value="reception@carewell" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+        </div>
+        <div>
+          <label for="rec-pin" class="font-semibold text-slate-700 block mb-1">Desk PIN (Demo: 1234)</label>
+          <input id="rec-pin" type="password" autocomplete="current-password" value="1234" maxlength="6" class="h-11 w-full px-3.5 text-sm rounded-xl border border-emerald-200 outline-none focus:border-tealbrand">
+        </div>
+        <button type="submit" class="w-full h-11 rounded-xl bg-tealbrand text-white text-sm font-semibold hover:bg-teal-700 transition shadow-xs">
+          Open Front Desk Console
+        </button>
+        <button id="btn-quick-rec-login" type="button" class="w-full h-10 rounded-xl bg-mint text-tealbrand border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition">
+          1-Click Demo Login as Front Desk Receptionist
+        </button>
+      </form>
+    </div>
+
+    <!-- Receptionist Workspace -->
+    <div id="rec-workspace-view" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-white border border-emerald-100 shadow-xs">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-tealbrand">Front Desk Operations</span>
+          <h1 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Patient Check-in, Walk-ins &amp; Billing</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Verify arrivals, record triage vitals, issue walk-in tokens, and print OPD receipts.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" id="btn-rec-walkin" class="h-10 px-4 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 shadow-xs">
+            + Issue Walk-in Token
+          </button>
+          <button type="button" id="btn-rec-next-queue" class="h-10 px-4 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100">
+            Advance Queue (+1)
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Strip (Non-Financial Operational Metrics) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 rounded-2xl bg-white border border-emerald-100 shadow-xs">
+          <span class="text-slate-500 font-semibold uppercase text-[10px]">Active Queue Token</span>
+          <p id="rec-kpi-token" class="font-display text-3xl font-bold text-tealbrand mt-1">Token 8</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-emerald-100 shadow-xs">
+          <span class="text-slate-500 font-semibold uppercase text-[10px]">Waiting / Confirmed</span>
+          <p id="rec-kpi-waiting" class="font-display text-3xl font-bold text-slate-900 mt-1">0</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-emerald-100 shadow-xs">
+          <span class="text-slate-500 font-semibold uppercase text-[10px]">Checked-in Ready</span>
+          <p id="rec-kpi-checkedin" class="font-display text-3xl font-bold text-emerald-700 mt-1">0</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-emerald-100 shadow-xs">
+          <span class="text-slate-500 font-semibold uppercase text-[10px]">Completed / No-Show</span>
+          <p id="rec-kpi-done" class="font-display text-3xl font-bold text-slate-700 mt-1">0 / 0</p>
+        </div>
+      </div>
+
+      <!-- Check-in & Queue Table -->
+      <div class="bg-white rounded-3xl border border-emerald-100 p-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-emerald-100">
+          <h2 class="font-display text-xl font-bold text-slate-900">Today's Reception Queue</h2>
+          <input id="rec-search" type="text" aria-label="Search patient by name or phone" placeholder="Search name, phone, or token..." class="h-10 px-3.5 text-xs rounded-xl border border-emerald-200 outline-none focus:border-tealbrand w-full sm:w-64">
+        </div>
+        <div id="rec-table-wrap" class="mt-4 overflow-x-auto"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-white border-t border-emerald-100 py-4 text-center text-xs text-slate-500">
+    CareWell Clinic · Receptionist Front Desk Portal · Role-Based Access Isolated
+  </footer>
+
+  <div id="toast" class="fixed left-4 right-4 top-20 z-[60] hidden rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white shadow-lg sm:left-auto sm:right-6 sm:w-80" role="status"></div>
+  <div id="rec-modal-container"></div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="data.js"></script>
+  <script src="api.js"></script>
+  <script src="security.js"></script>
+  <script src="auth.js"></script>
+  <script src="receptionist.js"></script>
+</body>
+</html>

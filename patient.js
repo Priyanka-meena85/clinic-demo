@@ -294,6 +294,9 @@
                       <a href="index.html#queue" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 transition flex items-center gap-1">
                         <i data-lucide="radio" class="w-3.5 h-3.5"></i> Track Live Queue
                       </a>
+                      <button type="button" onclick="window.CareWellPatient.viewReceiptModal('${escapeHtml(app.id)}')" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-white text-tealbrand text-xs font-semibold hover:bg-mint transition">
+                        Receipt
+                      </button>
                       ${app.status !== "cancelled" ? `
                         <button type="button" onclick="window.CareWellPatient.cancelAppointment('${escapeHtml(app.id)}')" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-medium hover:bg-red-50 hover:text-red-700 transition">
                           Cancel
@@ -500,6 +503,71 @@
       }
     },
 
+    orderMedicines(rxId, doctorName) {
+      const member = familyMembers.find((m) => m.patientId === activeMemberId) || familyMembers[0];
+      const orders = readJson("carewell_pharmacy_orders", []);
+      orders.unshift({
+        id: `PH-${Date.now().toString().slice(-6)}`,
+        patientId: member.patientId,
+        patientName: member.name,
+        rxId,
+        doctor: doctorName,
+        status: "Preparing at In-House Pharmacy",
+        createdAt: new Date().toISOString()
+      });
+      writeJson("carewell_pharmacy_orders", orders);
+      const outbox = readJson("carewell_outbox", []);
+      outbox.unshift({
+        id: `out-${Date.now()}`,
+        phone: member.phone || "9811111111",
+        patient: member.name,
+        kind: "Pharmacy Order",
+        text: `In-House Pharmacy ne aapki Rx (${rxId}) ke medicines pack karne shuru kar diye hain. Ready hone par WhatsApp alert milega.`,
+        status: "Delivered",
+        createdAt: new Date().toISOString()
+      });
+      writeJson("carewell_outbox", outbox);
+      fetch("/api/pharmacy/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ patientId: member.patientId, patientName: member.name, rxId, doctor: doctorName })
+      }).catch(() => {});
+      showToast("Medicines ordered from CareWell In-House Pharmacy!");
+    },
+
+    viewReceiptModal(id) {
+      const appts = readJson("carewell_appointments", []);
+      const app = appts.find((x) => x.id === id);
+      if (!app) return;
+      const doc = (CareWellData?.doctors || []).find((d) => d.id === app.doctorId);
+      const fee = doc ? doc.fee : 500;
+      const modalContainer = $("#prescription-modal-container");
+      if (!modalContainer) return;
+      modalContainer.innerHTML = `
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div id="printable-rx" class="bg-white rounded-3xl border border-emerald-100 shadow-2xl w-full max-w-md p-6">
+            <div class="border-b-2 border-tealbrand pb-3 flex justify-between items-start">
+              <div>
+                <h3 class="font-display text-xl font-bold text-tealbrand">CareWell Clinic · OPD Receipt</h3>
+                <p class="text-[11px] text-slate-500">214, MG Road, Camp, Pune 411001 · +91 98765 43210</p>
+              </div>
+              <span class="font-mono text-xs font-bold text-slate-700">${escapeHtml(app.bookingId || app.token)}</span>
+            </div>
+            <div class="my-4 space-y-2 text-xs">
+              <div class="flex justify-between"><span class="text-slate-500">Patient:</span><strong>${escapeHtml(app.patientName)}</strong></div>
+              <div class="flex justify-between"><span class="text-slate-500">Doctor:</span><strong>${escapeHtml(doc ? doc.name : app.doctorId)}</strong></div>
+              <div class="flex justify-between"><span class="text-slate-500">Date &amp; Slot:</span><strong>${escapeHtml(app.date)} · ${escapeHtml(app.slot)}</strong></div>
+              <div class="flex justify-between"><span class="text-slate-500">Payment Mode:</span><strong>${escapeHtml(app.paymentMode || "Pay at Clinic")}</strong></div>
+              <div class="flex justify-between pt-2 border-t border-slate-100 text-sm"><span class="font-bold">Consultation Fee:</span><strong class="text-tealbrand">₹${fee}</strong></div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+              <button type="button" onclick="window.print()" class="px-4 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">Print Receipt</button>
+              <button type="button" onclick="document.querySelector('#prescription-modal-container').innerHTML=''" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold">Close</button>
+            </div>
+          </div>
+        </div>`;
+    },
+
     downloadReport(reportName) {
       const member = familyMembers.find((m) => m.patientId === activeMemberId) || familyMembers[0];
       const reports = readJson("carewell_reports", []);
@@ -595,12 +663,15 @@
               ${escapeHtml(rx.text)}
             </div>
 
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+            <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
               <div>
                 <p class="text-[10px] text-slate-400">Encrypted PHI Record · HIPAA Verified</p>
                 <p class="text-xs font-semibold text-tealbrand">CareWell Digital Health Records</p>
               </div>
-              <div class="flex gap-2">
+              <div class="flex flex-wrap gap-2">
+                <button type="button" onclick="window.CareWellPatient.orderMedicines('${escapeHtml(rx.id)}', '${escapeHtml(rx.doctor || "CareWell Physician")}')" class="px-3.5 py-2 rounded-xl bg-mint border border-emerald-200 text-tealbrand text-xs font-semibold hover:bg-emerald-100">
+                  Order Medicines
+                </button>
                 <button type="button" onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">
                   Print / Save PDF
                 </button>

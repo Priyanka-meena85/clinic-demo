@@ -513,6 +513,13 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Favicon handler (prevent 404 on direct /favicon.ico requests)
+  if (pathname === "/favicon.ico") {
+    res.writeHead(200, { "Content-Type": "image/svg+xml" });
+    res.end(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0F766E"/><path d="M16 9v14M9 16h14" stroke="white" stroke-width="3.5" stroke-linecap="round"/></svg>`);
+    return;
+  }
+
   // Health Check
   if (pathname === "/api/health" && req.method === "GET") {
     return sendJson(res, 200, {

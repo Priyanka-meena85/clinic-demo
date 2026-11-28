@@ -303,7 +303,7 @@
             <div class="mt-5 p-4 rounded-2xl bg-mint border border-emerald-200">
               <p class="text-xs font-bold text-tealbrand">Already Booked / Visited?</p>
               <p class="text-[11px] text-slate-600 mt-0.5">Apni digital prescription (Rx) aur lab reports download karein:</p>
-              <a href="patient.html" class="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 transition shadow-2xs">
+              <a href="/patient" class="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700 transition shadow-2xs">
                 <span class="icon icon-user"></span> Open Patient Portal →
               </a>
             </div>
@@ -2592,7 +2592,7 @@
         // 9. Reports / Prescriptions / Portal
         if (q.includes("report") || q.includes("prescription") || q.includes("rx") || q.includes("dawai") || q.includes("pdf") || q.includes("portal") || q.includes("family")) {
           return {
-            text: "Aap apni saari <strong>Digital Prescriptions (Rx)</strong> aur <strong>Lab Reports (Blood, Sugar, X-Ray)</strong> <a href='patient.html' class='underline text-emerald-300 font-semibold'>Patient Portal</a> se apne mobile number + OTP se download kar sakte hain. Ek login mein 4 family members ke records milte hain.",
+            text: "Aap apni saari <strong>Digital Prescriptions (Rx)</strong> aur <strong>Lab Reports (Blood, Sugar, X-Ray)</strong> <a href='/patient' class='underline text-emerald-300 font-semibold'>Patient Portal</a> se apne mobile number + OTP se download kar sakte hain. Ek login mein 4 family members ke records milte hain.",
             speech: "Aap apni digital prescriptions aur lab reports Patient Portal se download kar sakte hain."
           };
         }
@@ -2994,7 +2994,7 @@
                 <a href="https://wa.me/91${waNum}?text=${waText}" target="_blank" rel="noopener" class="flex-1 py-2 px-3 rounded-xl bg-[#25D366] text-white font-semibold text-xs text-center flex items-center justify-center gap-1 shadow-xs hover:bg-[#1ebd5a]">
                   <span>Open Real WhatsApp</span>
                 </a>
-                <a href="patient.html" class="flex-1 py-2 px-3 rounded-xl bg-tealbrand text-white font-semibold text-xs text-center flex items-center justify-center gap-1 shadow-xs">
+                <a href="/patient" class="flex-1 py-2 px-3 rounded-xl bg-tealbrand text-white font-semibold text-xs text-center flex items-center justify-center gap-1 shadow-xs">
                   <span>Patient Portal</span>
                 </a>
                 <button type="button" onclick="window.CareWellSystem.closeAllModals()" class="px-4 py-2 rounded-xl bg-slate-200 text-slate-700 font-semibold text-xs">

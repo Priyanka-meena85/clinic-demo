@@ -221,7 +221,7 @@
             <div class="p-5 rounded-2xl border border-emerald-100 bg-slate-50/50">
               <h4 class="font-semibold text-sm text-slate-800 mb-3 flex items-center justify-between">
                 <span>Doctor OPD Live Loads</span>
-                <a href="doctor.html" class="text-xs text-tealbrand hover:underline font-semibold">Open Doctor Pad →</a>
+                <a href="/doctor" class="text-xs text-tealbrand hover:underline font-semibold">Open Doctor Pad →</a>
               </h4>
               <div class="space-y-2.5">
                 ${CareWellData.doctors.slice(0, 4).map((d, i) => `
@@ -379,7 +379,7 @@
                 </div>
                 <div class="mt-3 flex items-center justify-between text-xs">
                   <span class="text-slate-600">Digital Vault: Active Rx & Lab History</span>
-                  <a href="patient.html" class="text-tealbrand font-semibold hover:underline">
+                  <a href="/patient" class="text-tealbrand font-semibold hover:underline">
                     View in Patient Portal →
                   </a>
                 </div>
@@ -425,7 +425,7 @@
                   </div>
                   <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span class="text-slate-500">Rating: ★ ${d.rating || 4.8}</span>
-                    <a href="doctor.html" class="text-tealbrand font-medium hover:underline">
+                    <a href="/doctor" class="text-tealbrand font-medium hover:underline">
                       Open Doctor Console →
                     </a>
                   </div>

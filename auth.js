@@ -124,7 +124,7 @@
           window.location.pathname.includes("doctor.html") ||
           window.location.pathname.includes("receptionist.html") ||
           window.location.pathname.includes("admin.html")) {
-        window.location.href = "index.html";
+        window.location.href = "/";
       }
     }
   };
@@ -489,7 +489,7 @@
       localStorage.setItem("carewell_active_patient_member", patient.patientId || "CW-2048");
       writeJson("carewell_active_patient_user", patient);
       showToast(`Welcome ${patient.name}! Redirecting to Patient Portal...`);
-      setTimeout(() => (window.location.href = "patient.html"), 600);
+      setTimeout(() => (window.location.href = "/patient"), 600);
     });
 
     // Quick Patient Demo
@@ -503,7 +503,7 @@
         age: 28
       });
       showToast("Logged in as Riya Sharma (CW-2048)!");
-      setTimeout(() => (window.location.href = "patient.html"), 600);
+      setTimeout(() => (window.location.href = "/patient"), 600);
     });
 
     // 2. Patient Sign Up Submit
@@ -554,7 +554,7 @@
       writeJson("carewell_active_patient_user", newPatient);
 
       showToast(`Account Created! Patient ID: ${newPatientId}`);
-      setTimeout(() => (window.location.href = "patient.html"), 700);
+      setTimeout(() => (window.location.href = "/patient"), 700);
     });
 
     // 3. Doctor Login Submit
@@ -563,14 +563,14 @@
       const docId = $("#in-doc-select", container)?.value;
       localStorage.setItem("carewell_doctor_auth_id", docId);
       showToast("Doctor Verified! Opening OPD Workspace...");
-      setTimeout(() => (window.location.href = "doctor.html"), 600);
+      setTimeout(() => (window.location.href = "/doctor"), 600);
     });
 
     // Quick Doctor Demo
     $("#btn-quick-demo-doctor", container)?.addEventListener("click", () => {
       localStorage.setItem("carewell_doctor_auth_id", "ananya-rao");
       showToast("Logged in as Dr. Ananya Rao!");
-      setTimeout(() => (window.location.href = "doctor.html"), 600);
+      setTimeout(() => (window.location.href = "/doctor"), 600);
     });
 
     // 4. Doctor Sign Up Submit
@@ -606,7 +606,7 @@
 
       localStorage.setItem("carewell_doctor_auth_id", slug);
       showToast(`Dr. ${name} registered successfully!`);
-      setTimeout(() => (window.location.href = "doctor.html"), 700);
+      setTimeout(() => (window.location.href = "/doctor"), 700);
     });
 
     // 5. Admin Login Submit
@@ -614,14 +614,14 @@
       e.preventDefault();
       localStorage.setItem("carewell_admin_auth", "true");
       showToast("Admin credentials verified! Opening desk...");
-      setTimeout(() => (window.location.href = "admin.html"), 600);
+      setTimeout(() => (window.location.href = "/admin"), 600);
     });
 
     // Quick Admin Demo
     $("#btn-quick-demo-admin", container)?.addEventListener("click", () => {
       localStorage.setItem("carewell_admin_auth", "true");
       showToast("Logged in as Reception Admin!");
-      setTimeout(() => (window.location.href = "admin.html"), 600);
+      setTimeout(() => (window.location.href = "/admin"), 600);
     });
 
     // 6. Admin Sign Up / Staff Registration
@@ -634,7 +634,7 @@
       }
       localStorage.setItem("carewell_admin_auth", "true");
       showToast("Clinic Staff verified & registered!");
-      setTimeout(() => (window.location.href = "admin.html"), 600);
+      setTimeout(() => (window.location.href = "/admin"), 600);
     });
 
     // 7. Receptionist Login
@@ -648,13 +648,13 @@
       }
       localStorage.setItem("carewell_receptionist_auth", "true");
       showToast("Receptionist Desk Login Successful!");
-      setTimeout(() => (window.location.href = "receptionist.html"), 500);
+      setTimeout(() => (window.location.href = "/receptionist"), 500);
     });
 
     $("#btn-quick-demo-rec", container)?.addEventListener("click", () => {
       localStorage.setItem("carewell_receptionist_auth", "true");
       showToast("1-Click Front Desk Login Success!");
-      setTimeout(() => (window.location.href = "receptionist.html"), 500);
+      setTimeout(() => (window.location.href = "/receptionist"), 500);
     });
   }
 

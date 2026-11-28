@@ -277,7 +277,7 @@
             </span>
             <p class="font-bold text-slate-900 text-sm">Koi Active Appointment Nahi Hai</p>
             <p class="text-xs text-slate-500 mt-1">Aap CareWell website se doctor choose karke instant slot book kar sakte hain.</p>
-            <a href="index.html#doctors" class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">
+            <a href="/#doctors" class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-tealbrand text-white text-xs font-semibold hover:bg-teal-700">
               Doctor Dhoondhein & Book Karein →
             </a>
           </div>
@@ -287,7 +287,7 @@
           <div class="space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-emerald-100">
               <h3 class="font-display text-lg font-bold text-slate-900">Upcoming & Past Appointments</h3>
-              <a href="index.html#doctors" class="text-xs font-semibold text-tealbrand hover:underline">
+              <a href="/#doctors" class="text-xs font-semibold text-tealbrand hover:underline">
                 + Naya Appointment Book Karein
               </a>
             </div>
@@ -318,7 +318,7 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                      <a href="index.html#queue" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 transition flex items-center gap-1">
+                      <a href="/#queue" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-mint text-tealbrand text-xs font-semibold hover:bg-emerald-100 transition flex items-center gap-1">
                         <i data-lucide="radio" class="w-3.5 h-3.5"></i> Track Live Queue
                       </a>
                       <button type="button" onclick="window.CareWellPatient.viewReceiptModal('${escapeHtml(app.id)}')" class="px-3 py-1.5 rounded-xl border border-emerald-200 bg-white text-tealbrand text-xs font-semibold hover:bg-mint transition">
@@ -668,7 +668,7 @@
       if (!ok) return;
       ["carewell_appointments", "carewell_prescriptions", "carewell_reports", "carewell_visits", "carewell_wallet_bal", "carewell_patient_auth"].forEach((k) => localStorage.removeItem(k));
       showToast("Your data has been deleted per DPDP Right to Erasure.");
-      setTimeout(() => { window.location.href = "index.html"; }, 900);
+      setTimeout(() => { window.location.href = "/"; }, 900);
     },
 
     viewReceiptModal(id) {

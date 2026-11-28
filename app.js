@@ -242,10 +242,10 @@ function renderNav() {
         return `<a href="${item.href}" class="rounded-xl px-3 py-2.5 hover:bg-mint flex items-center justify-between" data-nav-link>${item.label}${count}</a>`;
       }).join("")}
       <div class="pt-2 mt-1 border-t border-slate-100 flex flex-col gap-2">
-        <button type="button" onclick="window.CareWellAuth ? window.CareWellAuth.openModal('patient', 'login') : window.location.href='login.html'" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-tealbrand text-xs font-semibold text-white shadow-2xs">
+        <button type="button" onclick="window.CareWellAuth ? window.CareWellAuth.openModal('patient', 'login') : window.location.href='/login'" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-tealbrand text-xs font-semibold text-white shadow-2xs">
           <span class="icon icon-key"></span> Login / Sign Up (Patient, Doctor, Admin)
         </button>
-        <a href="login.html" class="inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-mint border border-emerald-200 text-xs font-semibold text-tealbrand">
+        <a href="/login" class="inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-mint border border-emerald-200 text-xs font-semibold text-tealbrand">
           <span class="icon icon-shield"></span> All Roles Gateway
         </a>
         <button type="button" data-open-booking class="inline-flex h-11 items-center justify-center rounded-xl border border-emerald-300 bg-white text-xs font-semibold text-tealbrand">Appointment book karo</button>
@@ -720,16 +720,16 @@ function renderFooter() {
           Dedicated Portals
         </span>
         <div class="flex flex-col gap-2 text-emerald-200/90">
-          <a class="hover:text-white transition flex items-center gap-1.5" href="patient.html">
+          <a class="hover:text-white transition flex items-center gap-1.5" href="/patient">
             <span class="icon icon-user text-emerald-300"></span> Patient Portal (Rx & Reports)
           </a>
-          <a class="hover:text-white transition flex items-center gap-1.5" href="doctor.html">
+          <a class="hover:text-white transition flex items-center gap-1.5" href="/doctor">
             <span class="icon icon-stethoscope text-emerald-300"></span> Doctor OPD Console
           </a>
-          <a class="hover:text-white transition flex items-center gap-1.5" href="admin.html">
+          <a class="hover:text-white transition flex items-center gap-1.5" href="/admin">
             <span class="icon icon-shield"></span> Reception & Admin Desk
           </a>
-          <a class="hover:text-white transition flex items-center gap-1.5" href="login.html">
+          <a class="hover:text-white transition flex items-center gap-1.5" href="/login">
             <span class="icon icon-key"></span> Role Gateway & Sign Up
           </a>
           <a class="hover:text-white transition flex items-center gap-1.5" href="#queue">
@@ -770,15 +770,15 @@ function renderFooter() {
           20-Point Security Audit Report
         </button>
         <span>·</span>
-        <a href="privacy.html" class="hover:text-white transition">Privacy Policy</a>
+        <a href="/privacy" class="hover:text-white transition">Privacy Policy</a>
         <span>·</span>
-        <a href="terms.html" class="hover:text-white transition">Terms of Service</a>
+        <a href="/terms" class="hover:text-white transition">Terms of Service</a>
         <span>·</span>
-        <a href="refund.html" class="hover:text-white transition">Refund Policy</a>
+        <a href="/refund" class="hover:text-white transition">Refund Policy</a>
         <span>·</span>
         <a href="${whatsappUrl("Namaste Support, CareWell Clinic website mein help chahiye (Kuch Gadbad Hai).")}" target="_blank" rel="noopener" class="text-amber-300 hover:text-white transition font-semibold">Kuch Gadbad Hai? Support</a>
         <span>·</span>
-        <a href="login.html" class="hover:text-white transition">Staff Portals</a>
+        <a href="/login" class="hover:text-white transition">Staff Portals</a>
       </div>
     </div>`;
 }
